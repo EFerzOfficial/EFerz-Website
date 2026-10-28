@@ -83,13 +83,23 @@
       footer.elementor-2605 {
         display: none !important;
       }
+      /* Enforce Cairo font for Arabic & RTL */
+      :lang(ar),
+      [dir="rtl"],
+      [dir="rtl"] *,
+      [lang="ar"],
+      [lang="ar"] *,
+      .font-arabic,
+      .font-arabic * {
+        font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      }
       @keyframes eferzSpin {
         to { transform: rotate(360deg); }
       }
     </style>
 
     <!-- React App Production CSS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-D18l8f0d.css">
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-9eBe-5QD.css">
 
     <?php wp_head(); ?>
 </head>
@@ -105,7 +115,7 @@
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-BtwghZ6_.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-B5tG8eU7.js"></script>
 
     <?php wp_footer(); ?>
 </body>
