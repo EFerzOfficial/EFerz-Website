@@ -27,64 +27,33 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:ital,wght@0,700;0,800;0,900;1,900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Cabinet+Grotesk:wght@800;900&family=Clash+Display:wght@700;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
     
-    <!-- Theme Base Interceptor for Relative Media & Models -->
+    <!-- Theme Base Definition & Fetch Interceptor -->
     <script>
       (function() {
         var themeUri = '<?php echo esc_js(get_template_directory_uri()); ?>';
         window.__EFERZ_THEME_URI__ = themeUri;
 
-        // Fetch Interceptor for relative assets
-        var origFetch = window.fetch;
-        window.fetch = function(input, init) {
-          if (typeof input === 'string') {
-            if (input.startsWith('/') && !input.startsWith('//') && !input.startsWith(themeUri)) {
-              if (input.match(/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//)) {
-                input = themeUri + input;
-              }
-            }
-          } else if (input && input.url && typeof input.url === 'string') {
-            var u = new URL(input.url, window.location.origin);
-            if (u.pathname.match(/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//)) {
-              input = new Request(themeUri + u.pathname + u.search, input);
-            }
-          }
-          return origFetch ? origFetch.call(this, input, init) : Promise.reject('No fetch');
-        };
-
-        // DOM Media src Interceptor
-        var origSetAttribute = Element.prototype.setAttribute;
-        Element.prototype.setAttribute = function(name, val) {
-          if (typeof val === 'string' && (name === 'src' || name === 'href' || name === 'poster')) {
-            if (val.startsWith('/') && !val.startsWith('//') && !val.startsWith(themeUri)) {
-              if (val.match(/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//)) {
-                val = themeUri + val;
-              }
-            }
-          }
-          return origSetAttribute.call(this, name, val);
-        };
-
-        // Media property setters
-        ['HTMLImageElement', 'HTMLMediaElement', 'HTMLVideoElement', 'HTMLAudioElement'].forEach(function(cls) {
-          if (window[cls] && window[cls].prototype) {
-            var desc = Object.getOwnPropertyDescriptor(window[cls].prototype, 'src');
-            if (desc && desc.set) {
-              var origSet = desc.set;
-              Object.defineProperty(window[cls].prototype, 'src', {
-                set: function(val) {
-                  if (typeof val === 'string' && val.startsWith('/') && !val.startsWith('//') && !val.startsWith(themeUri)) {
-                    if (val.match(/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//)) {
-                      val = themeUri + val;
-                    }
+        // Fetch Interceptor for relative Three.js assets & models
+        if (typeof window !== 'undefined' && window.fetch) {
+          var origFetch = window.fetch;
+          window.fetch = function(input, init) {
+            try {
+              if (typeof input === 'string') {
+                if (input.startsWith('/') && !input.startsWith('//') && !input.startsWith(themeUri)) {
+                  if (/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//.test(input)) {
+                    input = themeUri + input;
                   }
-                  return origSet.call(this, val);
-                },
-                get: desc.get,
-                configurable: true
-              });
-            }
-          }
-        });
+                }
+              } else if (input && input.url && typeof input.url === 'string') {
+                var u = new URL(input.url, window.location.origin);
+                if (/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//.test(u.pathname)) {
+                  input = new Request(themeUri + u.pathname + u.search, input);
+                }
+              }
+            } catch (err) {}
+            return origFetch.apply(this, arguments);
+          };
+        }
       })();
     </script>
 
@@ -103,17 +72,30 @@
         padding: 0;
         background-color: #121212 !important;
       }
+      @keyframes eferzSpin {
+        to { transform: rotate(360deg); }
+      }
     </style>
 
-    <!-- React App Production CSS & JS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-IsCmkyra.css">
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-BLhZRj5s.js"></script>
+    <!-- React App Production CSS -->
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-D18l8f0d.css">
 
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('bg-[#121212] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
-    <div id="root"></div>
+    <div id="root">
+      <div id="eferz-loading" style="min-height:100vh;background:#121212;display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;">
+        <div style="text-align:center;">
+          <div style="width:44px;height:44px;border:3px solid #ec3935;border-top-color:transparent;border-radius:50%;animation:eferzSpin 0.9s linear infinite;margin:0 auto 16px;"></div>
+          <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888;">Initializing EFerz Studio...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- React App Production Bundle (Executed right after #root is in DOM) -->
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-BtwghZ6_.js"></script>
+
     <?php wp_footer(); ?>
 </body>
 </html>
