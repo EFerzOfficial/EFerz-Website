@@ -236,3 +236,19 @@ details[open] summary span:last-child {
 #mobile-nav-drawer.open {
   transform: translateY(0) !important;
 }
+
+/* Force Dark Aesthetic & Suppress Legacy Elementor Theme Builder Header/Footer */
+html, body, .home {
+  background-color: #04070F !important;
+  color: #ffffff !important;
+}
+
+.home .elementor-location-header,
+.home .elementor-location-footer,
+.home footer.elementor-2605,
+.home header.elementor-2609,
+.home .elementor-page-2609,
+.home .elementor-page-2605 {
+  display: none !important;
+}
+
