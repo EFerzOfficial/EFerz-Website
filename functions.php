@@ -124,3 +124,17 @@ function eferz_seo_schema_jsonld() {
     }
 }
 add_action('wp_head', 'eferz_seo_schema_jsonld');
+
+/**
+ * Force front-page.php on Front Page
+ * Prevents Elementor from overriding the flagship 3D theme layout
+ */
+add_filter('template_include', function($template) {
+    if (is_front_page()) {
+        $front = get_template_directory() . '/front-page.php';
+        if (file_exists($front)) {
+            return $front;
+        }
+    }
+    return $template;
+}, 999999);
