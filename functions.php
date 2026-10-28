@@ -127,7 +127,7 @@ add_action('wp_head', 'eferz_seo_schema_jsonld');
 
 /**
  * Force front-page.php on Front Page
- * Prevents Elementor from overriding the flagship 3D theme layout
+ * Prevents Elementor / Page Builders from overriding the flagship 3D theme layout
  */
 add_filter('template_include', function($template) {
     if (is_front_page()) {
@@ -138,3 +138,4 @@ add_filter('template_include', function($template) {
     }
     return $template;
 }, 999999);
+
