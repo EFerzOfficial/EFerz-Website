@@ -54,56 +54,7 @@ add_action('after_setup_theme', 'eferz_theme_setup');
  * Enqueue scripts and styles.
  */
 function eferz_theme_scripts() {
-    // Google Fonts
-    wp_enqueue_style(
-        'eferz-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap',
-        array(),
-        null
-    );
-
-    // Tailwind CSS CDN Engine (Compiles all utility classes on the fly)
-    wp_enqueue_script(
-        'tailwindcss-cdn',
-        'https://cdn.tailwindcss.com',
-        array(),
-        '3.4.17',
-        false
-    );
-
-    // Main Theme CSS
-    wp_enqueue_style(
-        'eferz-main-css',
-        get_template_directory_uri() . '/assets/css/eferz-main.css',
-        array(),
-        EFERZ_THEME_VERSION
-    );
-
-    // Three.js r128 Library for 3D Particle & Morphing Canvas
-    wp_enqueue_script(
-        'threejs',
-        'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
-        array(),
-        'r128',
-        true
-    );
-
-    // EFerz Interactive 3D & UI Bundle
-    wp_enqueue_script(
-        'eferz-interactive-js',
-        get_template_directory_uri() . '/assets/js/eferz-interactive.js',
-        array('threejs'),
-        EFERZ_THEME_VERSION,
-        true
-    );
-
-    // Localize data for AJAX or interactive state
-    wp_localize_script('eferz-interactive-js', 'eferzData', array(
-        'siteUrl'   => site_url(),
-        'themeUrl'  => get_template_directory_uri(),
-        'brandName' => get_bloginfo('name'),
-        'ajaxUrl'   => admin_url('admin-ajax.php'),
-    ));
+    // React app assets are loaded directly in front-page.php
 }
 add_action('wp_enqueue_scripts', 'eferz_theme_scripts');
 
