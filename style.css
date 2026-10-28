@@ -1,0 +1,38 @@
+/*
+Theme Name: EFerz Digital Studio - Cinematic 3D Agency
+Theme URI: https://eferz.com
+Author: EFerz Team
+Author URI: https://eferz.com
+Description: Production-ready, ultra-fast 2026 Cinematic 3D Web Agency WordPress Theme with Three.js interactive canvas, modern Bento grids, Yoast SEO compatibility, and automated GitHub Push-to-Deploy support.
+Version: 1.0.0
+Tested up to: 6.7
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: eferz
+Tags: agency, portfolio, threejs, 3d, dark-theme, responsive-layout, seo-friendly, custom-background, translation-ready
+*/
+
+/* Base CSS Reset & Custom Properties */
+:root {
+  --eferz-red: #d02128;
+  --eferz-red-glow: rgba(208, 33, 40, 0.45);
+  --eferz-cyan: #06b6d4;
+  --eferz-dark: #04070F;
+  --eferz-card-bg: rgba(255, 255, 255, 0.03);
+  --eferz-border: rgba(255, 255, 255, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--eferz-dark);
+  color: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--eferz-dark);
+}
