@@ -22,6 +22,23 @@
     <meta name="twitter:title" content="<?php bloginfo('name'); ?> — Cinematic 3D Web Studio">
     <meta name="twitter:description" content="We engineer ultra-luxury 3D websites, WebGL shaders, and high-conversion interactive digital products.">
     
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brandRed: '#d02128',
+              darkBg: '#04070F'
+            },
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+              mono: ['"Space Grotesk"', 'ui-monospace', 'monospace']
+            }
+          }
+        }
+      }
+    </script>
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('bg-[#04070F] text-white font-sans antialiased overflow-x-hidden selection:bg-[#d02128] selection:text-white'); ?>>

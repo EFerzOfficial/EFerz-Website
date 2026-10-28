@@ -62,6 +62,15 @@ function eferz_theme_scripts() {
         null
     );
 
+    // Tailwind CSS CDN Engine (Compiles all utility classes on the fly)
+    wp_enqueue_script(
+        'tailwindcss-cdn',
+        'https://cdn.tailwindcss.com',
+        array(),
+        '3.4.17',
+        false
+    );
+
     // Main Theme CSS
     wp_enqueue_style(
         'eferz-main-css',

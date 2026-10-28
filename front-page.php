@@ -8,6 +8,25 @@
 
 get_header(); ?>
 
+<!-- Tailwind CSS CDN Engine (Instant on-the-fly rendering) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brandRed: '#d02128',
+          darkBg: '#04070F'
+        },
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          mono: ['"Space Grotesk"', 'ui-monospace', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+
 <!-- Background 3D Particle & Morphing Canvas (Self-contained in front-page) -->
 <canvas id="particle-canvas-3d" class="fixed inset-0 pointer-events-none z-0 opacity-80 transition-opacity duration-1000"></canvas>
 
