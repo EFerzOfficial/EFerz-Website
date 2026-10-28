@@ -58,19 +58,30 @@
     </script>
 
     <style>
-      /* Suppress any legacy Elementor Theme Builder headers and footers */
+      /* Ensure body and root are always visible and active */
+      html, body {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: #121212 !important;
+        color: #fffdff !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      #root {
+        display: block !important;
+        min-height: 100vh !important;
+        position: relative !important;
+        z-index: 1 !important;
+      }
+      /* Suppress only legacy Elementor Theme Builder headers and footers (never hide body) */
+      header.elementor,
+      footer.elementor,
       .elementor-location-header,
       .elementor-location-footer,
-      footer.elementor-2605,
       header.elementor-2609,
-      .elementor-page-2609,
-      .elementor-page-2605 {
+      footer.elementor-2605 {
         display: none !important;
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #121212 !important;
       }
       @keyframes eferzSpin {
         to { transform: rotate(360deg); }

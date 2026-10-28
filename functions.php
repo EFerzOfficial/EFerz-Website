@@ -99,3 +99,19 @@ add_filter('template_include', function($template) {
     return $template;
 }, 999999);
 
+/**
+ * Clean body classes on front page to prevent conflicts with page builder stylesheets
+ */
+add_filter('body_class', function($classes) {
+    if (is_front_page()) {
+        $classes = array_diff($classes, array(
+            'elementor-page-2609',
+            'elementor-page-2605',
+            'elementor-page-6133'
+        ));
+        $classes[] = 'eferz-flagship-active';
+    }
+    return $classes;
+}, 999999);
+
+
