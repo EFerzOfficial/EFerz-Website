@@ -22,7 +22,7 @@ function eferz_theme_setup() {
 
     // Force exact requested document title
     add_filter('pre_get_document_title', function($title) {
-        return 'Effort Digital Agency - Cinematic 3D Web Experience';
+        return 'EFerz Digital Agency - Cinematic 3D Web Experience';
     }, 999999);
 
     // Enable Featured Images

@@ -12,16 +12,16 @@
     <meta charset="<?php bloginfo('charset'); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <?php if (!did_action('wp_head') && !current_theme_supports('title-tag')): ?>
-    <title>Effort Digital Agency - Cinematic 3D Web Experience</title>
+    <title>EFerz Digital Agency - Cinematic 3D Web Experience</title>
     <?php endif; ?>
-    <meta name="description" content="Effort Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
-    <meta name="keywords" content="Effort Digital Agency, EFerz, AI Development Agency, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرت الرقمية" />
-    <meta property="og:title" content="Effort Digital Agency - Cinematic 3D Web Experience" />
-    <meta property="og:description" content="Effort Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
+    <meta name="description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
+    <meta name="keywords" content="EFerz Digital Agency, EFerz, AI Development Agency, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرز الرقمية" />
+    <meta property="og:title" content="EFerz Digital Agency - Cinematic 3D Web Experience" />
+    <meta property="og:description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Effort Digital Agency" />
+    <meta property="og:site_name" content="EFerz Digital Agency" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Effort Digital Agency - Cinematic 3D Web Experience" />
+    <meta name="twitter:title" content="EFerz Digital Agency - Cinematic 3D Web Experience" />
     <meta name="twitter:description" content="Next-generation enterprise AI systems, autonomous agents, modern 3D WebGL platforms, and digital transformation services built by EFerz." />
     
     <!-- Premium Google Fonts -->
@@ -114,29 +114,18 @@
     </style>
 
     <!-- React App Production CSS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-BtvCEIWP.css">
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-BwSZGIkh.css">
 
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('bg-[#121212] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
     <div id="root">
-      <div id="eferz-loading" style="min-height:100vh;background:#05060a;display:flex;align-items:center;justify-content:center;position:fixed;inset:0;z-index:99999;overflow:hidden;">
-        <div style="position:relative;width:170px;height:170px;display:flex;align-items:center;justify-content:center;">
-          <!-- Outer Orbiting Dashed Ring -->
-          <div style="position:absolute;inset:0;border-radius:50%;border:1.5px dashed rgba(208,33,40,0.55);animation:eferzOrbit 12s linear infinite;"></div>
-          <!-- Inner Orbiting Starlight Ring -->
-          <div style="position:absolute;inset:16px;border-radius:50%;border:1px solid rgba(255,255,255,0.18);border-top-color:rgba(208,33,40,0.9);animation:eferzOrbitRev 7s linear infinite;"></div>
-          <!-- Ambient Crimson Aura -->
-          <div style="position:absolute;inset:24px;border-radius:50%;background:radial-gradient(circle, rgba(208,33,40,0.5) 0%, rgba(255,255,255,0.1) 45%, transparent 70%);filter:blur(20px);"></div>
-          <!-- Official Effort Logo in Living Motion -->
-          <img src="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" alt="Effort" loading="eager" decoding="async" data-no-lazy="1" data-skip-lazy="1" style="position:relative;z-index:2;width:82px;height:82px;object-fit:contain;animation:eferzPulseGlow 3s ease-in-out infinite;" />
-        </div>
-      </div>
+      <div id="eferz-loading" style="min-height:100vh;background:#000000;display:flex;align-items:center;justify-content:center;position:fixed;inset:0;z-index:99999;"></div>
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-LkwtQ4Vc.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-DoEZlX_M.js"></script>
 
     <?php wp_footer(); ?>
 </body>
