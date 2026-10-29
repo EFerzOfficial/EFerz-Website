@@ -20,6 +20,11 @@ function eferz_theme_setup() {
     // Let WordPress manage the document title (Yoast SEO compatible)
     add_theme_support('title-tag');
 
+    // Force exact requested document title
+    add_filter('pre_get_document_title', function($title) {
+        return 'Effort Digital Agency - Cinematic 3D Web Experience';
+    }, 999999);
+
     // Enable Featured Images
     add_theme_support('post-thumbnails');
 

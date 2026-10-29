@@ -11,7 +11,9 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <?php if (!did_action('wp_head') && !current_theme_supports('title-tag')): ?>
     <title>Effort Digital Agency - Cinematic 3D Web Experience</title>
+    <?php endif; ?>
     <meta name="description" content="Effort Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
     <meta name="keywords" content="Effort Digital Agency, EFerz, AI Development Agency, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرت الرقمية" />
     <meta property="og:title" content="Effort Digital Agency - Cinematic 3D Web Experience" />
