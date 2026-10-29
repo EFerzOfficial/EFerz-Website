@@ -93,29 +93,48 @@
       .font-arabic * {
         font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
       }
-      @keyframes eferzSpin {
+      @keyframes eferzOrbit {
         to { transform: rotate(360deg); }
+      }
+      @keyframes eferzOrbitRev {
+        to { transform: rotate(-360deg); }
+      }
+      @keyframes eferzPulseGlow {
+        0%, 100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 25px rgba(208,33,40,0.85)) brightness(1.15);
+        }
+        50% {
+          transform: scale(1.08);
+          filter: drop-shadow(0 0 45px rgba(208,33,40,1)) brightness(1.3);
+        }
       }
     </style>
 
     <!-- React App Production CSS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-V1FWc9GM.css">
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-DMuPg5qj.css">
 
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('bg-[#121212] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
     <div id="root">
-      <div id="eferz-loading" style="min-height:100vh;background:#121212;display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;">
-        <div style="text-align:center;">
-          <div style="width:44px;height:44px;border:3px solid #ec3935;border-top-color:transparent;border-radius:50%;animation:eferzSpin 0.9s linear infinite;margin:0 auto 16px;"></div>
-          <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#888;">Initializing EFerz Studio...</div>
+      <div id="eferz-loading" style="min-height:100vh;background:#05060a;display:flex;align-items:center;justify-content:center;position:fixed;inset:0;z-index:99999;overflow:hidden;">
+        <div style="position:relative;width:170px;height:170px;display:flex;align-items:center;justify-content:center;">
+          <!-- Outer Orbiting Dashed Ring -->
+          <div style="position:absolute;inset:0;border-radius:50%;border:1.5px dashed rgba(208,33,40,0.55);animation:eferzOrbit 12s linear infinite;"></div>
+          <!-- Inner Orbiting Starlight Ring -->
+          <div style="position:absolute;inset:16px;border-radius:50%;border:1px solid rgba(255,255,255,0.18);border-top-color:rgba(208,33,40,0.9);animation:eferzOrbitRev 7s linear infinite;"></div>
+          <!-- Ambient Crimson Aura -->
+          <div style="position:absolute;inset:24px;border-radius:50%;background:radial-gradient(circle, rgba(208,33,40,0.5) 0%, rgba(255,255,255,0.1) 45%, transparent 70%);filter:blur(20px);"></div>
+          <!-- Official EFerz Logo in Living Motion -->
+          <img src="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" alt="EFerz" style="position:relative;z-index:2;width:82px;height:82px;object-fit:contain;animation:eferzPulseGlow 3s ease-in-out infinite;" />
         </div>
       </div>
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-COr7fzDp.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-MR39Aybt.js"></script>
 
     <?php wp_footer(); ?>
 </body>
