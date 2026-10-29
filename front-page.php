@@ -128,7 +128,7 @@
           <!-- Ambient Crimson Aura -->
           <div style="position:absolute;inset:24px;border-radius:50%;background:radial-gradient(circle, rgba(208,33,40,0.5) 0%, rgba(255,255,255,0.1) 45%, transparent 70%);filter:blur(20px);"></div>
           <!-- Official EFerz Logo in Living Motion -->
-          <img src="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" alt="EFerz" style="position:relative;z-index:2;width:82px;height:82px;object-fit:contain;animation:eferzPulseGlow 3s ease-in-out infinite;" />
+          <img src="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" alt="EFerz" loading="eager" decoding="async" data-no-lazy="1" data-skip-lazy="1" style="position:relative;z-index:2;width:82px;height:82px;object-fit:contain;animation:eferzPulseGlow 3s ease-in-out infinite;" />
         </div>
       </div>
     </div>
