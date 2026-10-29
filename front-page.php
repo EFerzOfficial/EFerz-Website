@@ -114,7 +114,7 @@
     </style>
 
     <!-- React App Production CSS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-DPihOV2X.css">
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-BwSZGIkh.css">
 
     <?php wp_head(); ?>
 </head>
@@ -125,7 +125,7 @@
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-BaeWSDK4.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-B2mSjNMT.js"></script>
 
     <?php wp_footer(); ?>
 </body>
