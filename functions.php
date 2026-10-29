@@ -86,11 +86,28 @@ function eferz_seo_schema_jsonld() {
 add_action('wp_head', 'eferz_seo_schema_jsonld');
 
 /**
- * Force front-page.php on Front Page
- * Prevents Elementor / Page Builders from overriding the flagship 3D theme layout
+ * SPA Routes Support: /services, /work, /clients, /team, /contact, /blog, etc.
+ * Ensures visiting https://eferz.com/services loads the React flagship application seamlessly.
  */
+function eferz_add_spa_rewrites() {
+    $spa_routes = array('services', 'work', 'portfolio', 'clients', 'team', 'contact', 'blog', 'about', 'privacy', 'terms', 'refund', 'lets-build');
+    foreach ($spa_routes as $route) {
+        add_rewrite_rule('^' . $route . '/?$', 'index.php?eferz_spa_route=' . $route, 'top');
+    }
+}
+add_action('init', 'eferz_add_spa_rewrites');
+
+add_filter('query_vars', function($vars) {
+    $vars[] = 'eferz_spa_route';
+    return $vars;
+});
+
 add_filter('template_include', function($template) {
-    if (is_front_page()) {
+    $spa_routes = array('services', 'work', 'portfolio', 'clients', 'team', 'contact', 'blog', 'about', 'privacy', 'terms', 'refund', 'lets-build');
+    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
+    $first_seg = explode('/', $req_path)[0] ?? '';
+
+    if (is_front_page() || in_array($first_seg, $spa_routes, true) || get_query_var('eferz_spa_route') || is_404()) {
         $front = get_template_directory() . '/front-page.php';
         if (file_exists($front)) {
             return $front;
@@ -100,10 +117,14 @@ add_filter('template_include', function($template) {
 }, 999999);
 
 /**
- * Clean body classes on front page to prevent conflicts with page builder stylesheets
+ * Clean body classes on front page and SPA routes to prevent page-builder stylesheet clashes
  */
 add_filter('body_class', function($classes) {
-    if (is_front_page()) {
+    $spa_routes = array('services', 'work', 'portfolio', 'clients', 'team', 'contact', 'blog', 'about', 'privacy', 'terms', 'refund', 'lets-build');
+    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
+    $first_seg = explode('/', $req_path)[0] ?? '';
+
+    if (is_front_page() || in_array($first_seg, $spa_routes, true)) {
         $classes = array_diff($classes, array(
             'elementor-page-2609',
             'elementor-page-2605',

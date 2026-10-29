@@ -11,15 +11,15 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EFerz Digital Agency | AI Solutions, 3D WebGL & Custom Software (USA · KSA · PAK)</title>
-    <meta name="description" content="EFerz is an award-winning global digital agency in USA, Saudi Arabia & Pakistan specializing in Artificial Intelligence, 3D WebGL websites, Shopify Plus, Amazon FBA, SEO, and Cybersecurity." />
-    <meta name="keywords" content="EFerz Digital Agency, AI Development Agency USA KSA, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرز الرقمية" />
-    <meta property="og:title" content="EFerz Digital Agency | AI Solutions, 3D WebGL & Custom Software (USA · KSA · PAK)" />
-    <meta property="og:description" content="EFerz is an award-winning global digital agency in USA, Saudi Arabia & Pakistan specializing in Artificial Intelligence, 3D WebGL websites, Shopify Plus, Amazon FBA, SEO, and Cybersecurity." />
+    <title>Effort Digital Agency - Cinematic 3D Web Experience</title>
+    <meta name="description" content="Effort Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
+    <meta name="keywords" content="Effort Digital Agency, EFerz, AI Development Agency, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرت الرقمية" />
+    <meta property="og:title" content="Effort Digital Agency - Cinematic 3D Web Experience" />
+    <meta property="og:description" content="Effort Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="EFerz Digital Agency" />
+    <meta property="og:site_name" content="Effort Digital Agency" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EFerz Digital Agency | AI Solutions, 3D WebGL & Custom Software" />
+    <meta name="twitter:title" content="Effort Digital Agency - Cinematic 3D Web Experience" />
     <meta name="twitter:description" content="Next-generation enterprise AI systems, autonomous agents, modern 3D WebGL platforms, and digital transformation services built by EFerz." />
     
     <!-- Premium Google Fonts -->
@@ -112,7 +112,7 @@
     </style>
 
     <!-- React App Production CSS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-DMuPg5qj.css">
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-BtvCEIWP.css">
 
     <?php wp_head(); ?>
 </head>
@@ -127,14 +127,14 @@
           <div style="position:absolute;inset:16px;border-radius:50%;border:1px solid rgba(255,255,255,0.18);border-top-color:rgba(208,33,40,0.9);animation:eferzOrbitRev 7s linear infinite;"></div>
           <!-- Ambient Crimson Aura -->
           <div style="position:absolute;inset:24px;border-radius:50%;background:radial-gradient(circle, rgba(208,33,40,0.5) 0%, rgba(255,255,255,0.1) 45%, transparent 70%);filter:blur(20px);"></div>
-          <!-- Official EFerz Logo in Living Motion -->
-          <img src="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" alt="EFerz" loading="eager" decoding="async" data-no-lazy="1" data-skip-lazy="1" style="position:relative;z-index:2;width:82px;height:82px;object-fit:contain;animation:eferzPulseGlow 3s ease-in-out infinite;" />
+          <!-- Official Effort Logo in Living Motion -->
+          <img src="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" alt="Effort" loading="eager" decoding="async" data-no-lazy="1" data-skip-lazy="1" style="position:relative;z-index:2;width:82px;height:82px;object-fit:contain;animation:eferzPulseGlow 3s ease-in-out infinite;" />
         </div>
       </div>
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-MR39Aybt.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-LkwtQ4Vc.js"></script>
 
     <?php wp_footer(); ?>
 </body>
