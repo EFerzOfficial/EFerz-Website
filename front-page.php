@@ -16,13 +16,27 @@
     <?php endif; ?>
     <meta name="description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
     <meta name="keywords" content="EFerz Digital Agency, EFerz, AI Development Agency, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرز الرقمية" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#121212" />
+    <meta name="author" content="EFerz Digital Agency" />
+    <link rel="canonical" href="https://eferz.com/" />
     <meta property="og:title" content="EFerz Digital Agency - Cinematic 3D Web Experience" />
     <meta property="og:description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eferz.com/" />
     <meta property="og:site_name" content="EFerz Digital Agency" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ar_SA" />
+    <meta property="og:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
+    <meta property="og:image:alt" content="EFerz Digital Agency Logo" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="EFerz Digital Agency - Cinematic 3D Web Experience" />
     <meta name="twitter:description" content="Next-generation enterprise AI systems, autonomous agents, modern 3D WebGL platforms, and digital transformation services built by EFerz." />
+    <meta name="twitter:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
+    <meta name="twitter:image:alt" content="EFerz Digital Agency Logo" />
+    <link rel="preload" as="video" href="<?php echo get_template_directory_uri(); ?>/videos/intro_cinematic.mp4" type="video/mp4">
     
     <!-- Premium Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -125,7 +139,7 @@
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-DS537irc.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-DaTgjds9.js"></script>
 
     <?php wp_footer(); ?>
 </body>
