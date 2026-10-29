@@ -125,7 +125,7 @@
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-B2mSjNMT.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-DS537irc.js"></script>
 
     <?php wp_footer(); ?>
 </body>
