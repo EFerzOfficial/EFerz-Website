@@ -12,15 +12,15 @@
     <meta charset="<?php bloginfo('charset'); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <?php if (!did_action('wp_head') && !current_theme_supports('title-tag')): ?>
-    <title>EFerz Digital Agency - Cinematic 3D Web Experience</title>
+    <title>EFerz Digital Agency — Nothing Is Impossible In The IT World</title>
     <?php endif; ?>
-    <meta name="description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
-    <meta name="keywords" content="EFerz Digital Agency, EFerz, AI Development Agency, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرز الرقمية" />
+    <meta name="description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity. Nothing is impossible in the IT world." />
+    <meta name="keywords" content="EFerz Digital Agency, EFerz, Nothing is impossible in the IT world, AI Development Agency, 3D WebGL Website Design, Custom Software Engineering, Shopify Plus & Amazon FBA Agency, Enterprise SEO, Riyadh Digital Agency, وكالة إيفرز الرقمية" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#121212" />
     <meta name="author" content="EFerz Digital Agency" />
     <link rel="canonical" href="https://eferz.com/" />
-    <meta property="og:title" content="EFerz Digital Agency - Cinematic 3D Web Experience" />
+    <meta property="og:title" content="EFerz Digital Agency — Nothing Is Impossible In The IT World" />
     <meta property="og:description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://eferz.com/" />
@@ -128,7 +128,7 @@
     </style>
 
     <!-- React App Production CSS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-CiPU1Re8.css">
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-DSGrFyNM.css">
 
     <?php wp_head(); ?>
 </head>
@@ -139,7 +139,7 @@
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-5Oar30Ew.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-PH7tkefv.js"></script>
 
     <?php wp_footer(); ?>
 </body>
