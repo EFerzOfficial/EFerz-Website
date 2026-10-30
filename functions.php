@@ -22,7 +22,7 @@ function eferz_theme_setup() {
 
     // Force exact requested document title
     add_filter('pre_get_document_title', function($title) {
-        return 'EFerz Digital Agency - Cinematic 3D Web Experience';
+        return 'EFerz Digital Agency — Nothing Is Impossible In The IT World';
     }, 999999);
 
     // Enable Featured Images

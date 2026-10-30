@@ -32,7 +32,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EFerz Digital Agency - Cinematic 3D Web Experience" />
+    <meta name="twitter:title" content="EFerz Digital Agency — Nothing Is Impossible In The IT World" />
     <meta name="twitter:description" content="Next-generation enterprise AI systems, autonomous agents, modern 3D WebGL platforms, and digital transformation services built by EFerz." />
     <meta name="twitter:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
     <meta name="twitter:image:alt" content="EFerz Digital Agency Logo" />
@@ -128,7 +128,7 @@
     </style>
 
     <!-- React App Production CSS -->
-    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-DSGrFyNM.css">
+    <link rel="stylesheet" crossorigin href="<?php echo get_template_directory_uri(); ?>/assets/index-B3y2asM6.css">
 
     <?php wp_head(); ?>
 </head>
@@ -139,7 +139,7 @@
     </div>
 
     <!-- React App Production Bundle (Executed right after #root is in DOM) -->
-    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-PH7tkefv.js"></script>
+    <script type="module" crossorigin src="<?php echo get_template_directory_uri(); ?>/assets/index-CrYCigPu.js"></script>
 
     <?php wp_footer(); ?>
 </body>

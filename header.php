@@ -15,11 +15,11 @@
     <!-- OpenGraph & Social Metadata (SEO Optimized) -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="<?php bloginfo('name'); ?>">
-    <meta property="og:title" content="<?php bloginfo('name'); ?> — Cinematic 3D Web Experiences">
-    <meta property="og:description" content="We engineer ultra-luxury 3D websites, WebGL shaders, interactive product models and next-generation eCommerce experiences.">
+    <meta property="og:title" content="<?php bloginfo('name'); ?> — Nothing Is Impossible In The IT World">
+    <meta property="og:description" content="EFerz Digital Agency is an award-winning global agency specializing in Artificial Intelligence, 3D WebGL websites, custom software, eCommerce, SEO, and enterprise cybersecurity. Nothing is impossible in the IT world.">
     <meta property="og:url" content="<?php echo esc_url(home_url('/')); ?>">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?php bloginfo('name'); ?> — Cinematic 3D Web Studio">
+    <meta name="twitter:title" content="<?php bloginfo('name'); ?> — Nothing Is Impossible In The IT World">
     <meta name="twitter:description" content="We engineer ultra-luxury 3D websites, WebGL shaders, and high-conversion interactive digital products.">
     
     <script src="https://cdn.tailwindcss.com"></script>
