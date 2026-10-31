@@ -52,14 +52,42 @@ function eferz_theme_setup() {
         'flex-height' => true,
         'flex-width'  => true,
     ));
+
+    // Full WooCommerce Support & Product Gallery
+    add_theme_support('woocommerce');
+    add_theme_support('wc-product-gallery-zoom');
+    add_theme_support('wc-product-gallery-lightbox');
+    add_theme_support('wc-product-gallery-slider');
 }
 add_action('after_setup_theme', 'eferz_theme_setup');
 
 /**
- * Enqueue scripts and styles.
+ * Enqueue scripts, styles and WooCommerce luxury dark styling.
  */
 function eferz_theme_scripts() {
-    // React app assets are loaded directly in front-page.php
+    // Custom WooCommerce Dark Luxury Styling
+    if (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page())) {
+        $custom_wc_css = "
+        .woocommerce, .woocommerce-page { color: #fffdff !important; font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important; }
+        .woocommerce ul.products li.product { background: rgba(7, 9, 15, 0.88) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; border-radius: 1.25rem !important; padding: 1.25rem !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; backdrop-filter: blur(16px) !important; text-align: center; }
+        .woocommerce ul.products li.product:hover { border-color: #d02128 !important; box-shadow: 0 12px 36px rgba(208, 33, 40, 0.28) !important; transform: translateY(-4px) !important; }
+        .woocommerce ul.products li.product .woocommerce-loop-product__title { color: #fffdff !important; font-weight: 800 !important; font-size: 1.15rem !important; margin-top: 0.85rem !important; }
+        .woocommerce ul.products li.product .price, .woocommerce div.product p.price, .woocommerce div.product span.price { color: #ff4d49 !important; font-family: 'Space Grotesk', monospace !important; font-weight: 700 !important; font-size: 1.1rem !important; }
+        .woocommerce ul.products li.product .button, .woocommerce div.product form.cart .button, .woocommerce #respond input#submit, .woocommerce a.button, .woocommerce button.button, .woocommerce input.button { background: linear-gradient(135deg, #d02128, #ff3b30) !important; color: #ffffff !important; border-radius: 9999px !important; padding: 0.75rem 1.6rem !important; font-family: 'Space Grotesk', monospace !important; font-weight: 700 !important; font-size: 0.8rem !important; text-transform: uppercase !important; letter-spacing: 0.12em !important; border: none !important; transition: all 0.25s ease !important; box-shadow: 0 0 20px rgba(208, 33, 40, 0.45) !important; cursor: pointer !important; }
+        .woocommerce ul.products li.product .button:hover, .woocommerce div.product form.cart .button:hover, .woocommerce a.button:hover, .woocommerce button.button:hover, .woocommerce input.button:hover { transform: scale(1.03) !important; box-shadow: 0 0 35px rgba(208, 33, 40, 0.75) !important; }
+        .woocommerce-message, .woocommerce-info, .woocommerce-error { background: rgba(7, 9, 15, 0.95) !important; border-radius: 1rem !important; backdrop-filter: blur(20px) !important; color: #fffdff !important; border-left: 4px solid #d02128 !important; }
+        .woocommerce-message { border-left-color: #10b981 !important; }
+        .woocommerce-info { border-left-color: #38bdf8 !important; }
+        .woocommerce input.input-text, .woocommerce select, .woocommerce textarea { background-color: rgba(4, 7, 15, 0.92) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 0.75rem !important; color: #fffdff !important; padding: 0.75rem 1rem !important; }
+        .woocommerce input.input-text:focus, .woocommerce select:focus, .woocommerce textarea:focus { border-color: #d02128 !important; outline: none !important; box-shadow: 0 0 14px rgba(208, 33, 40, 0.45) !important; }
+        .woocommerce table.shop_table { background: rgba(7, 9, 15, 0.82) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; border-radius: 1.25rem !important; overflow: hidden !important; }
+        .woocommerce table.shop_table th { color: #fffdff !important; font-family: 'Space Grotesk', monospace !important; text-transform: uppercase !important; letter-spacing: 0.1em !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; }
+        .woocommerce table.shop_table td { border-top: 1px solid rgba(255, 255, 255, 0.08) !important; color: rgba(255, 255, 255, 0.88) !important; }
+        #payment { background: rgba(4, 7, 15, 0.96) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; border-radius: 1.25rem !important; }
+        #payment div.payment_box { background: rgba(255, 255, 255, 0.06) !important; color: #fffdff !important; border-radius: 0.75rem !important; }
+        ";
+        wp_add_inline_style('woocommerce-general', $custom_wc_css);
+    }
 }
 add_action('wp_enqueue_scripts', 'eferz_theme_scripts');
 
@@ -111,6 +139,15 @@ add_filter('template_include', function($template) {
     $spa_routes = array('services', 'work', 'portfolio', 'clients', 'team', 'contact', 'blog', 'about', 'privacy', 'terms', 'refund', 'lets-build');
     $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
     $first_seg = explode('/', $req_path)[0] ?? '';
+
+    // Route WooCommerce pages (shop, products, cart, checkout, my-account) to custom luxury template
+    $wc_routes = array('shop', 'cart', 'checkout', 'my-account', 'product', 'product-category');
+    if (in_array($first_seg, $wc_routes, true) || (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page()))) {
+        $wc_template = get_template_directory() . '/woocommerce.php';
+        if (file_exists($wc_template)) {
+            return $wc_template;
+        }
+    }
 
     if (is_front_page() || in_array($first_seg, $spa_routes, true) || get_query_var('eferz_spa_route') || is_404()) {
         $front = get_template_directory() . '/front-page.php';

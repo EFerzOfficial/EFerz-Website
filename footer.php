@@ -44,9 +44,9 @@
         <div class="space-y-3">
             <h4 class="text-xs font-mono uppercase tracking-[0.2em] text-[#d02128]">Contact Direct</h4>
             <div class="space-y-2 text-xs text-white/70">
-                <p>Email: <a href="mailto:hello@eferz.com" class="text-white hover:text-cyan-400 font-mono">hello@eferz.com</a></p>
-                <p>Studio: <span class="text-white">Dubai &bull; London &bull; Global Remote</span></p>
-                <p>Response Time: <span class="text-emerald-400 font-mono">&lt; 12 Hours Guaranteed</span></p>
+                <p>Email: <a href="mailto:info@eferz.com" class="text-white hover:text-[#d02128] font-mono">info@eferz.com</a></p>
+                <p>Hubs: <span class="text-white">USA (Florida) &bull; Saudi Arabia (Riyadh) &bull; Pakistan</span></p>
+                <p>Response Time: <span class="text-emerald-400 font-mono">&lt; 2 Hours Guaranteed</span></p>
             </div>
         </div>
 
