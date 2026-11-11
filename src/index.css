@@ -4,13 +4,6 @@
   pointer-events: none !important;
 }
 
-/* Crisp & Stable Icon Rendering */
-svg {
-  pointer-events: none;
-  shape-rendering: geometricPrecision;
-  text-rendering: geometricPrecision;
-  transform-origin: center center;
-}
 
 [data-global-paint] {
   -webkit-text-fill-color: initial !important;

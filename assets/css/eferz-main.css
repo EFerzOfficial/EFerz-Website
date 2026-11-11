@@ -1,0 +1,257 @@
+/* ==========================================================================
+   EFerz Cinematic 3D Studio - Main Theme Stylesheet
+   Version: 1.0.0
+   Author: EFerz Digital Studio (EFerz.com)
+   ========================================================================== */
+
+:root {
+  --eferz-primary: #d02128;
+  --eferz-primary-glow: rgba(208, 33, 40, 0.45);
+  --eferz-dark-bg: #04070F;
+  --eferz-card-bg: rgba(255, 255, 255, 0.03);
+  --eferz-border: rgba(255, 255, 255, 0.12);
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Grotesk', ui-monospace, monospace;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, .home {
+  scroll-behavior: smooth;
+  font-family: var(--font-main);
+  background-color: var(--eferz-dark-bg) !important;
+  color: #ffffff !important;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none !important;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: #ffffff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #020409;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(208, 33, 40, 0.5);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(208, 33, 40, 0.85);
+}
+
+/* Selection */
+::selection {
+  background-color: #d02128;
+  color: #ffffff;
+}
+
+/* Typography Helpers */
+.font-mono {
+  font-family: var(--font-mono) !important;
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.6);
+}
+
+.text-primary-glow {
+  text-shadow: 0 0 20px rgba(208, 33, 40, 0.75);
+}
+
+/* 3D Canvas Background */
+#particle-canvas-3d {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* Interactive Cursor Ripple Overlay */
+#fluid-ripple-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 10 !important;
+  overflow: hidden;
+}
+
+.ripple-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(208, 33, 40, 0.8) 0%, rgba(208, 33, 40, 0) 70%);
+  animation: rippleFade 0.9s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes rippleFade {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 0.9;
+  }
+  100% {
+    width: 140px;
+    height: 140px;
+    opacity: 0;
+  }
+}
+
+/* Shape Switcher Buttons */
+.shape-btn {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.shape-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.shape-btn.active {
+  background: rgba(208, 33, 40, 0.15) !important;
+  border-color: #d02128 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 25px rgba(208, 33, 40, 0.4);
+}
+
+/* Navigation Bar */
+#eferz-header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50 !important;
+  background: rgba(4, 7, 15, 0.75) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+#eferz-header nav a {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0.5rem;
+}
+
+#eferz-header nav a:hover {
+  color: #ffffff !important;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+/* Card Styling Fallbacks */
+.bg-white\/\[0\.02\],
+.bg-white\/\[0\.03\],
+.bg-white\/\[0\.04\],
+.bg-white\/\[0\.05\] {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.border-white\/10 { border-color: rgba(255, 255, 255, 0.1) !important; }
+.border-white\/15 { border-color: rgba(255, 255, 255, 0.15) !important; }
+.border-white\/20 { border-color: rgba(255, 255, 255, 0.2) !important; }
+
+.rounded-3xl { border-radius: 1.5rem !important; }
+.rounded-2xl { border-radius: 1rem !important; }
+.rounded-xl { border-radius: 0.75rem !important; }
+.rounded-full { border-radius: 9999px !important; }
+
+.backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+
+/* Spacing Helpers */
+.space-y-3 > * + * { margin-top: 0.75rem !important; }
+.space-y-4 > * + * { margin-top: 1rem !important; }
+.space-y-6 > * + * { margin-top: 1.5rem !important; }
+.space-y-8 > * + * { margin-top: 2rem !important; }
+.space-y-10 > * + * { margin-top: 2.5rem !important; }
+.space-y-12 > * + * { margin-top: 3rem !important; }
+
+/* Grid & Layout Fallbacks */
+.grid { display: grid; }
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.hidden { display: none; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.flex-col { flex-direction: column; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.uppercase { text-transform: uppercase; }
+.font-bold { font-weight: 700; }
+.font-black { font-weight: 900; }
+.font-extrabold { font-weight: 800; }
+
+.w-full { width: 100%; }
+.max-w-7xl { max-width: 80rem; }
+.max-w-5xl { max-width: 64rem; }
+.max-w-4xl { max-width: 56rem; }
+.max-w-2xl { max-width: 42rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+/* Colors */
+.bg-\[\#d02128\] { background-color: #d02128 !important; }
+.text-\[\#d02128\] { color: #d02128 !important; }
+.border-\[\#d02128\] { border-color: #d02128 !important; }
+.text-white { color: #ffffff !important; }
+.text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+.text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+.text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+
+/* Accordion */
+details summary::-webkit-details-marker { display: none; }
+details[open] summary span:last-child { transform: rotate(45deg); }
+
+/* Suppress Legacy Elementor Theme Builder Header/Footer */
+.home .elementor-location-header,
+.home .elementor-location-footer,
+.home footer.elementor-2605,
+.home header.elementor-2609,
+.home .elementor-page-2609,
+.home .elementor-page-2605 {
+  display: none !important;
+}
+
+/* Active Mobile Drawer */
+#mobile-nav-drawer.open {
+  transform: translateY(0) !important;
+}

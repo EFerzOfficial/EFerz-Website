@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zaika Pantry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,700;0,900;1,700;1,900&family=Mulish:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--mar:#5a1020;--red:#d23a2a;--cream:#f4eadb;--ink:#2a0d12;--mus:#e8b13a;--grn:#3f6b3a;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-width:none}html::-webkit-scrollbar{display:none}
+body{background:var(--cream);color:var(--ink);font-family:Mulish,system-ui,sans-serif;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+/* loader */
+#ld{position:fixed;inset:0;z-index:200;background:var(--cream)}
+#ldp{position:absolute;inset:0;background:var(--red);transition:transform 1s cubic-bezier(.76,0,.24,1)}
+#ld.go #ldp{transform:translateY(-100%)}
+#ld.go .sh{transition:transform 1s cubic-bezier(.76,0,.24,1);transform:translateY(-120vh)!important}
+#ld.done{display:none}
+.sh{position:absolute;opacity:.92;animation:fl 6s ease-in-out infinite alternate;z-index:1}
+@keyframes fl{to{margin-top:-40px;margin-left:30px;rotate:25deg}}
+#cnt{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;font-size:min(26vw,220px);color:var(--cream);line-height:1;transition:opacity .4s}
+#ld.go #cnt,#ld.go #ldt{opacity:0}
+#ldt{position:absolute;z-index:2;bottom:6vh;left:0;right:0;text-align:center;color:var(--cream);letter-spacing:.4em;font-size:12px;font-weight:800;transition:opacity .4s}
+/* header */
+#hd{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:20px 28px;pointer-events:none}
+#hd>*{pointer-events:auto}
+#mb{display:flex;flex-direction:column;gap:6px;width:34px;padding:6px 0}
+#mb i{display:block;height:2px;background:var(--mar);transition:.3s}
+#mb:hover i:nth-child(2){transform:translateX(8px)}
+#logo{position:absolute;left:50%;transform:translateX(-50%);text-align:center;font-family:'Bodoni Moda',serif;font-weight:900;font-size:26px;letter-spacing:.08em;color:var(--mar);cursor:pointer}
+#logo small{display:block;font:800 8px Mulish;letter-spacing:.5em;margin-top:2px}
+#cur{display:flex;border:2px solid var(--mar);border-radius:30px;overflow:hidden;font-weight:800;font-size:12px;color:var(--mar)}
+#cur button{padding:7px 14px}#cur .on{background:var(--mar);color:var(--cream)}
+/* menu */
+#mn{position:fixed;inset:0;z-index:90;background:var(--mar);color:var(--cream);display:flex;flex-direction:column;justify-content:center;padding:0 8vw;clip-path:circle(0 at 40px 40px);transition:clip-path .8s cubic-bezier(.76,0,.24,1);pointer-events:none}
+#mn.on{clip-path:circle(150% at 40px 40px);pointer-events:auto}
+#mn a{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;font-size:min(8vw,52px);line-height:1.2;cursor:pointer;transition:.3s;width:max-content}
+#mn a:hover{transform:translateX(24px);color:var(--mus)}
+#mx{position:absolute;top:18px;left:28px;font-size:38px;color:var(--cream)}
+#wp{position:fixed;inset:0;z-index:150;background:var(--mar);transform:translateY(100%);pointer-events:none}
+#pill{position:fixed;z-index:120;left:0;top:0;pointer-events:none;background:var(--mar);color:var(--cream);font-weight:800;font-size:11px;letter-spacing:.2em;padding:14px 20px;border-radius:40px;transform:translate(-50%,-50%) scale(0);transition:transform .25s;white-space:nowrap}
+#pill.on{transform:translate(-50%,-50%) scale(1)}
+#toast{position:fixed;bottom:30px;left:50%;transform:translate(-50%,120px);background:var(--mar);color:var(--cream);padding:14px 26px;border-radius:40px;z-index:140;transition:.5s;font-weight:700;font-size:14px}
+#toast.on{transform:translate(-50%,0)}
+canvas#gb,canvas#gl{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;will-change:transform}
+#gb{z-index:3;filter:blur(9px)}#gl{z-index:4}
+/* hero */
+#hT{height:700vh;position:relative}
+#hero{position:sticky;top:0;height:100vh;overflow:hidden}
+#blobw{position:absolute;left:50%;top:50%;width:max(118vh,70vw);height:max(118vh,70vw);transform:translate(-50%,-50%);z-index:1}
+#blobw svg{width:100%;height:100%;overflow:visible}
+#arcg{transform-origin:500px 500px}
+#hero .hc{position:absolute;left:0;right:0;bottom:5vh;z-index:6;text-align:center;color:var(--cream);pointer-events:none}
+#hname{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;font-size:min(7vw,46px)}
+#hsub{font-size:11px;letter-spacing:.35em;font-weight:800;margin-top:6px;opacity:.85}
+#scr{position:absolute;left:28px;bottom:5vh;z-index:6;color:var(--cream);writing-mode:vertical-rl;letter-spacing:.4em;font-size:10px;font-weight:800}
+#dots{position:absolute;right:28px;top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;gap:10px}
+#dots i{width:8px;height:8px;border-radius:50%;background:var(--cream);opacity:.35;transition:.3s}#dots i.on{opacity:1;transform:scale(1.5)}
+/* sections */
+.sec{padding:14vh 6vw;position:relative}
+.ey{font-size:11px;font-weight:800;letter-spacing:.4em;color:var(--red);margin-bottom:18px}
+.h2{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;font-size:min(11vw,110px);line-height:.95;color:var(--mar)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:6vh}
+.card{position:relative;border-radius:36px;background:var(--t);height:min(46vw,520px);overflow:hidden;cursor:pointer;isolation:isolate}
+.card.in{transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s,opacity 1s}
+.card.in:hover{transform:translateY(-8px);box-shadow:0 30px 50px -25px rgba(60,10,20,.5)}
+.card svg.sil{position:absolute;left:-10%;top:-10%;width:120%;height:120%;z-index:-1;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.card:hover svg.sil{transform:rotate(18deg) scale(1.12)}
+.card img{position:absolute;left:50%;bottom:17%;height:66%;transform:translateX(-50%);transition:transform .6s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 24px 22px rgba(40,10,10,.35))}
+.card:hover img{transform:translateX(-50%) translateY(-14px) rotate(-5deg) scale(1.07)}
+.card .ct{position:absolute;left:24px;right:24px;bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;color:var(--mar)}
+.card b{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;font-size:clamp(18px,2.4vw,30px);line-height:1}
+.card span{font-weight:800;font-size:13px}
+.card .tg{position:absolute;top:20px;left:22px;font-size:10px;letter-spacing:.3em;font-weight:800;color:var(--mar);opacity:.7}
+.rv{opacity:0;transform:translateY(50px);transition:1s cubic-bezier(.2,.8,.2,1)}.rv.in{opacity:1;transform:none}
+#story{background:var(--mar);color:var(--cream);border-radius:60px 60px 0 0}
+#story .h2{color:var(--cream)}
+#story p{max-width:620px;font-size:18px;line-height:1.7;margin-top:30px;opacity:.85}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:8vh;border-top:1px solid rgba(244,234,219,.25);padding-top:36px}
+.nums b{display:block;font-family:'Bodoni Moda',serif;font-style:italic;font-size:min(10vw,80px);color:var(--mus);font-weight:900}
+.nums span{font-size:11px;letter-spacing:.3em;font-weight:800}
+/* product */
+#prod{display:none}
+#pT{height:450vh;position:relative}
+#pstage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--pt,#eee);cursor:grab}
+#ptitle{position:absolute;left:0;right:0;top:50%;transform:translateY(-54%);text-align:center;font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;line-height:.82;color:var(--pc,var(--mar));z-index:2;font-size:min(21vw,22vh*3.1)}
+#ptitle span{display:block}
+.sd{position:absolute;z-index:6;top:50%;font-size:11px;font-weight:800;letter-spacing:.3em;color:var(--mar);max-width:180px;line-height:1.8}
+.sd.l{left:28px}.sd.r{right:28px;text-align:right}
+.sd em{display:block;font-style:normal;color:var(--red);margin-bottom:6px}
+#dragh{position:absolute;bottom:4vh;left:0;right:0;text-align:center;z-index:6;font-size:11px;letter-spacing:.4em;font-weight:800;color:var(--mar)}
+#pinfo{display:grid;grid-template-columns:1.1fr 1fr;gap:6vw;background:var(--cream)}
+#pinfo p{font-size:18px;line-height:1.75;margin:24px 0;max-width:560px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:start}
+.fact{background:#fff7;border:1.5px solid var(--mar);border-radius:24px;padding:20px;transition:.4s}
+.fact:hover{background:var(--mar);color:var(--cream);transform:translateY(-4px)}
+.fact small{font-size:10px;letter-spacing:.3em;font-weight:800;color:var(--red);display:block;margin-bottom:8px}
+.fact:hover small{color:var(--mus)}.fact div{font-weight:700;line-height:1.5}
+.buy{display:flex;gap:24px;align-items:center;margin-top:30px;flex-wrap:wrap}
+.btn{background:var(--mar);color:var(--cream);padding:18px 34px;border-radius:50px;font-weight:800;letter-spacing:.2em;font-size:12px;transition:.4s}
+.btn:hover{background:var(--red);transform:scale(1.04)}
+.price{font-family:'Bodoni Moda',serif;font-weight:900;font-size:40px;color:var(--mar)}
+.heat{display:flex;gap:5px;margin-top:8px;align-items:center}.heat i{width:20px;height:6px;border-radius:4px;background:#0002}.heat i.on{background:var(--red)}
+.quote{font-family:'Bodoni Moda',serif;font-style:italic;font-size:min(7vw,52px);font-weight:700;color:var(--mar);line-height:1.15;max-width:900px}
+/* footer */
+#ft{background:var(--mar);color:var(--cream);padding:10vh 6vw 4vh;overflow:hidden}
+#ft .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px}
+#ft h4{font-size:11px;letter-spacing:.35em;color:var(--mus);margin-bottom:16px}
+#ft a{display:block;margin:8px 0;opacity:.8;cursor:pointer;transition:.3s;width:max-content}#ft a:hover{opacity:1;transform:translateX(8px)}
+#ft form{display:flex;border-bottom:1.5px solid var(--cream);margin-top:14px;max-width:360px}
+#ft input{flex:1;background:none;border:0;color:var(--cream);padding:12px 0;font:inherit;outline:none}
+#ft input::placeholder{color:#f4eadb99}
+.giant{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:900;font-size:27vw;line-height:.8;margin-top:8vh;letter-spacing:-.02em;color:var(--red);white-space:nowrap;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.giant:hover{transform:translateX(-3vw)}
+.copy{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.2em;margin-top:30px;opacity:.7;flex-wrap:wrap;gap:10px}
+@media(max-width:800px){
+#hd{padding:14px 16px}#logo{font-size:20px}.cards{grid-template-columns:1fr 1fr;gap:12px}.card{height:62vw;border-radius:24px}
+#pinfo{grid-template-columns:1fr}.sd{display:none}.nums{grid-template-columns:1fr}#ft .cols{grid-template-columns:1fr}.sec{padding:10vh 5vw}
+#scr{display:none}#dots{right:12px}
+}
+</style>
+</head>
+<body>
+<div id="ld"><div id="ldp"></div><div id="cnt">0</div><div id="ldt">OPENING THE PANTRY</div></div>
+<div id="hd"><button id="mb" aria-label="Menu"><i></i><i></i><i></i></button><div id="logo">ZAIKA<small>PANTRY</small></div><div id="cur"><button class="on" data-c="Rs">Rs</button><button data-c="$">$</button></div></div>
+<div id="mn"><button id="mx" aria-label="Close">×</button></div>
+<div id="wp"></div><div id="pill">DISCOVER THE PRODUCT</div><div id="toast"></div>
+<canvas id="gb"></canvas><canvas id="gl"></canvas>
+
+<main id="home">
+ <div id="hT"><div id="hero">
+  <div id="blobw"><svg viewBox="0 0 1000 1000"><defs><path id="cp" d="M500,500 m-452,0 a452,452 0 1,1 904,0 a452,452 0 1,1 -904,0"/></defs><path id="blob" fill="#5a1020"/><g id="arcg"><text fill="#f4eadb" font-family="Bodoni Moda,serif" font-style="italic" font-weight="900" font-size="40" opacity=".0"><textPath id="arct" href="#cp" textLength="2840" lengthAdjust="spacing">HANDMADE PICKLES · CHUTNEYS · SAUCES · SMALL BATCH · SLOW SUN · </textPath></text></g></svg></div>
+  <div id="scr">SCROLL</div><div id="dots"></div>
+  <div class="hc"><div id="hname"></div><div id="hsub"></div></div>
+ </div></div>
+ <section class="sec" id="cardsec"><div class="ey">THE PANTRY</div><div class="h2 rv">Taste the<br>old kitchen.</div><div class="cards" id="cards"></div></section>
+ <section class="sec" id="story"><div class="ey" style="color:var(--mus)">OUR STORY</div><div class="h2 rv">Slow sun,<br>strong spice.</div><p class="rv">Zaika Pantry began in a family kitchen in Karachi, where every summer the roof filled with jars of mangoes, chillies and lemons curing in the sun. We still make everything the same way: small batches, cold-pressed mustard oil, hand-ground masalas and absolutely no shortcuts.</p>
+ <div class="nums rv"><div><b>38</b><span>YEARS OF RECIPES</span></div><div><b>100%</b><span>NATURAL INGREDIENTS</span></div><div><b>0</b><span>PRESERVATIVES ADDED</span></div></div></section>
+</main>
+
+<main id="prod">
+ <div id="pT"><div id="pstage"><h1 id="ptitle"><span id="pl1"></span><span id="pl2"></span></h1>
+  <div class="sd l"><em>FLAVOUR</em><span id="sdl"></span></div><div class="sd r"><em>NET WEIGHT</em>340 g glass jar</div><div id="dragh">DRAG THE JAR TO ROTATE</div></div></div>
+ <section class="sec" id="pinfo"><div><div class="ey" id="ptag"></div><div class="quote" id="pq"></div><p id="pd"></p>
+  <div class="buy"><div><div class="price" id="pp"></div><div class="heat" id="ph"></div></div><button class="btn" id="add">ADD TO BAG</button></div></div>
+  <div class="facts"><div class="fact"><small>INGREDIENTS</small><div id="fi"></div></div><div class="fact"><small>NUTRITION / 15 g</small><div id="fn"></div></div><div class="fact"><small>PAIRS WITH</small><div id="fp"></div></div><div class="fact"><small>SHELF LIFE</small><div>12 months unopened. Refrigerate after opening and keep the oil on top.</div></div></div></section>
+ <section class="sec"><div class="ey">KEEP EXPLORING</div><div class="h2">The other<br>products.</div><div class="cards" id="oth"></div></section>
+</main>
+
+<footer id="ft"><div class="cols"><div><h4>JOIN THE KITCHEN</h4><div style="font-family:'Bodoni Moda',serif;font-size:30px;font-style:italic;font-weight:700;max-width:380px">New batches, recipes and first access to seasonal jars.</div><form id="nf"><input type="email" required placeholder="Your email"><button>→</button></form></div>
+<div><h4>PRODUCTS</h4><div id="fl"></div></div><div><h4>ZAIKA</h4><a data-h>Home</a><a>Our story</a><a>Wholesale</a><a>Contact</a></div></div>
+<div class="giant">Zaika</div><div class="copy"><span>© 2026 ZAIKA PANTRY · A DEMO CONCEPT</span><span>HANDMADE IN KARACHI</span></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),lerp=(a,b,t)=>a+(b-a)*t;
+const P=[
+{n:'Mango Pickle',l1:'MANGO',l2:'ACHAR',tag:'CLASSIC · SUN CURED',rs:890,heat:4,col:'#e0881c',tint:'#f7d9a2',pc:'#8a3a0a',lid:'#b3202a',
+ desc:'Raw green mangoes cut by hand, rubbed with salt and left under the summer sun, then folded into a masala of fennel, nigella, fenugreek and cold-pressed mustard oil. Tangy first, fiery after, and completely unforgettable.',
+ ing:'Raw mango, mustard oil, fennel, nigella, fenugreek, red chilli, turmeric, salt',nut:'42 kcal · 4 g fat · 2 g carbs',pair:'Paratha, daal chawal, biryani',quote:'The jar every dinner table needs.'},
+{n:'Green Chilli Pickle',l1:'GREEN',l2:'CHILLI',tag:'FIERY · CRUNCHY',rs:790,heat:5,col:'#5d8a2e',tint:'#d3e6b2',pc:'#2f5214',lid:'#2d4a1c',
+ desc:'Whole green chillies slit and stuffed with crushed mustard, cumin and lemon, then cured in oil until they turn glossy and deeply savoury. Brave hearts only.',
+ ing:'Green chilli, mustard seed, cumin, lemon juice, mustard oil, salt',nut:'30 kcal · 3 g fat · 1 g carbs',pair:'Kebabs, nihari, plain rice',quote:'Small chilli. Big personality.'},
+{n:'Mint Chutney',l1:'MINT',l2:'CHUTNEY',tag:'FRESH · COOLING',rs:650,heat:2,col:'#3f9a55',tint:'#c4e8cb',pc:'#1d5a30',lid:'#e8b13a',
+ desc:'Garden mint and coriander ground with green chilli, roasted cumin and a squeeze of lime. Bright, herby and cooling, it lifts anything that comes off the grill.',
+ ing:'Mint, coriander, green chilli, lime, roasted cumin, black salt',nut:'12 kcal · 0.5 g fat · 2 g carbs',pair:'Samosas, tikka, sandwiches',quote:'A cool breeze for hot food.'},
+{n:'Tamarind Chutney',l1:'TAMARIND',l2:'CHUTNEY',tag:'SWEET · TANGY',rs:690,heat:1,col:'#5a2a14',tint:'#ecd0ae',pc:'#4a1d0a',lid:'#5a1020',
+ desc:'Slow-cooked tamarind pulp sweetened with jaggery and finished with dried ginger, black salt and roasted cumin. Dark, glossy and the secret behind every great chaat.',
+ ing:'Tamarind, jaggery, dried ginger, roasted cumin, black salt, chilli',nut:'38 kcal · 0 g fat · 9 g carbs',pair:'Chaat, pakoray, dahi bhallay',quote:'Sweet, sour and a little bit sneaky.'},
+{n:'Garlic Chilli Sauce',l1:'GARLIC',l2:'CHILLI SAUCE',tag:'BOLD · SMOKY',rs:750,heat:4,col:'#c0302a',tint:'#f6bfb5',pc:'#8a1810',lid:'#1d1d1d',
+ desc:'Sun-dried red chillies and roasted garlic blended with vinegar and a hint of smoked paprika into a thick sauce that clings to everything.',
+ ing:'Red chilli, roasted garlic, vinegar, smoked paprika, sugar, salt',nut:'20 kcal · 0 g fat · 4 g carbs',pair:'Rolls, fries, grilled chicken',quote:'One spoon and the whole plate wakes up.'},
+{n:'Lemon Pickle',l1:'LEMON',l2:'PICKLE',tag:'ZESTY · AGED',rs:820,heat:3,col:'#d9b72a',tint:'#f8ecb3',pc:'#8a6f08',lid:'#e8b13a',
+ desc:'Whole lemons aged for sixty days in rock salt and spices until the peel turns soft and the juice turns golden. Salty, sharp and quietly sweet.',
+ ing:'Lemon, rock salt, black pepper, ajwain, red chilli, mustard oil',nut:'25 kcal · 2 g fat · 2 g carbs',pair:'Khichdi, curd rice, dal',quote:'Sixty days of patience in every bite.'}
+];
+const N=P.length;let cur='Rs';
+const price=p=>cur==='Rs'?'Rs '+p.rs.toLocaleString():'$'+(p.rs/280).toFixed(2);
+/* ---------- three ---------- */
+const gl=$('#gl'),gb=$('#gb'),gbx=gb.getContext('2d');
+const R=new THREE.WebGLRenderer({canvas:gl,alpha:true,antialias:true});
+R.setClearColor(0,0);R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;
+const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,.1,100);cam.position.set(0,0,16);
+{const es=new THREE.Scene();es.add(new THREE.Mesh(new THREE.BoxGeometry(40,30,40),new THREE.MeshBasicMaterial({color:0x35302c,side:THREE.BackSide})));
+ const pn=(w,h,d,x,y,z,c)=>{const m=new THREE.MeshBasicMaterial();m.color.setRGB(c[0],c[1],c[2]);const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);es.add(o)};
+ pn(16,1,10,0,13,0,[7,7,7]);pn(1,14,10,-17,0,2,[5,4.6,4]);pn(1,14,10,17,0,2,[3,3.4,4]);pn(14,8,1,0,2,-17,[2.2,2,1.8]);
+ const pm=new THREE.PMREMGenerator(R);sc.environment=pm.fromScene(es,.03).texture}
+sc.add(new THREE.AmbientLight(0xffffff,.45));const dl=new THREE.DirectionalLight(0xfff2e0,1.1);dl.position.set(3,6,8);sc.add(dl);
+const V=a=>new THREE.Vector2(a[0],a[1]);const lathe=a=>new THREE.LatheGeometry(a.map(V),72);
+const GP=[[0,0],[.9,0],[1.12,.03],[1.24,.12],[1.29,.3],[1.3,.55],[1.3,2.55],[1.27,2.82],[1.17,3.06],[1.13,3.18],[1.13,3.3],[1.18,3.33],[1.18,3.42]];
+const CP=[[0,.1],[1.0,.1],[1.17,.2],[1.24,.35],[1.25,.6],[1.25,2.5],[1.1,2.58],[0,2.62]];
+const LP=[[1.34,0],[1.36,.05],[1.36,.58],[1.32,.64],[1.1,.66],[0,.66]];
+const tex=c=>{const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return t};
+function fitText(x,s,w,start,weight){let sz=start;do{x.font=weight+' '+sz+'px "Bodoni Moda",Georgia,serif';sz-=4}while(x.measureText(s).width>w&&sz>24)}
+function labelTex(p){const c=document.createElement('canvas');c.width=1010;c.height=500;const x=c.getContext('2d');
+ x.fillStyle='#f7eddb';x.fillRect(0,0,1010,500);x.fillStyle=p.pc;x.fillRect(0,0,1010,84);x.fillRect(0,432,1010,68);
+ x.textAlign='center';x.textBaseline='middle';x.fillStyle='#f7eddb';x.font='800 28px Mulish,sans-serif';
+ if('letterSpacing' in x)x.letterSpacing='10px';x.fillText('ZAIKA PANTRY',505,44);x.fillText('340 g · SMALL BATCH',505,468);
+ x.fillStyle=p.col;x.globalAlpha=.22;x.beginPath();x.arc(505,250,170,0,7);x.fill();x.globalAlpha=1;
+ if('letterSpacing' in x)x.letterSpacing='0px';
+ x.fillStyle=p.pc;fitText(x,p.l1,720,150,'italic 900');x.fillText(p.l1,505,200);
+ x.fillStyle=p.col;fitText(x,p.l2,720,100,'italic 900');x.fillText(p.l2,505,310);
+ x.fillStyle=p.pc;x.font='800 22px Mulish,sans-serif';if('letterSpacing' in x)x.letterSpacing='8px';x.fillText(p.tag.replace(' · ',' — '),505,390);
+ return tex(c)}
+function contentTex(p){const c=document.createElement('canvas');c.width=256;c.height=256;const x=c.getContext('2d');x.fillStyle=p.col;x.fillRect(0,0,256,256);
+ for(let i=0;i<500;i++){x.fillStyle=Math.random()<.5?'rgba(255,255,255,.14)':'rgba(0,0,0,.18)';const r=1+Math.random()*5;x.beginPath();x.arc(Math.random()*256,Math.random()*256,r,0,7);x.fill()}
+ const t=tex(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(4,2);return t}
+const jars=[];
+function makeJar(p){const g=new THREE.Group(),inn=new THREE.Group();inn.position.y=-1.98;g.add(inn);const mats=[];
+ const add=(geo,mat,ro,base)=>{const m=new THREE.Mesh(geo,mat);m.renderOrder=ro;inn.add(m);mats.push({m:mat,b:base});return m};
+ add(lathe(CP),new THREE.MeshStandardMaterial({map:contentTex(p),roughness:.35,metalness:0,envMapIntensity:.8}),0,1);
+ const lb=add(new THREE.CylinderGeometry(1.318,1.318,2.45,64,1,true,-1.885,3.75),new THREE.MeshStandardMaterial({map:labelTex(p),roughness:.6,side:THREE.DoubleSide,envMapIntensity:.4}),1,1);lb.position.y=1.25;
+ add(lathe(LP),new THREE.MeshStandardMaterial({color:p.lid,roughness:.3,metalness:.75,envMapIntensity:1.4}),1,1).position.y=3.3;
+ add(lathe(GP),new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.03,metalness:0,clearcoat:1,clearcoatRoughness:.02,envMapIntensity:1.6}),2,.2);
+ sc.add(g);return {g,mats,p}}
+function setA(j,a){j.mats.forEach(o=>{o.m.transparent=true;o.m.opacity=o.b*a;o.m.depthWrite=o.b===1&&a>.98});j.g.visible=a>.01}
+function resize(){const dpr=Math.min(devicePixelRatio||1,2),w=innerWidth,h=innerHeight;R.setPixelRatio(dpr);R.setSize(w,h,false);gb.width=gl.width;gb.height=gl.height;cam.aspect=w/h;cam.updateProjectionMatrix()}
+function pass(arr){jars.forEach((j,i)=>setA(j,arr[i]));R.render(sc,cam)}
+/* ---------- shapes / blob ---------- */
+(function(){const pts=[];const n=14;for(let i=0;i<n;i++){const a=i/n*6.283;const r=350+16*Math.sin(3*a+1)+12*Math.sin(5*a+2);pts.push([500+r*Math.cos(a),500+r*Math.sin(a)])}
+ let d='';for(let i=0;i<n;i++){const a=pts[i],b=pts[(i+1)%n],m=[(a[0]+b[0])/2,(a[1]+b[1])/2];if(!i){const l=pts[n-1];d='M'+(l[0]+a[0])/2+','+(l[1]+a[1])/2}d+=' Q'+a[0]+','+a[1]+' '+m[0]+','+m[1]}
+ $('#blob').setAttribute('d',d+'Z');
+ const cols=['#f4eadb','#e8b13a','#5a1020','#3f6b3a','#f4eadb','#e8b13a'];
+ const ld=$('#ld');for(let i=0;i<9;i++){const s=document.createElement('div');s.className='sh';const w=50+Math.random()*110;
+  s.style.cssText=`left:${Math.random()*92}%;top:${Math.random()*86}%;width:${w}px;height:${w}px;background:${cols[i%6]};animation-delay:${-Math.random()*5}s;clip-path:polygon(${[...Array(6)].map((_,k)=>{const a=k/6*6.283+Math.random()*.6,r=36+Math.random()*14;return(50+r*Math.cos(a))+'% '+(50+r*Math.sin(a))+'%'}).join(',')})`;
+  ld.insertBefore(s,$('#cnt'))}})();
+function sil(c){const pts=[...Array(7)].map((_,k)=>{const a=k/7*6.283+Math.random()*.5,r=36+Math.random()*12;return[50+r*Math.cos(a),50+r*Math.sin(a)]});
+ return `<svg class="sil" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="${c}"/></svg>`}
+/* ---------- UI ---------- */
+const snaps=[];
+function cardHTML(i){const p=P[i];return `<div class="card rv" data-i="${i}" style="--t:${p.tint}">${sil(p.col+'44')}<div class="tg">${p.tag}</div><img src="${snaps[i]}" alt="${p.n}"><div class="ct"><b>${p.n}</b><span data-pr="${i}">${price(p)}</span></div></div>`}
+let intro=null,spin=null;const ease3=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+let sel=0,page='home',tgt=0,cs=0,own=false,lastW=0,mx=0,hk=-1,u=0,tu=0;const T0=performance.now();
+function buildCards(){$('#cards').innerHTML=P.map((_,i)=>cardHTML(i)).join('');$('#fl').innerHTML=P.map((p,i)=>`<a data-i="${i}">${p.n}</a>`).join('');
+ $('#mn').insertAdjacentHTML('beforeend','<a data-h>Home</a>'+P.map((p,i)=>`<a data-i="${i}">${p.n}</a>`).join(''));
+ $('#dots').innerHTML=P.map(()=>'<i></i>').join('')}
+function renderProd(i){const p=P[i];sel=i;const o=P.map((_,k)=>k).filter(k=>k!==i);
+ $('#pl1').textContent=p.l1;$('#pl2').textContent=p.l2;const ps=$('#pstage');ps.style.setProperty('--pt',p.tint);ps.style.setProperty('--pc',p.pc);
+ $('#sdl').textContent=p.tag;$('#ptag').textContent=p.tag;$('#pq').textContent='“'+p.quote+'”';$('#pd').textContent=p.desc;$('#pp').textContent=price(p);
+ $('#ph').innerHTML=[1,2,3,4,5].map(k=>`<i class="${k<=p.heat?'on':''}"></i>`).join('')+'<small style="margin-left:8px;font-size:10px;letter-spacing:.2em;font-weight:800">HEAT</small>';
+ $('#fi').textContent=p.ing;$('#fn').textContent=p.nut;$('#fp').textContent=p.pair;
+ $('#oth').innerHTML=o.slice(0,3).map(cardHTML).join('');bind()}
+function wipe(cb){const w=$('#wp');w.style.transition='transform .7s cubic-bezier(.76,0,.24,1)';w.style.transform='translateY(0)';
+ setTimeout(()=>{cb();scrollTo(0,0);tgt=0;cs=0;own=false;w.style.transition='none';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{w.style.transition='transform .7s cubic-bezier(.76,0,.24,1)';w.style.transform='translateY(-100%)';setTimeout(()=>{w.style.transition='none';w.style.transform='translateY(100%)'},750)}))},750)}
+function go(i,auto){$('#mn').classList.remove('on');$('#pill').classList.remove('on');wipe(()=>{if(i<0){page='home';$('#home').style.display='';$('#prod').style.display='none'}else{renderProd(i);page='prod';{rot=0;rv=0}$('#home').style.display='none';$('#prod').style.display='block'}
+ document.querySelectorAll('.rv').forEach(e=>{e.classList.remove('in');io.observe(e)})})}
+function bind(){document.querySelectorAll('[data-i]').forEach(e=>{if(e.dataset.b)return;e.dataset.b=1;e.addEventListener('click',()=>go(+e.dataset.i));
+ if(e.classList.contains('card')){e.addEventListener('mouseenter',()=>$('#pill').classList.add('on'));e.addEventListener('mouseleave',()=>$('#pill').classList.remove('on'))}});
+ document.querySelectorAll('[data-h]').forEach(e=>{if(e.dataset.b)return;e.dataset.b=1;e.addEventListener('click',()=>go(-1))})}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2400)}
+$('#nf').onsubmit=e=>{e.preventDefault();toast('Thank you, you are on the list.');e.target.reset()};
+$('#mb').onclick=()=>$('#mn').classList.add('on');$('#mx').onclick=()=>$('#mn').classList.remove('on');$('#logo').onclick=()=>page==='home'?(tgt=0,own=true):go(-1);
+$('#add').onclick=()=>toast(P[sel].n+' added to your bag');
+document.querySelectorAll('#cur button').forEach(b=>b.onclick=()=>{cur=b.dataset.c;document.querySelectorAll('#cur button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('[data-pr]').forEach(e=>e.textContent=price(P[+e.dataset.pr]));$('#pp').textContent=price(P[sel])});
+addEventListener('mousemove',e=>{const p=$('#pill');p.style.left=e.clientX+'px';p.style.top=e.clientY+'px';mx=e.clientX;
+ if(page==='home'&&scrollY<$('#hT').offsetHeight-innerHeight*.5&&!e.target.closest('.card'))p.classList.toggle('on',Math.abs(e.clientX-innerWidth/2)<innerWidth*.14&&Math.abs(e.clientY-innerHeight*.45)<innerHeight*.3)});
+$('#hero').addEventListener('click',e=>{if(Math.abs(e.clientX-innerWidth/2)<innerWidth*.16)go(((Math.round(u)%N)+N)%N)});
+/* drag */
+let drag=false,lx=0,rot=0,rv=0;
+addEventListener('pointerdown',e=>{if(page==='prod'&&!spin&&e.target.closest('#pstage')){drag=true;lx=e.clientX;$('#pstage').style.cursor='grabbing'}});
+addEventListener('pointermove',e=>{if(drag){const d=e.clientX-lx;lx=e.clientX;rv=d*.012;rot+=rv}});
+addEventListener('pointerup',()=>{drag=false;$('#pstage').style.cursor='grab'});
+/* smooth scroll */
+addEventListener('wheel',e=>{if(e.ctrlKey)return;e.preventDefault();if(intro||spin)return;lastW=performance.now();if(!own){cs=scrollY;tgt=scrollY;own=true}tgt=clamp(tgt+e.deltaY*(e.deltaMode?32:1),0,document.documentElement.scrollHeight-innerHeight)},{passive:false});
+addEventListener('scroll',()=>{if(performance.now()-lastW>250&&!own){tgt=cs=scrollY}});
+/* loop */
+function frame(now){requestAnimationFrame(frame);
+ if(own){cs+=(tgt-cs)*.085;if(Math.abs(tgt-cs)<.4){cs=tgt;own=false}scrollTo(0,cs)}
+ const sy=scrollY,vh=innerHeight,t=(now-T0)/1000;
+ const pin=page==='home'?$('#hT'):$('#pT'),hr=pin.offsetHeight-vh,off=Math.max(0,sy-hr),pr=clamp(sy/hr,0,1);
+ gl.style.transform=gb.style.transform=off>0?`translateY(${-off}px)`:'';
+ $('#arcg').style.transform=`rotate(${t*6+sy*.05}deg)`;
+ if(off>vh)return;
+ const sw=Math.min(4.2,(2*16*Math.tan(THREE.MathUtils.degToRad(15))*cam.aspect)*.3);
+ if(page==='home'){const pu=u;
+  tu=pr*3*N;u+=(tu-u)*.07;const vel=u-pu;const sway=clamp(vel*14,-.25,.25);
+  const A=[],B=[];
+  jars.forEach((j,i)=>{let d=((i-u)%N+N)%N;if(d>N/2)d-=N;const ad=Math.abs(d);const b=clamp((ad-.9)/.45,0,1);const s=1.5-.28*Math.min(ad,2);
+   j.g.position.set(d*sw*1.1,-.1-Math.min(ad,2)*.15+(1-clamp(ad,0,1))*Math.sin(t*1.2)*.05,-ad*1.5);j.g.scale.setScalar(ad>2.8?.001:s*(innerWidth<800?.78:1));
+   j.g.rotation.set(0,d*.55+Math.sin(t*.6)*.12,-d*.05+sway*(1-b));const v=ad<2.8;A.push(v?b:0);B.push(v?1-b:0)});
+  pass(A);gbx.clearRect(0,0,gb.width,gb.height);gbx.drawImage(gl,0,0);pass(B);
+  const k=((Math.round(u)%N)+N)%N;if(k!==hk){hk=k;$('#hname').textContent=P[k].n;$('#hsub').textContent=P[k].tag;document.querySelectorAll('#dots i').forEach((d,x)=>d.classList.toggle('on',x===k))}
+ }else{
+  gbx.clearRect(0,0,gb.width,gb.height);const e=1-Math.pow(1-pr,3);
+  if(!drag){rv*=.94;rot+=rv}
+  jars.forEach((j,i)=>{if(i!==sel){setA(j,0);return}setA(j,1);
+   j.g.position.set(0,lerp(-2.6,.2,e),0);j.g.scale.setScalar((innerWidth<800?1.15:1.6)+e*.3);j.g.rotation.set(0,rot+pr*6*Math.PI,0)});
+  $('#ptitle').style.transform=`translateY(-54%) scale(${1+pr*.06})`;
+  R.render(sc,cam)}
+}
+(async function(){
+ try{await Promise.all(['900 40px "Bodoni Moda"','italic 900 40px "Bodoni Moda"','800 20px Mulish'].map(f=>document.fonts.load(f)))}catch(e){}
+ resize();addEventListener('resize',resize);
+ P.forEach(p=>jars.push(makeJar(p)));
+ const cz=cam.position.z;R.setPixelRatio(1);R.setSize(520,640,false);cam.aspect=520/640;cam.position.z=11;cam.updateProjectionMatrix();
+ jars.forEach((j,i)=>{jars.forEach((k,x)=>setA(k,x===i?1:0));j.g.position.set(0,0,0);j.g.scale.setScalar(1);j.g.rotation.set(0,-.35,0);R.render(sc,cam);snaps[i]=gl.toDataURL('image/png')});
+ cam.position.z=cz;resize();
+ buildCards();renderProd(0);bind();document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+ requestAnimationFrame(frame);
+ const c=$('#cnt');let n=0;const iv=setInterval(()=>{n+=Math.ceil(Math.random()*6);if(n>=100){n=100;clearInterval(iv);c.textContent=100;setTimeout(()=>{$('#ld').classList.add('go');setTimeout(()=>$('#ld').classList.add('done'),1300);},350)}c.textContent=n},60);
+})();
+</script>
+</body>
+</html>
