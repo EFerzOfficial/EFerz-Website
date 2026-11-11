@@ -1,0 +1,6 @@
+{
+  "name": "EFerz AI & Digital Solutions",
+  "description": "Next-generation enterprise AI systems, autonomous agents, modern web platforms, and digital transformation services built by EFerz.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
