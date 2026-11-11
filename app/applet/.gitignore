@@ -2,3 +2,4 @@ node_modules
 .aistudio
 .DS_Store
 *.log
+*.zip
