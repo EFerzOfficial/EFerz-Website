@@ -73,12 +73,18 @@ export const AgenceHeader: React.FC<AgenceHeaderProps> = ({
       onMouseLeave={() => setHeaderHovered(false)}
       className="fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-500"
     >
-      {/* Seamless Feathered Blur Backdrop */}
+      {/* Soft Edge-less Gradient Vignette (Zero Background Blur) */}
       <div
         aria-hidden="true"
-        className={`absolute inset-x-0 top-0 h-24 sm:h-28 pointer-events-none transition-opacity duration-300 backdrop-blur-md bg-gradient-to-b from-[#070709]/90 via-[#070709]/40 to-transparent ${
-          headerHovered || soundHover || activeMenuOpen ? 'opacity-100' : 'opacity-90'
+        className={`absolute inset-x-0 top-0 h-20 sm:h-24 pointer-events-none transition-opacity duration-300 bg-gradient-to-b from-[#070709]/55 via-[#070709]/15 to-transparent ${
+          headerHovered || soundHover || activeMenuOpen ? 'opacity-95' : 'opacity-70'
         }`}
+        style={{
+          WebkitMaskImage:
+            'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
+          maskImage:
+            'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0) 100%)',
+        }}
       />
 
       <div className="relative flex items-center justify-between px-4 sm:px-10 lg:px-12 py-4 sm:py-6">
