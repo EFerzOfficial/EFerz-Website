@@ -1197,7 +1197,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'BUSINESS DEVELOPMENT MANAGER',
     shape: 'rocket',
     matrixPattern: 'social',
-    photo: '/assets/aistudio/Syed_Ahmed_cutout.png',
+    photo: '/assets/aistudio/Syed_Ahmed_3d79a4c0.png',
     objectPosition: 'center top',
     bio: [
       'As Business Development Manager at EFerz Digital Agency, Syed Ahmed manages international client onboarding, strategic consultation, and tailored project roadmaps for startups and established enterprises worldwide.',
@@ -1223,7 +1223,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'OPERATIONS COORDINATOR',
     shape: 'sphere',
     matrixPattern: 'art',
-    photo: '/assets/aistudio/Syed_Owais_cutout.png',
+    photo: '/assets/aistudio/Syed_Owais_1f8d91ac.png',
     objectPosition: 'center top',
     bio: [
       'As Operations Coordinator at EFerz Digital Agency, Syed Owais orchestrates day-to-day project execution, cross-functional sprint workflows, and quality assurance standards across our USA, Saudi Arabia, and Pakistan hubs.',
