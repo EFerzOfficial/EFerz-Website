@@ -101,7 +101,6 @@ export const FluidCursorRippleOverlay: React.FC = () => {
             detail: {
               velocity: dx * 0.015,
               direction: 'horizontal',
-              convergence: 0.85,
             },
           })
         );
