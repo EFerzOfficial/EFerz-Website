@@ -6,38 +6,40 @@
  * @package EFerz
  * @version 1.1.0
  */
-?><!doctype html>
+$eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'keywords' => 'EFerz Digital Agency, AI Development Agency, 3D WebGL Website Design, Shopify Plus, Amazon FBA, Technical SEO, Cybersecurity', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
+?>
+<!doctype html>
 <html <?php language_attributes(); ?> class="dark scroll-smooth theme-galaxy">
 <head>
     <meta charset="<?php bloginfo('charset'); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <?php if (!did_action('wp_head') && !current_theme_supports('title-tag')): ?>
-    <title>EFerz Digital Agency | AI, 3D WebGL, SEO &amp; Software</title>
+    <title><?php echo esc_html($eferz_seo['title']); ?></title>
     <?php endif; ?>
-    <meta name="description" content="Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO &amp; cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project." />
-    <meta name="keywords" content="EFerz Digital Agency, AI Development Agency, Bespoke AI Agents, LLM Automation, 3D WebGL Website Design, Three.js Agency, Custom Software Engineering, Full Stack Web Development, React Next.js Agency, Shopify Plus Development, Amazon FBA Management, Technical SEO Agency, Performance Marketing ROAS, Zero Trust Cybersecurity, Cloud Architecture AWS Google Cloud, Brand Identity Design, UI UX Systems, Web Design Saudi Arabia Riyadh, Web Design Fort Lauderdale USA, Pakistan Software House" />
+    <meta name="description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
+    <meta name="keywords" content="<?php echo esc_attr($eferz_seo['keywords']); ?>" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#121212" />
     <meta name="author" content="EFerz Digital Agency" />
-    <link rel="canonical" href="https://eferz.com/" />
-    <link rel="alternate" hreflang="en" href="https://eferz.com/" />
-    <link rel="alternate" hreflang="ar" href="https://eferz.com/?lang=ar" />
-    <link rel="alternate" hreflang="x-default" href="https://eferz.com/" />
-    <meta property="og:title" content="EFerz Digital Agency | AI, 3D WebGL, SEO &amp; Software" />
-    <meta property="og:description" content="Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO &amp; cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project." />
+    <link rel="canonical" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
+    <link rel="alternate" hreflang="en" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
+    <link rel="alternate" hreflang="ar" href="<?php echo esc_url($eferz_seo['canonical'] . '?lang=ar'); ?>" />
+    <link rel="alternate" hreflang="x-default" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
+    <meta property="og:title" content="<?php echo esc_attr($eferz_seo['title']); ?>" />
+    <meta property="og:description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://eferz.com/" />
+    <meta property="og:url" content="<?php echo esc_url($eferz_seo['canonical']); ?>" />
     <meta property="og:site_name" content="EFerz Digital Agency" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="ar_SA" />
+    <meta property="og:locale" content="<?php echo $eferz_seo['is_ar'] ? 'ar_SA' : 'en_US'; ?>" />
+    <meta property="og:locale:alternate" content="<?php echo $eferz_seo['is_ar'] ? 'en_US' : 'ar_SA'; ?>" />
     <meta property="og:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
     <meta property="og:image:alt" content="EFerz Digital Agency Logo" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@eferzofficial" />
-    <meta name="twitter:title" content="EFerz Digital Agency | AI, 3D WebGL, SEO &amp; Software" />
-    <meta name="twitter:description" content="Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO &amp; cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project." />
+    <meta name="twitter:title" content="<?php echo esc_attr($eferz_seo['title']); ?>" />
+    <meta name="twitter:description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
     <meta name="twitter:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
     <meta name="twitter:image:alt" content="EFerz Digital Agency Logo" />
     <script type="application/ld+json">

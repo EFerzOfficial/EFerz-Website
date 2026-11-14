@@ -952,15 +952,15 @@ export const WorkView: React.FC<WorkViewProps> = ({
         <>
 
           <div
-            className={`relative z-10 w-full max-w-full h-full flex items-center justify-center px-3 sm:px-10 ${
+            className={`relative z-10 w-full max-w-full h-full flex items-start lg:items-center justify-center px-3 sm:px-10 ${
               isRTL
-                ? 'md:pr-48 lg:pr-60 lg:pl-12'
-                : 'md:pl-48 lg:pl-60 lg:pr-12'
+                ? 'md:pr-48 lg:pr-60 xl:pr-64 lg:pl-12'
+                : 'md:pl-48 lg:pl-60 xl:pl-64 lg:pr-12'
             } pt-20 pb-24 sm:pb-20 md:pb-16 overflow-y-auto overflow-x-hidden`}
           >
             <div
               key={currentProject.id}
-              className={`max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-9 items-center transition-all duration-500 ${
+              className={`max-w-7xl w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-9 items-center transition-all duration-500 ${
                 isTransitioning
                   ? 'opacity-0 translate-y-5 scale-[0.98]'
                   : 'opacity-100 translate-y-0 scale-100'
