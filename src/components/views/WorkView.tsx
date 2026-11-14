@@ -881,8 +881,8 @@ export const WorkView: React.FC<WorkViewProps> = ({
       {slideIndex === -1 && (
         <div
           className={`relative z-10 w-full h-full flex flex-col items-center justify-center px-5 sm:px-10 ${
-            isRTL ? 'md:pr-60 lg:pr-64' : 'md:pl-60 lg:pl-64'
-          } pb-16 sm:pb-0 text-center transition-all duration-500 ${
+            isRTL ? 'md:pr-48 lg:pr-60 xl:pr-64' : 'md:pl-48 lg:pl-60 xl:pl-64'
+          } pb-24 sm:pb-20 md:pb-16 text-center overflow-y-auto overflow-x-hidden transition-all duration-500 ${
             isTransitioning
               ? 'opacity-0 translate-y-4 scale-[0.98]'
               : 'opacity-100 translate-y-0 scale-100'
@@ -954,9 +954,9 @@ export const WorkView: React.FC<WorkViewProps> = ({
           <div
             className={`relative z-10 w-full max-w-full h-full flex items-center justify-center px-3 sm:px-10 ${
               isRTL
-                ? 'md:pr-60 lg:pr-64 lg:pl-16'
-                : 'md:pl-60 lg:pl-64 lg:pr-16'
-            } pt-16 pb-20 sm:pb-12 overflow-y-auto overflow-x-hidden lg:overflow-visible`}
+                ? 'md:pr-48 lg:pr-60 lg:pl-12'
+                : 'md:pl-48 lg:pl-60 lg:pr-12'
+            } pt-20 pb-24 sm:pb-20 md:pb-16 overflow-y-auto overflow-x-hidden`}
           >
             <div
               key={currentProject.id}

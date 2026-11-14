@@ -10,4 +10,32 @@
   background-clip: border-box !important;
   -webkit-background-clip: border-box !important;
 }
+html, body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+@supports (height: 100dvh) {
+  .h-screen { height: 100dvh; }
+  .min-h-screen { min-height: 100dvh; }
+}
+.left-12 { left: calc(var(--spacing) * 12); }
+.pt-20 { padding-top: calc(var(--spacing) * 20); }
+@media (min-width: 40rem) {
+  .sm\:pt-24 { padding-top: calc(var(--spacing) * 24); }
+  .sm\:pb-20 { padding-bottom: calc(var(--spacing) * 20); }
+}
+@media (min-width: 48rem) {
+  .md\:pl-48 { padding-left: calc(var(--spacing) * 48); }
+  .md\:pr-48 { padding-right: calc(var(--spacing) * 48); }
+  .md\:pb-16 { padding-bottom: calc(var(--spacing) * 16); }
+}
+@media (min-width: 64rem) {
+  .lg\:pl-60 { padding-left: calc(var(--spacing) * 60); }
+  .lg\:pr-60 { padding-right: calc(var(--spacing) * 60); }
+}
+@media (min-width: 80rem) {
+  .xl\:pl-64 { padding-left: calc(var(--spacing) * 64); }
+  .xl\:pr-64 { padding-right: calc(var(--spacing) * 64); }
+}
+
 

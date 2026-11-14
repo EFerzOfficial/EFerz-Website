@@ -379,11 +379,11 @@ export const PolicyView: React.FC<PolicyViewProps> = ({
       {/* MAIN INTERACTIVE POLICY STAGE                                       */}
       {/* =================================================================== */}
       <div
-        className={`relative z-10 w-full h-full flex flex-col justify-between pt-[76px] sm:pt-[84px] pb-[88px] md:pb-[72px] px-4 sm:px-8 ${
+        className={`relative z-10 w-full h-full flex flex-col justify-between pt-[76px] sm:pt-[84px] pb-24 sm:pb-20 md:pb-16 px-4 sm:px-8 ${
           isRTL
-            ? 'md:pr-[215px] lg:pr-[235px] xl:pr-[255px] lg:pl-12'
-            : 'md:pl-[215px] lg:pl-[235px] xl:pl-[255px] lg:pr-12'
-        } max-w-[1580px] mx-auto overflow-y-auto md:overflow-hidden`}
+            ? 'md:pr-48 lg:pr-60 xl:pr-64 lg:pl-12'
+            : 'md:pl-48 lg:pl-60 xl:pl-64 lg:pr-12'
+        } max-w-[1580px] mx-auto overflow-y-auto overflow-x-hidden`}
       >
         {/* Top Policy Switcher Bar */}
         <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-white/10 pb-2.5 shrink-0">

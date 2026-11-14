@@ -245,7 +245,7 @@ export const VerticalWheelRail: React.FC<VerticalWheelRailProps> = ({
       ============================================================ */}
       <div
         dir={isRTL ? 'rtl' : 'ltr'}
-        className="md:hidden fixed bottom-12 left-3 right-14 z-30 flex items-center justify-between gap-2 px-3 py-1.5 rounded-2xl bg-[#06080f]/90 border border-white/15 backdrop-blur-xl shadow-2xl"
+        className="md:hidden fixed bottom-12 left-12 right-14 z-30 flex items-center justify-between gap-1.5 px-2.5 py-1.5 rounded-2xl bg-[#06080f]/90 border border-white/15 backdrop-blur-xl shadow-2xl"
       >
         <button
           type="button"
