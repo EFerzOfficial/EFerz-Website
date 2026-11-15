@@ -300,7 +300,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
       ============================================================ */}
       {slideIndex === -1 && (
         <div
-          className={`relative z-10 w-full h-full flex flex-col items-center justify-center px-5 sm:px-10 ${
+          className={`eferz-intro-wrap relative z-10 w-full h-full flex flex-col items-center pl-4 pr-14 sm:px-10 ${
             isRTL ? 'md:pr-48 lg:pr-60 xl:pr-64' : 'md:pl-48 lg:pl-60 xl:pl-64'
           } pb-24 sm:pb-20 md:pb-16 text-center overflow-y-auto overflow-x-hidden transition-all duration-500 ${
             isTransitioning
@@ -364,13 +364,13 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
         <>
 
           <div
-            className={`relative z-10 w-full h-full flex flex-col items-center justify-center px-5 sm:px-10 ${
+            className={`eferz-intro-wrap relative z-10 w-full h-full flex flex-col items-center pl-4 pr-14 sm:px-10 ${
               isRTL ? 'md:pr-48 lg:pr-60 xl:pr-64' : 'md:pl-48 lg:pl-60 xl:pl-64'
             } pb-24 sm:pb-20 md:pb-16 text-center overflow-y-auto overflow-x-hidden pointer-events-none`}
           >
           <div
             key={currentService.id}
-            className={`max-w-5xl mx-auto flex flex-col items-center transition-all duration-500 ${
+            className={`max-w-5xl mx-auto my-auto flex flex-col items-center transition-all duration-500 ${
               isTransitioning
                 ? 'opacity-0 translate-y-4 scale-[0.98]'
                 : 'opacity-100 translate-y-0 scale-100'

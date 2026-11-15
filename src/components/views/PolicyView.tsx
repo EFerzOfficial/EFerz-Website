@@ -379,7 +379,7 @@ export const PolicyView: React.FC<PolicyViewProps> = ({
       {/* MAIN INTERACTIVE POLICY STAGE                                       */}
       {/* =================================================================== */}
       <div
-        className={`relative z-10 w-full h-full flex flex-col justify-between pt-[76px] sm:pt-[84px] pb-24 sm:pb-20 md:pb-16 px-4 sm:px-8 ${
+        className={`relative z-10 w-full h-full flex flex-col justify-between pt-[76px] sm:pt-[84px] pb-24 sm:pb-20 md:pb-16 pl-4 pr-14 sm:px-10 ${
           isRTL
             ? 'md:pr-48 lg:pr-60 xl:pr-64 lg:pl-12'
             : 'md:pl-48 lg:pl-60 xl:pl-64 lg:pr-12'

@@ -42,33 +42,6 @@ $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : ar
     <meta name="twitter:description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
     <meta name="twitter:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
     <meta name="twitter:image:alt" content="EFerz Digital Agency Logo" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": ["Organization", "ProfessionalService"],
-            "@id": "https://eferz.com/#organization",
-            "name": "EFerz Digital Agency",
-            "url": "https://eferz.com/",
-            "logo": "https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png",
-            "foundingDate": "2020-10-10",
-            "email": "info@eferz.com",
-            "telephone": "+1-786-224-4112",
-            "areaServed": "Worldwide",
-            "knowsAbout": ["Artificial Intelligence", "Autonomous AI Agents", "3D WebGL", "Three.js", "Full-Stack Web Development", "Shopify Plus", "Amazon FBA", "Technical SEO", "Cybersecurity", "Cloud Architecture"],
-            "sameAs": ["https://www.facebook.com/EFerzOfficial", "https://www.instagram.com/EFerzOfficial", "https://www.linkedin.com/company/EFerz/", "https://www.youtube.com/@EFerzOfficial"]
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://eferz.com/#website",
-            "url": "https://eferz.com/",
-            "name": "EFerz Digital Agency",
-            "publisher": { "@id": "https://eferz.com/#organization" }
-          }
-        ]
-      }
-    </script>
     <link rel="preload" as="video" href="<?php echo get_template_directory_uri(); ?>/videos/intro_cinematic.mp4" type="video/mp4">
     
     <!-- Premium Google Fonts -->
@@ -164,7 +137,33 @@ $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : ar
 </head>
 <body <?php body_class('bg-[#121212] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
-    <div id="root"></div>
+    <div id="root">
+      <div class="sr-only" aria-hidden="true">
+        <header>
+          <nav aria-label="Primary Navigation">
+            <a href="https://eferz.com/">Home</a>
+            <a href="https://eferz.com/services">Services</a>
+            <a href="https://eferz.com/work">Portfolio &amp; Case Studies</a>
+            <a href="https://eferz.com/clients">Clients &amp; Reviews</a>
+            <a href="https://eferz.com/team">Leadership Team</a>
+            <a href="https://eferz.com/about">About EFerz</a>
+            <a href="https://eferz.com/blog">Engineering &amp; SEO Blog</a>
+            <a href="https://eferz.com/lets-build">Interactive 3D Studio</a>
+            <a href="https://eferz.com/contact">Contact Us</a>
+            <a href="https://eferz.com/privacy">Privacy Policy</a>
+            <a href="https://eferz.com/terms">Terms of Service</a>
+            <a href="https://eferz.com/refund">Refund Policy</a>
+          </nav>
+        </header>
+        <main>
+          <h1><?php echo esc_html($eferz_seo['title']); ?></h1>
+          <p><?php echo esc_html($eferz_seo['desc']); ?></p>
+          <h2>Enterprise Digital Capabilities — USA, Saudi Arabia &amp; Pakistan</h2>
+          <p>EFerz Digital Agency engineers custom AI agents, LLM automation workflows, 3D WebGL &amp; Three.js flagship websites, Shopify Plus e-commerce platforms, Amazon FBA private label management, technical SEO strategies, brand identity UI/UX systems, iOS &amp; Android apps, and Zero Trust cloud cybersecurity.</p>
+          <p>Headquarters: 701 E Commercial Blvd, Fort Lauderdale, FL 33334, USA (+1-786-224-4112) · Riyadh, Saudi Arabia (+966-539-046410) · Karachi, Pakistan · info@eferz.com</p>
+        </main>
+      </div>
+    </div>
 
     <!-- React App Production Bundle (Auto-synced with latest build) -->
     <script type="module" crossorigin src="<?php echo esc_url($js_url); ?>"></script>

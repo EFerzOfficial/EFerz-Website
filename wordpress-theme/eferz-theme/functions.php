@@ -14,10 +14,10 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.1.0');
+define('EFERZ_THEME_VERSION', '1.2.0');
 
 /**
- * 1. HTTP Security & Trust Headers (Fixes Scam Detector / Security Scanner Trust Score)
+ * 1. HTTP Security & Trust Headers (Compatible with Wordfence & WooPayments Stripe/Apple Pay)
  */
 function eferz_send_security_headers() {
     if (!headers_sent()) {
@@ -25,7 +25,7 @@ function eferz_send_security_headers() {
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
         header('Referrer-Policy: strict-origin-when-cross-origin');
-        header('Permissions-Policy: camera=(self), microphone=(self), geolocation=()');
+        header('Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=(self "https://js.stripe.com" "https://checkout.stripe.com" "https://pay.google.com")');
         if (is_ssl()) {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         }
@@ -36,6 +36,56 @@ add_action('send_headers', 'eferz_send_security_headers');
 // Disable XML-RPC pingbacks & obscure WP version for security scanners
 add_filter('xmlrpc_enabled', '__return_false');
 remove_action('wp_head', 'wp_generator');
+
+/**
+ * Determine if the current request belongs to the React 3D SPA (and NOT WooCommerce, Elementor, WordPress posts/pages, or AJAX/API).
+ */
+function eferz_is_spa_request() {
+    if (is_admin() || wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
+        return false;
+    }
+    if (is_feed() || is_robots() || is_trackback() || is_embed() || is_customize_preview()) {
+        return false;
+    }
+    // Never override Elementor editor, previews, or WooCommerce AJAX/add-to-cart endpoints
+    if (isset($_GET['elementor-preview']) || isset($_GET['preview']) || isset($_GET['preview_id']) || isset($_GET['wc-ajax']) || isset($_GET['add-to-cart']) || isset($_GET['remove_item']) || isset($_GET['wordfence_lh'])) {
+        return false;
+    }
+    if (is_singular('elementor_library')) {
+        return false;
+    }
+
+    // Never override active WooCommerce catalog, products, cart, checkout, or My Account endpoints
+    if (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url())) {
+        return false;
+    }
+
+    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+    $first_seg = strtolower(explode('/', $req_path)[0] ?? '');
+
+    $wc_or_wp_reserved = array('shop', 'cart', 'checkout', 'my-account', 'product', 'product-category', 'product-tag', 'order-pay', 'order-received', 'wp-json', 'wc-api', 'wp-login.php', 'wp-admin', 'wp-content', 'wp-includes', 'feed');
+    if (in_array($first_seg, $wc_or_wp_reserved, true)) {
+        return false;
+    }
+
+    $spa_routes = array('services', 'work', 'portfolio', 'clients', 'team', 'contact', 'blog', 'about', 'privacy', 'terms', 'refund', 'lets-build');
+
+    if (is_front_page() || in_array($first_seg, $spa_routes, true) || get_query_var('eferz_spa_route')) {
+        return true;
+    }
+
+    // Allow regular WordPress posts, custom post types (The7 Projects/Testimonials/Team), inner Pages, archives, and search to render normally
+    if (is_singular() || is_archive() || is_search() || is_author() || is_home()) {
+        return false;
+    }
+
+    // Route friendly unknown SPA paths to SPA, but avoid catching missing static files
+    if (is_404() && !preg_match('/\.(css|js|map|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico|xml|txt|json)$/i', $req_path)) {
+        return true;
+    }
+
+    return false;
+}
 
 /**
  * Route-aware SEO configuration (synced with React T3 & m6) so crawlers receive
@@ -160,16 +210,22 @@ function eferz_get_route_seo() {
 }
 
 function eferz_theme_setup() {
-    // Let WordPress manage the document title dynamically per route
+    // Let WordPress / Yoast SEO manage the document title dynamically
     add_theme_support('title-tag');
 
     add_filter('pre_get_document_title', function($title) {
+        if (!eferz_is_spa_request()) {
+            return $title;
+        }
         $seo = eferz_get_route_seo();
         return $seo['title'];
     }, 999999);
 
-    // Enable Featured Images
+    // Enable Featured Images, Block Alignments & Responsive Embeds (Required for WooCommerce 11.3 Cart/Checkout Blocks)
     add_theme_support('post-thumbnails');
+    add_theme_support('align-wide');
+    add_theme_support('wp-block-styles');
+    add_theme_support('responsive-embeds');
 
     // Register Navigation Menus
     register_nav_menus(array(
@@ -196,8 +252,18 @@ function eferz_theme_setup() {
         'flex-width'  => true,
     ));
 
-    // Full WooCommerce Support & Product Gallery
-    add_theme_support('woocommerce');
+    // Full WooCommerce Support, Product Grid & Product Gallery
+    add_theme_support('woocommerce', array(
+        'thumbnail_image_width' => 450,
+        'single_image_width'    => 800,
+        'product_grid'          => array(
+            'default_rows'    => 3,
+            'min_rows'        => 1,
+            'default_columns' => 3,
+            'min_columns'     => 1,
+            'max_columns'     => 4,
+        ),
+    ));
     add_theme_support('wc-product-gallery-zoom');
     add_theme_support('wc-product-gallery-lightbox');
     add_theme_support('wc-product-gallery-slider');
@@ -205,40 +271,135 @@ function eferz_theme_setup() {
 add_action('after_setup_theme', 'eferz_theme_setup');
 
 /**
- * Enqueue scripts, styles and WooCommerce luxury dark styling.
+ * Elementor & PRO Elements Theme Builder location compatibility
  */
-function eferz_theme_scripts() {
-    // Custom WooCommerce Dark Luxury Styling
-    if (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page())) {
-        $custom_wc_css = "
-        .woocommerce, .woocommerce-page { color: #fffdff !important; font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important; }
-        .woocommerce ul.products li.product { background: rgba(7, 9, 15, 0.88) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; border-radius: 1.25rem !important; padding: 1.25rem !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; backdrop-filter: blur(16px) !important; text-align: center; }
-        .woocommerce ul.products li.product:hover { border-color: #d02128 !important; box-shadow: 0 12px 36px rgba(208, 33, 40, 0.28) !important; transform: translateY(-4px) !important; }
-        .woocommerce ul.products li.product .woocommerce-loop-product__title { color: #fffdff !important; font-weight: 800 !important; font-size: 1.15rem !important; margin-top: 0.85rem !important; }
-        .woocommerce ul.products li.product .price, .woocommerce div.product p.price, .woocommerce div.product span.price { color: #ff4d49 !important; font-family: 'Space Grotesk', monospace !important; font-weight: 700 !important; font-size: 1.1rem !important; }
-        .woocommerce ul.products li.product .button, .woocommerce div.product form.cart .button, .woocommerce #respond input#submit, .woocommerce a.button, .woocommerce button.button, .woocommerce input.button { background: linear-gradient(135deg, #d02128, #ff3b30) !important; color: #ffffff !important; border-radius: 9999px !important; padding: 0.75rem 1.6rem !important; font-family: 'Space Grotesk', monospace !important; font-weight: 700 !important; font-size: 0.8rem !important; text-transform: uppercase !important; letter-spacing: 0.12em !important; border: none !important; transition: all 0.25s ease !important; box-shadow: 0 0 20px rgba(208, 33, 40, 0.45) !important; cursor: pointer !important; }
-        .woocommerce ul.products li.product .button:hover, .woocommerce div.product form.cart .button:hover, .woocommerce a.button:hover, .woocommerce button.button:hover, .woocommerce input.button:hover { transform: scale(1.03) !important; box-shadow: 0 0 35px rgba(208, 33, 40, 0.75) !important; }
-        .woocommerce-message, .woocommerce-info, .woocommerce-error { background: rgba(7, 9, 15, 0.95) !important; border-radius: 1rem !important; backdrop-filter: blur(20px) !important; color: #fffdff !important; border-left: 4px solid #d02128 !important; }
-        .woocommerce-message { border-left-color: #10b981 !important; }
-        .woocommerce-info { border-left-color: #38bdf8 !important; }
-        .woocommerce input.input-text, .woocommerce select, .woocommerce textarea { background-color: rgba(4, 7, 15, 0.92) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 0.75rem !important; color: #fffdff !important; padding: 0.75rem 1rem !important; }
-        .woocommerce input.input-text:focus, .woocommerce select:focus, .woocommerce textarea:focus { border-color: #d02128 !important; outline: none !important; box-shadow: 0 0 14px rgba(208, 33, 40, 0.45) !important; }
-        .woocommerce table.shop_table { background: rgba(7, 9, 15, 0.82) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; border-radius: 1.25rem !important; overflow: hidden !important; }
-        .woocommerce table.shop_table th { color: #fffdff !important; font-family: 'Space Grotesk', monospace !important; text-transform: uppercase !important; letter-spacing: 0.1em !important; border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important; }
-        .woocommerce table.shop_table td { border-top: 1px solid rgba(255, 255, 255, 0.08) !important; color: rgba(255, 255, 255, 0.88) !important; }
-        #payment { background: rgba(4, 7, 15, 0.96) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; border-radius: 1.25rem !important; }
-        #payment div.payment_box { background: rgba(255, 255, 255, 0.06) !important; color: #fffdff !important; border-radius: 0.75rem !important; }
-        ";
-        wp_add_inline_style('woocommerce-general', $custom_wc_css);
+add_action('elementor/theme/register_locations', function($elementor_theme_manager) {
+    if (is_object($elementor_theme_manager) && method_exists($elementor_theme_manager, 'register_all_core_location')) {
+        $elementor_theme_manager->register_all_core_location();
     }
-}
-add_action('wp_enqueue_scripts', 'eferz_theme_scripts');
+});
 
 /**
- * 2. Verified Schema.org Organization, ProfessionalService & WebSite JSON-LD
- * Provides domain trust signals for Scam Detector, Google Knowledge Graph, and Security Crawlers.
+ * Enqueue scripts & self-contained dark luxury styling ONLY for inner WordPress & WooCommerce pages.
+ * Keeps React SPA front-page isolated and fast.
+ */
+function eferz_theme_scripts() {
+    if (eferz_is_spa_request()) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'eferz-wp-fonts',
+        'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap',
+        array(),
+        null
+    );
+
+    $css_path = get_template_directory() . '/assets/eferz-wp-pages.css';
+    $css_ver  = file_exists($css_path) ? (string) filemtime($css_path) : EFERZ_THEME_VERSION;
+
+    wp_enqueue_style(
+        'eferz-wp-pages',
+        get_template_directory_uri() . '/assets/eferz-wp-pages.css',
+        array('eferz-wp-fonts'),
+        $css_ver
+    );
+}
+add_action('wp_enqueue_scripts', 'eferz_theme_scripts', 50);
+
+/**
+ * Keep WooCommerce Cart Counter updated during AJAX Add-to-Cart
+ */
+add_filter('woocommerce_add_to_cart_fragments', function($fragments) {
+    if (function_exists('WC') && WC()->cart) {
+        $count = WC()->cart->get_cart_contents_count();
+        $fragments['span.eferz-cart-count'] = '<span class="eferz-cart-count">' . esc_html($count) . '</span>';
+    }
+    return $fragments;
+});
+
+/**
+ * 2. Verified Schema.org Organization, ProfessionalService, OfferCatalog, FAQPage, BreadcrumbList & WebPage JSON-LD
+ * Provides complete Google Rich Results & Knowledge Graph signals in initial SSR HTML.
  */
 function eferz_seo_schema_jsonld() {
+    if (!eferz_is_spa_request()) {
+        return; // Let Yoast SEO & WooCommerce emit native Product/Page schemas on backend pages
+    }
+    $seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array(
+        'route'     => 'agency',
+        'is_ar'     => false,
+        'title'     => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software',
+        'desc'      => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.',
+        'canonical' => 'https://eferz.com/',
+    );
+    $route = $seo['route'];
+    $canonical = $seo['canonical'];
+
+    $schema_type_map = array(
+        'agency'     => 'WebPage',
+        'services'   => 'Service',
+        'work'       => 'CollectionPage',
+        'clients'    => 'CollectionPage',
+        'team'       => 'AboutPage',
+        'about'      => 'AboutPage',
+        'blog'       => 'Blog',
+        'contact'    => 'ContactPage',
+        'lets-build' => 'WebApplication',
+        'privacy'    => 'WebPage',
+        'terms'      => 'WebPage',
+        'refund'     => 'WebPage',
+    );
+    $page_type = $schema_type_map[$route] ?? 'WebPage';
+
+    $page_node = array(
+        '@type'       => $page_type,
+        '@id'         => $canonical . '#webpage',
+        'url'         => $canonical,
+        'name'        => $seo['title'],
+        'description' => $seo['desc'],
+        'inLanguage'  => $seo['is_ar'] ? 'ar' : 'en',
+        'isPartOf'    => array('@id' => 'https://eferz.com/#website'),
+        'about'       => array('@id' => 'https://eferz.com/#organization'),
+    );
+
+    if ($route === 'services' || $route === 'agency') {
+        $page_node['hasOfferCatalog'] = array(
+            '@type'           => 'OfferCatalog',
+            'name'            => 'EFerz Enterprise Digital Services',
+            'itemListElement' => array(
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Full-Stack Web Engineering & Next.js Platforms')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => '3D WebGL & Interactive Three.js Websites')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Custom Artificial Intelligence Agents & LLM Systems')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Shopify Plus & Enterprise E-Commerce Architecture')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Amazon FBA Private Label & Marketplace Management')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Technical SEO & Search Ranking Growth')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Performance Marketing, PPC & ROAS Scaling')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Mobile App Development (iOS & Android)')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Brand Identity & UI/UX Product Systems')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'Zero Trust Cloud & Enterprise Cybersecurity')),
+                array('@type' => 'Offer', 'itemOffered' => array('@type' => 'Service', 'name' => 'No-Code & Automated Business Workflows')),
+            ),
+        );
+    }
+
+    $breadcrumb_items = array(
+        array(
+            '@type'    => 'ListItem',
+            'position' => 1,
+            'name'     => 'Home',
+            'item'     => 'https://eferz.com/',
+        ),
+    );
+    if ($route !== 'agency') {
+        $breadcrumb_items[] = array(
+            '@type'    => 'ListItem',
+            'position' => 2,
+            'name'     => ucfirst(str_replace('-', ' ', $route)),
+            'item'     => $canonical,
+        );
+    }
+
     $schema = array(
         '@context' => 'https://schema.org',
         '@graph'   => array(
@@ -246,15 +407,22 @@ function eferz_seo_schema_jsonld() {
                 '@type'        => array('Organization', 'ProfessionalService'),
                 '@id'          => 'https://eferz.com/#organization',
                 'name'         => 'EFerz Digital Agency',
+                'alternateName'=> 'وكالة إيفرز الرقمية',
                 'legalName'    => 'EFerz Digital Agency',
                 'url'          => 'https://eferz.com/',
                 'logo'         => 'https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png',
+                'image'        => 'https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png',
                 'foundingDate' => '2020-10-10',
-                'description'  => 'Founded in 2020, EFerz Digital Agency is a global IT, AI, 3D WebGL, eCommerce, and Cybersecurity agency headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — entertaining and serving clients worldwide.',
+                'description'  => 'Founded in 2020, EFerz Digital Agency is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity agency headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
                 'email'        => 'info@eferz.com',
                 'telephone'    => '+1-786-224-4112',
-                'priceRange'   => '$$$',
-                'areaServed'   => 'Worldwide',
+                'priceRange'   => '$$-$$$$',
+                'areaServed'   => array('US', 'SA', 'AE', 'GB', 'CA', 'AU', 'PK', 'Worldwide'),
+                'knowsAbout'   => array('Artificial Intelligence', 'Autonomous AI Agents', 'LLM Systems', '3D WebGL', 'Three.js', 'Full-Stack Web Development', 'Shopify Plus', 'Amazon FBA', 'Technical SEO', 'Cybersecurity', 'Cloud Architecture'),
+                'contactPoint' => array(
+                    array('@type' => 'ContactPoint', 'telephone' => '+1-786-224-4112', 'contactType' => 'sales', 'areaServed' => array('US', 'Worldwide'), 'availableLanguage' => array('English', 'Arabic')),
+                    array('@type' => 'ContactPoint', 'telephone' => '+966-539-046410', 'contactType' => 'customer support', 'areaServed' => array('SA', 'AE', 'Worldwide'), 'availableLanguage' => array('Arabic', 'English')),
+                ),
                 'founders'     => array(
                     array(
                         '@type'    => 'Person',
@@ -284,21 +452,9 @@ function eferz_seo_schema_jsonld() {
                         'jobTitle' => 'Director of Business Development',
                         'sameAs'   => array('https://www.linkedin.com/in/irfan-mirza-76a375255/'),
                     ),
-                    array(
-                        '@type'    => 'Person',
-                        'name'     => 'Syed Ahmed',
-                        'jobTitle' => 'Business Development Manager',
-                    ),
-                    array(
-                        '@type'    => 'Person',
-                        'name'     => 'Asad Malik',
-                        'jobTitle' => 'Website Designer & Developer',
-                    ),
-                    array(
-                        '@type'    => 'Person',
-                        'name'     => 'Syed Owais',
-                        'jobTitle' => 'Operations Coordinator',
-                    ),
+                    array('@type' => 'Person', 'name' => 'Syed Ahmed', 'jobTitle' => 'Business Development Manager'),
+                    array('@type' => 'Person', 'name' => 'Asad Malik', 'jobTitle' => 'Website Designer & Developer'),
+                    array('@type' => 'Person', 'name' => 'Syed Owais', 'jobTitle' => 'Operations Coordinator'),
                 ),
                 'address'      => array(
                     array(
@@ -311,7 +467,7 @@ function eferz_seo_schema_jsonld() {
                     ),
                     array(
                         '@type'           => 'PostalAddress',
-                        'streetAddress'   => 'Dammam Road, Khurais',
+                        'streetAddress'   => 'Prince Muhammad Ibn Saad Ibn Abdulaziz Rd, Al Malqa',
                         'addressLocality' => 'Riyadh',
                         'postalCode'      => '13525',
                         'addressCountry'  => 'SA',
@@ -330,15 +486,58 @@ function eferz_seo_schema_jsonld() {
                 ),
             ),
             array(
-                '@type'     => 'WebSite',
-                '@id'       => 'https://eferz.com/#website',
-                'url'       => 'https://eferz.com/',
-                'name'      => 'EFerz Digital Agency',
-                'publisher' => array('@id' => 'https://eferz.com/#organization'),
+                '@type'      => 'WebSite',
+                '@id'        => 'https://eferz.com/#website',
+                'url'        => 'https://eferz.com/',
+                'name'       => 'EFerz Digital Agency',
+                'inLanguage' => array('en', 'ar'),
+                'publisher'  => array('@id' => 'https://eferz.com/#organization'),
+            ),
+            $page_node,
+            array(
+                '@type'           => 'BreadcrumbList',
+                'itemListElement' => $breadcrumb_items,
+            ),
+            array(
+                '@type'      => 'FAQPage',
+                'mainEntity' => array(
+                    array(
+                        '@type'          => 'Question',
+                        'name'           => 'What services does EFerz Digital Agency specialize in?',
+                        'acceptedAnswer' => array(
+                            '@type' => 'Answer',
+                            'text'  => 'EFerz Digital Agency builds custom AI agents and LLM automation, 3D WebGL and Three.js websites, full-stack SaaS software, Shopify Plus stores, Amazon FBA management, technical SEO, brand identity, and Zero Trust cloud cybersecurity.',
+                        ),
+                    ),
+                    array(
+                        '@type'          => 'Question',
+                        'name'           => 'Where are EFerz Digital Agency offices located?',
+                        'acceptedAnswer' => array(
+                            '@type' => 'Answer',
+                            'text'  => 'EFerz Digital Agency is headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Saudi Arabia) and Karachi (Pakistan), serving enterprise and growth clients worldwide.',
+                        ),
+                    ),
+                    array(
+                        '@type'          => 'Question',
+                        'name'           => 'Are 3D WebGL websites engineered by EFerz SEO-friendly and fast?',
+                        'acceptedAnswer' => array(
+                            '@type' => 'Answer',
+                            'text'  => 'Yes. EFerz combines semantic HTML, route-aware SSR metadata, Schema.org structured data, GPU-accelerated rendering, and responsive mobile optimization so 3D WebGL sites achieve top Google search rankings.',
+                        ),
+                    ),
+                    array(
+                        '@type'          => 'Question',
+                        'name'           => 'Do clients retain 100% source code and intellectual property ownership?',
+                        'acceptedAnswer' => array(
+                            '@type' => 'Answer',
+                            'text'  => 'Yes. Under EFerz enterprise agreements, clients receive 100% ownership of all custom software codebases, brand assets, and intellectual property upon milestone completion.',
+                        ),
+                    ),
+                ),
             ),
         ),
     );
-    echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>' . "\n";
+    echo '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>' . "\n";
 }
 add_action('wp_head', 'eferz_seo_schema_jsonld');
 
@@ -539,31 +738,47 @@ function eferz_add_spa_rewrites() {
 }
 add_action('init', 'eferz_add_spa_rewrites');
 
+/**
+ * Automatically flush rewrite rules once when theme updates so WooCommerce products & SPA routes never 404
+ */
+add_action('init', function() {
+    if (get_option('eferz_rewrite_version') !== EFERZ_THEME_VERSION) {
+        flush_rewrite_rules(false);
+        update_option('eferz_rewrite_version', EFERZ_THEME_VERSION);
+    }
+}, 99);
+
 add_filter('query_vars', function($vars) {
     $vars[] = 'eferz_spa_route';
     return $vars;
 });
 
 add_filter('template_include', function($template) {
-    $spa_routes = array('services', 'work', 'portfolio', 'clients', 'team', 'contact', 'blog', 'about', 'privacy', 'terms', 'refund', 'lets-build');
-    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
-    $first_seg = explode('/', $req_path)[0] ?? '';
-
-    // Route WooCommerce pages (shop, products, cart, checkout, my-account) to custom luxury template
-    $wc_routes = array('shop', 'cart', 'checkout', 'my-account', 'product', 'product-category');
-    if (in_array($first_seg, $wc_routes, true) || (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page()))) {
+    // 1. WooCommerce catalog & single product pages -> woocommerce.php (unless Elementor Canvas template overrides)
+    if (function_exists('is_woocommerce') && is_woocommerce()) {
+        $page_tpl = is_singular() ? get_page_template_slug(get_queried_object_id()) : '';
+        if ($page_tpl === 'elementor_canvas') {
+            return $template;
+        }
         $wc_template = get_template_directory() . '/woocommerce.php';
         if (file_exists($wc_template)) {
             return $wc_template;
         }
     }
 
-    if (is_front_page() || in_array($first_seg, $spa_routes, true) || get_query_var('eferz_spa_route') || is_404()) {
+    // 2. Cart, Checkout, My Account, Elementor pages, regular WP Pages & Posts -> keep native WordPress page.php / single.php / Elementor template
+    if (function_exists('is_cart') && (is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url())) {
+        return $template;
+    }
+
+    // 3. React 3D SPA routes -> front-page.php
+    if (eferz_is_spa_request()) {
         $front = get_template_directory() . '/front-page.php';
         if (file_exists($front)) {
             return $front;
         }
     }
+
     return $template;
 }, 999999);
 
@@ -571,11 +786,7 @@ add_filter('template_include', function($template) {
  * Clean body classes on front page and SPA routes to prevent page-builder stylesheet clashes
  */
 add_filter('body_class', function($classes) {
-    $spa_routes = array('services', 'work', 'portfolio', 'clients', 'team', 'contact', 'blog', 'about', 'privacy', 'terms', 'refund', 'lets-build');
-    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
-    $first_seg = explode('/', $req_path)[0] ?? '';
-
-    if (is_front_page() || in_array($first_seg, $spa_routes, true)) {
+    if (eferz_is_spa_request()) {
         $classes = array_diff($classes, array(
             'elementor-page-2609',
             'elementor-page-2605',

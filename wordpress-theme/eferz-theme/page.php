@@ -1,51 +1,109 @@
 <?php
 /**
- * The template for displaying all single pages
+ * The template for displaying WordPress Pages, WooCommerce Cart, Checkout,
+ * My Account, Contact Form 7 pages, and Elementor-built pages.
  *
  * @package EFerz
- * @version 1.0.0
+ * @version 1.2.0
  */
 
-get_header(); ?>
+get_header();
 
-<main id="primary" class="relative z-10 pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto min-h-[75vh]">
+$is_wc_flow = function_exists('is_cart') && (is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url());
+$is_elementor_page = false;
+if (class_exists('\Elementor\Plugin')) {
+    $doc = \Elementor\Plugin::$instance->documents->get(get_the_ID());
+    if ($doc && method_exists($doc, 'is_built_with_elementor') && $doc->is_built_with_elementor()) {
+        $is_elementor_page = true;
+    }
+}
+
+$shell_class = 'eferz-wp-shell';
+if ($is_elementor_page && !$is_wc_flow) {
+    $shell_class .= ' eferz-wp-shell--elementor';
+} elseif (!$is_wc_flow) {
+    $shell_class .= ' eferz-wp-shell--narrow';
+}
+?>
+
+<main id="primary" class="<?php echo esc_attr($shell_class); ?>">
     <?php while (have_posts()) : the_post(); ?>
-        <article id="post-<?php the_ID(); ?>" <?php post_class('p-8 md:p-12 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-xl space-y-6'); ?>>
-            <header class="border-b border-white/10 pb-6 mb-8">
-                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
-                    <?php the_title(); ?>
-                </h1>
-                <?php if (has_excerpt()) : ?>
-                    <p class="text-base text-white/70 font-light leading-relaxed">
-                        <?php echo get_the_excerpt(); ?>
+        <?php if ($is_wc_flow) : ?>
+            <div class="eferz-wc-banner">
+                <div>
+                    <div class="eferz-wc-badge">
+                        <span class="eferz-wc-badge-dot"></span>
+                        <span>EFerz Secure Commerce Portal</span>
+                    </div>
+                    <h1 class="eferz-wc-title"><?php the_title(); ?></h1>
+                    <p class="eferz-wc-subtitle">
+                        <?php
+                        if (is_cart()) {
+                            esc_html_e('Review your selected services or products before proceeding to encrypted merchant checkout.', 'eferz');
+                        } elseif (is_checkout()) {
+                            esc_html_e('Encrypted checkout powered by WooPayments. Complete your order securely below.', 'eferz');
+                        } else {
+                            esc_html_e('Manage your orders, invoices, payment methods, and account security settings.', 'eferz');
+                        }
+                        ?>
                     </p>
-                <?php endif; ?>
-            </header>
-
-            <?php if (has_post_thumbnail()) : ?>
-                <div class="rounded-2xl overflow-hidden border border-white/10 mb-8 max-h-96">
-                    <?php the_post_thumbnail('full', array('class' => 'w-full h-auto object-cover')); ?>
                 </div>
-            <?php endif; ?>
 
-            <div class="entry-content prose prose-invert prose-red max-w-none text-white/80 leading-relaxed space-y-6 text-sm sm:text-base">
-                <?php
-                the_content();
-
-                wp_link_pages(array(
-                    'before' => '<div class="page-links mt-8 pt-4 border-t border-white/10 text-xs font-mono text-white/60">' . esc_html__('Pages:', 'eferz'),
-                    'after'  => '</div>',
-                ));
-                ?>
+                <div class="eferz-wc-actions">
+                    <?php if (function_exists('wc_get_cart_url') && !is_cart()) : ?>
+                        <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="eferz-wp-pill-btn">
+                            <span>Cart (<span class="eferz-cart-count"><?php echo esc_html(function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0); ?></span>)</span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (function_exists('wc_get_page_permalink') && !is_account_page()) : ?>
+                        <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>" class="eferz-wp-pill-btn">
+                            <span><?php esc_html_e('Account', 'eferz'); ?></span>
+                        </a>
+                    <?php endif; ?>
+                    <a href="<?php echo esc_url(home_url('/')); ?>" class="eferz-wp-cta" style="display:inline-flex;">
+                        <span>&larr; Agency Home</span>
+                    </a>
+                </div>
             </div>
 
-            <?php
-            // If comments are open or we have at least one comment, load up the comment template.
-            if (comments_open() || get_comments_number()) :
-                comments_template();
-            endif;
-            ?>
-        </article>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('eferz-wc-card'); ?>>
+                <div class="eferz-entry-content">
+                    <?php the_content(); ?>
+                </div>
+            </article>
+        <?php elseif ($is_elementor_page) : ?>
+            <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                <?php the_content(); ?>
+            </article>
+        <?php else : ?>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('eferz-wc-card'); ?>>
+                <header class="eferz-article-header">
+                    <h1 class="eferz-article-title"><?php the_title(); ?></h1>
+                </header>
+
+                <?php if (has_post_thumbnail()) : ?>
+                    <div style="margin-bottom: 1.5rem; border-radius: 0.9rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.12);">
+                        <?php the_post_thumbnail('full'); ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="eferz-entry-content">
+                    <?php
+                    the_content();
+                    wp_link_pages(array(
+                        'before' => '<div class="page-links">' . esc_html__('Pages:', 'eferz'),
+                        'after'  => '</div>',
+                    ));
+                    ?>
+                </div>
+
+                <?php if (comments_open() || get_comments_number()) : ?>
+                    <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 1.5rem;">
+                        <?php comments_template(); ?>
+                    </div>
+                <?php endif; ?>
+            </article>
+        <?php endif; ?>
     <?php endwhile; ?>
 </main>
 

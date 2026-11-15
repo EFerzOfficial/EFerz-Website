@@ -38,4 +38,26 @@ html, body {
   .xl\:pr-64 { padding-right: calc(var(--spacing) * 64); }
 }
 
+html, body {
+  overscroll-behavior-y: none;
+}
 
+.eferz-intro-wrap {
+  justify-content: flex-start;
+  padding-top: 5.5rem;
+}
+@media (min-width: 48rem) {
+  .eferz-intro-wrap {
+    justify-content: center;
+    padding-top: 2rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .hpanel__pad {
+    max-height: calc(100dvh - 175px);
+    padding-left: 1rem !important;
+    padding-right: 3.5rem !important;
+    padding-bottom: 5.5rem !important;
+  }
+}
