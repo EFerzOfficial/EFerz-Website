@@ -1,25 +1,15 @@
 <?php
 /**
- * The template for displaying WooCommerce Shop, Product, and Taxonomy pages.
- * Cart, Checkout, and My Account are handled via page.php so Gutenberg Blocks,
- * shortcodes, WooPayments, Wordfence 2FA, and Cart Abandonment work natively.
+ * The template for displaying WooCommerce Shop, Single Product, and Taxonomy pages.
+ * Always renders full native woocommerce_content() (product gallery, price, short description,
+ * variations, quantity, Add to Cart, WooPayments Express Checkout, tabs, reviews, related products)
+ * without being hijacked by incomplete legacy Elementor product templates.
  *
  * @package EFerz
- * @version 1.2.0
+ * @version 1.2.1
  */
 
 get_header();
-
-$is_elementor_handled = false;
-if (function_exists('elementor_theme_do_location')) {
-    if (function_exists('is_product') && is_product() && elementor_theme_do_location('single')) {
-        $is_elementor_handled = true;
-    } elseif (!is_product() && elementor_theme_do_location('archive')) {
-        $is_elementor_handled = true;
-    }
-}
-
-if (!$is_elementor_handled) :
 ?>
 <main id="primary" class="eferz-wp-shell">
     <div class="eferz-wc-banner">
@@ -64,6 +54,4 @@ if (!$is_elementor_handled) :
     </div>
 </main>
 <?php
-endif;
-
 get_footer();

@@ -1,20 +1,24 @@
 <?php
 /**
- * EFerz Theme Footer (Inner WordPress, WooCommerce & Elementor Pages)
+ * EFerz Theme Footer (Inner WordPress & WooCommerce Pages)
+ * Always renders the clean EFerz obsidian footer (never overridden by old Elementor footer 2605).
  *
  * @package EFerz
- * @version 1.2.0
+ * @version 1.2.1
  */
 ?>
-<?php if (!function_exists('elementor_theme_do_location') || !elementor_theme_do_location('footer')) : ?>
 <footer id="footer" class="eferz-wp-footer">
     <div class="eferz-wp-footer-grid">
         <div>
             <div class="eferz-wp-brand" style="margin-bottom: 0.85rem;">
-                <span class="eferz-wp-brand-mark">E</span>
-                <span class="eferz-wp-brand-name"><?php bloginfo('name'); ?></span>
+                <span class="eferz-wp-brand-mark" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L14.9 9.1L22 12L14.9 14.9L12 22L9.1 14.9L2 12L9.1 9.1L12 2Z" fill="#ffffff"/>
+                    </svg>
+                </span>
+                <span class="eferz-wp-brand-name">EFERZ DIGITAL AGENCY</span>
             </div>
-            <p style="font-size: 0.84rem; color: rgba(255,255,255,0.62); max-width: 24rem; margin: 0;">
+            <p class="eferz-wp-footer-desc">
                 Global AI, 3D WebGL, software engineering, e-commerce, SEO, and cloud cybersecurity studio — Nothing Is Impossible In The IT World.
             </p>
         </div>
@@ -41,11 +45,10 @@
     </div>
 
     <div class="eferz-wp-footer-bottom">
-        <div>&copy; <?php echo esc_html(date('Y')); ?> <?php bloginfo('name'); ?>. All Rights Reserved.</div>
+        <div>&copy; <?php echo esc_html(date('Y')); ?> EFerz Digital Agency. All Rights Reserved.</div>
         <div>Powered by <a href="https://eferz.com" target="_blank" rel="noopener">EFerz.com</a></div>
     </div>
 </footer>
-<?php endif; ?>
 
 <script>
 (function() {

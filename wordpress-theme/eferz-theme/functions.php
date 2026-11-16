@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.2.0');
+define('EFERZ_THEME_VERSION', '1.2.1');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence & WooPayments Stripe/Apple Pay)
@@ -271,13 +271,12 @@ function eferz_theme_setup() {
 add_action('after_setup_theme', 'eferz_theme_setup');
 
 /**
- * Elementor & PRO Elements Theme Builder location compatibility
+ * Prevent leftover The7 / PRO Elements global Theme Builder templates (header 3971, footer 2605,
+ * single-page 2609, incomplete single-product 7502) from hijacking WooCommerce & EFerz templates.
+ * Page-level Elementor content & Elementor Canvas templates remain fully functional.
  */
-add_action('elementor/theme/register_locations', function($elementor_theme_manager) {
-    if (is_object($elementor_theme_manager) && method_exists($elementor_theme_manager, 'register_all_core_location')) {
-        $elementor_theme_manager->register_all_core_location();
-    }
-});
+add_filter('elementor/theme/need_override_location', '__return_false', 999999);
+add_filter('elementor/theme/get_location_templates/template_id', '__return_zero', 999999);
 
 /**
  * Enqueue scripts & self-contained dark luxury styling ONLY for inner WordPress & WooCommerce pages.
@@ -754,7 +753,7 @@ add_filter('query_vars', function($vars) {
 });
 
 add_filter('template_include', function($template) {
-    // 1. WooCommerce catalog & single product pages -> woocommerce.php (unless Elementor Canvas template overrides)
+    // 1. WooCommerce catalog & single product pages -> always render native woocommerce.php (unless explicit Elementor Canvas)
     if (function_exists('is_woocommerce') && is_woocommerce()) {
         $page_tpl = is_singular() ? get_page_template_slug(get_queried_object_id()) : '';
         if ($page_tpl === 'elementor_canvas') {
@@ -766,9 +765,16 @@ add_filter('template_include', function($template) {
         }
     }
 
-    // 2. Cart, Checkout, My Account, Elementor pages, regular WP Pages & Posts -> keep native WordPress page.php / single.php / Elementor template
+    // 2. Cart, Checkout, My Account, and WC endpoints -> force clean theme page.php (prevents PRO Elements single-page 2609 hijack!)
     if (function_exists('is_cart') && (is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url())) {
-        return $template;
+        $page_tpl = is_singular() ? get_page_template_slug(get_queried_object_id()) : '';
+        if ($page_tpl === 'elementor_canvas') {
+            return $template;
+        }
+        $wp_page = get_template_directory() . '/page.php';
+        if (file_exists($wp_page)) {
+            return $wp_page;
+        }
     }
 
     // 3. React 3D SPA routes -> front-page.php
@@ -783,16 +789,23 @@ add_filter('template_include', function($template) {
 }, 999999);
 
 /**
- * Clean body classes on front page and SPA routes to prevent page-builder stylesheet clashes
+ * Clean body classes on SPA routes and WooCommerce pages to prevent legacy The7 / Elementor stylesheet clashes
  */
 add_filter('body_class', function($classes) {
+    $legacy_classes = array(
+        'elementor-page-2609',
+        'elementor-page-2605',
+        'elementor-page-3971',
+        'elementor-page-7502',
+        'elementor-page-6133',
+    );
+
     if (eferz_is_spa_request()) {
-        $classes = array_diff($classes, array(
-            'elementor-page-2609',
-            'elementor-page-2605',
-            'elementor-page-6133'
-        ));
+        $classes = array_diff($classes, $legacy_classes);
         $classes[] = 'eferz-flagship-active';
+    } elseif (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url())) {
+        $classes = array_diff($classes, array_merge($legacy_classes, array('elementor-template-full-width')));
     }
+
     return $classes;
 }, 999999);

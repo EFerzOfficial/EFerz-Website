@@ -1,9 +1,10 @@
 <?php
 /**
  * EFerz Theme Header (Inner WordPress, WooCommerce & Elementor Pages)
+ * Always renders the clean EFerz obsidian studio header (never overridden by old Elementor headers).
  *
  * @package EFerz
- * @version 1.2.0
+ * @version 1.2.1
  */
 ?><!doctype html>
 <html <?php language_attributes(); ?> class="theme-galaxy">
@@ -16,13 +17,16 @@
 <body <?php body_class('eferz-wp-body'); ?>>
 <?php wp_body_open(); ?>
 
-<?php if (!function_exists('elementor_theme_do_location') || !elementor_theme_do_location('header')) : ?>
 <header id="eferz-header" class="eferz-wp-header">
     <a href="<?php echo esc_url(home_url('/')); ?>" class="eferz-wp-brand">
-        <span class="eferz-wp-brand-mark">E</span>
+        <span class="eferz-wp-brand-mark" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L14.9 9.1L22 12L14.9 14.9L12 22L9.1 14.9L2 12L9.1 9.1L12 2Z" fill="#ffffff"/>
+            </svg>
+        </span>
         <span class="eferz-wp-brand-text">
-            <span class="eferz-wp-brand-name"><?php bloginfo('name'); ?></span>
-            <span class="eferz-wp-brand-sub">Digital Studio</span>
+            <span class="eferz-wp-brand-name">EFERZ</span>
+            <span class="eferz-wp-brand-sub">Digital Agency</span>
         </span>
     </a>
 
@@ -49,7 +53,7 @@
 
 <div id="eferz-mobile-nav-drawer" class="eferz-wp-drawer" aria-hidden="true">
     <div class="eferz-wp-drawer-top">
-        <span class="eferz-wp-brand-name"><?php bloginfo('name'); ?></span>
+        <span class="eferz-wp-brand-name">EFERZ DIGITAL AGENCY</span>
         <button id="eferz-mobile-menu-close" type="button" aria-label="<?php esc_attr_e('Close Menu', 'eferz'); ?>" class="eferz-wp-drawer-close">&times;</button>
     </div>
     <nav class="eferz-wp-drawer-links" aria-label="<?php esc_attr_e('Mobile Navigation', 'eferz'); ?>">
@@ -59,8 +63,7 @@
         <a href="<?php echo esc_url(home_url('/about')); ?>">About Studio</a>
         <a href="<?php echo esc_url(home_url('/contact')); ?>" class="is-accent">Start a Project &rarr;</a>
     </nav>
-    <div style="font-family: 'Space Grotesk', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.45);">
-        &copy; <?php echo esc_html(date('Y')); ?> <?php bloginfo('name'); ?> &bull; Powered by EFerz
+    <div class="eferz-wp-drawer-meta">
+        &copy; <?php echo esc_html(date('Y')); ?> EFerz Digital Agency &bull; USA &bull; KSA &bull; PAK
     </div>
 </div>
-<?php endif; ?>

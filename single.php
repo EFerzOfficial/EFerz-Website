@@ -3,14 +3,10 @@
  * The template for displaying single posts and custom post types.
  *
  * @package EFerz
- * @version 1.2.0
+ * @version 1.2.1
  */
 
 get_header();
-
-$is_elementor_handled = function_exists('elementor_theme_do_location') && elementor_theme_do_location('single');
-
-if (!$is_elementor_handled) :
 ?>
 <main id="primary" class="eferz-wp-shell eferz-wp-shell--narrow">
     <?php while (have_posts()) : the_post(); ?>
@@ -48,6 +44,4 @@ if (!$is_elementor_handled) :
     <?php endwhile; ?>
 </main>
 <?php
-endif;
-
 get_footer();

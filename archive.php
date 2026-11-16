@@ -3,14 +3,10 @@
  * The template for displaying category, tag, and custom post type archives.
  *
  * @package EFerz
- * @version 1.2.0
+ * @version 1.2.1
  */
 
 get_header();
-
-$is_elementor_handled = function_exists('elementor_theme_do_location') && elementor_theme_do_location('archive');
-
-if (!$is_elementor_handled) :
 ?>
 <main id="primary" class="eferz-wp-shell">
     <div class="eferz-wc-banner">
@@ -62,6 +58,4 @@ if (!$is_elementor_handled) :
     <?php endif; ?>
 </main>
 <?php
-endif;
-
 get_footer();
