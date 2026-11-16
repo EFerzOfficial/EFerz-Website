@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.2.2');
+define('EFERZ_THEME_VERSION', '1.2.3');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence & WooPayments Stripe/Apple Pay)
@@ -141,15 +141,15 @@ function eferz_get_route_seo() {
         ),
         'about' => array(
             'title' => 'About EFerz | Global AI & Tech Agency (USA · KSA · PAK)',
-            'titleAr' => 'عن وكالة إيفرز | شركة تقنية عالمية منذ 2020',
-            'desc' => 'Founded October 2020 in Fort Lauderdale USA with Riyadh & Karachi offices, EFerz engineers scalable AI, WebGL & cloud systems. Learn how we build.',
-            'descAr' => 'تأسست إيفرز في أكتوبر 2020 في أمريكا مع مكاتب في الرياض وكراتشي لبناء أنظمة الذكاء الاصطناعي ومواقع WebGL والحوسبة السحابية. اكتشف قصتنا.',
-            'keywords' => 'About EFerz Digital Agency, Founded October 10 2020, Global IT & AI Company USA KSA PAK, Software Agency Mission & Core Pillars',
+            'titleAr' => 'عن إيفرز | شركة تقنية عالمية منذ 2020',
+            'desc' => 'Founded in 2020 in Fort Lauderdale USA with Riyadh & Karachi offices, EFerz engineers scalable AI, WebGL & cloud systems. Learn how we build.',
+            'descAr' => 'تأسست إيفرز في عام 2020 في أمريكا مع مكاتب في الرياض وكراتشي لبناء أنظمة الذكاء الاصطناعي ومواقع WebGL والحوسبة السحابية. اكتشف قصتنا.',
+            'keywords' => 'About EFerz, Founded in 2020, Global IT & AI Company USA KSA PAK, Software Agency Mission & Core Pillars',
             'slug' => 'about',
         ),
         'blog' => array(
             'title' => 'Engineering, AI, SEO & WebGL Blog Playbooks | EFerz',
-            'titleAr' => 'مدونة الهندسة والذكاء الاصطناعي والسيو | وكالة إيفرز',
+            'titleAr' => 'مدونة الهندسة والذكاء الاصطناعي والسيو | إيفرز',
             'desc' => 'Read technical guides from EFerz engineers on LLMs, 3D WebGL performance, Core Web Vitals, technical SEO & Shopify conversion optimization. Explore now.',
             'descAr' => 'اقرأ أدلة هندسية من خبراء إيفرز حول الذكاء الاصطناعي، أداء مواقع WebGL، مؤشرات Core Web Vitals وتحسين محركات البحث سيو. تصفح المقالات الآن.',
             'keywords' => 'AI Engineering Blog, 3D WebGL & Next.js Performance Guide, Technical SEO Playbook, Shopify Plus Conversion Optimization, Enterprise Cybersecurity Best Practices',
@@ -160,12 +160,12 @@ function eferz_get_route_seo() {
             'titleAr' => 'تواصل مع إيفرز | ابدأ مشروعك الرقمي اليوم',
             'desc' => 'Launch your AI, software, e-commerce or SEO project with EFerz. Connect with our Fort Lauderdale USA, Riyadh KSA & Pakistan teams for a free quote.',
             'descAr' => 'أطلق مشروعك في الذكاء الاصطناعي أو الويب أو المتاجر الإلكترونية مع إيفرز. تواصل مع مكاتبنا في أمريكا والرياض وباكستان للحصول على استشارة مجانية.',
-            'keywords' => 'Contact EFerz Digital Agency, Hire Web & AI Developers USA KSA, Request Software Development Proposal, Riyadh & Florida IT Consultation',
+            'keywords' => 'Contact EFerz, Hire Web & AI Developers USA KSA, Request Software Development Proposal, Riyadh & Florida IT Consultation',
             'slug' => 'contact',
         ),
         'lets-build' => array(
             'title' => 'Let’s Build 3D Studio | Interactive WebGL Configurator',
-            'titleAr' => 'استوديو البناء ثلاثي الأبعاد التفاعلي | وكالة إيفرز',
+            'titleAr' => 'استوديو البناء ثلاثي الأبعاد التفاعلي | إيفرز',
             'desc' => 'Customize a live 3D WebGL brand experience with your logo, colors & packaging inside the EFerz Interactive 3D Studio. Try the real-time demo.',
             'descAr' => 'صمم تجربة موقع ثلاثية الأبعاد حية بشعارك وألوان علامتك ومنتجاتك داخل استوديو إيفرز التفاعلي في الوقت الفعلي. جرّب العرض المباشر الآن.',
             'keywords' => 'Interactive 3D Website Builder, Live WebGL Product Customizer, 3D Beverage Can & Packaging Configurator, EFerz 3D Studio Demo',
@@ -173,25 +173,25 @@ function eferz_get_route_seo() {
         ),
         'privacy' => array(
             'title' => 'Privacy Policy & Data Protection Standards | EFerz',
-            'titleAr' => 'سياسة الخصوصية وحماية البيانات | وكالة إيفرز',
-            'desc' => 'Review EFerz Digital Agency privacy policy covering GDPR, CCPA compliance, enterprise encryption & client confidentiality. Read our data practices.',
-            'descAr' => 'اطلع على سياسة الخصوصية الرسمية في وكالة إيفرز الرقمية ومعايير الامتثال GDPR والتشفير وحماية سرية بيانات العملاء. اقرأ التفاصيل كاملة.',
+            'titleAr' => 'سياسة الخصوصية وحماية البيانات | إيفرز',
+            'desc' => 'Review EFerz privacy policy covering GDPR, CCPA compliance, enterprise encryption & client confidentiality. Read our data practices.',
+            'descAr' => 'اطلع على سياسة الخصوصية الرسمية في إيفرز ومعايير الامتثال GDPR والتشفير وحماية سرية بيانات العملاء. اقرأ التفاصيل كاملة.',
             'keywords' => 'EFerz Privacy Policy, GDPR CCPA Data Protection, Client Confidentiality & Security',
             'slug' => 'privacy',
         ),
         'terms' => array(
             'title' => 'Terms of Service & Enterprise SLA Terms | EFerz',
-            'titleAr' => 'شروط الخدمة واتفاقية العملاء | وكالة إيفرز',
-            'desc' => 'Read EFerz Digital Agency Terms of Service, 100% client IP ownership, milestone billing & SLA commitments for software projects. View terms.',
-            'descAr' => 'اقرأ شروط الخدمة واتفاقية مستوى الخدمة وضمان نقل الملكية الفكرية بنسبة 100% لمشاريع البرمجة والتصميم في وكالة إيفرز. تصفح الشروط الآن.',
+            'titleAr' => 'شروط الخدمة واتفاقية العملاء | إيفرز',
+            'desc' => 'Read EFerz Terms of Service, 100% client IP ownership, milestone billing & SLA commitments for software projects. View terms.',
+            'descAr' => 'اقرأ شروط الخدمة واتفاقية مستوى الخدمة وضمان نقل الملكية الفكرية بنسبة 100% لمشاريع البرمجة والتصميم في إيفرز. تصفح الشروط الآن.',
             'keywords' => 'EFerz Terms of Service, 100% IP Ownership Software Agreement, Digital Agency SLA Terms',
             'slug' => 'terms',
         ),
         'refund' => array(
             'title' => 'Refund Policy & 30-Day Project Guarantee | EFerz',
-            'titleAr' => 'سياسة الاسترداد وضمان 30 يوماً | وكالة إيفرز',
-            'desc' => 'Explore EFerz Digital Agency 30-Day Money-Back Guarantee and milestone approval policy for risk-free digital & software delivery. Learn more.',
-            'descAr' => 'تعرف على سياسة الاسترداد وضمان الرضا لمدة 30 يوماً واعتماد مراحل التسليم الآمن للمشاريع مع وكالة إيفرز الرقمية. اطلع على التفاصيل الآن.',
+            'titleAr' => 'سياسة الاسترداد وضمان 30 يوماً | إيفرز',
+            'desc' => 'Explore EFerz 30-Day Money-Back Guarantee and milestone approval policy for risk-free digital & software delivery. Learn more.',
+            'descAr' => 'تعرف على سياسة الاسترداد وضمان الرضا لمدة 30 يوماً واعتماد مراحل التسليم الآمن للمشاريع مع إيفرز. اطلع على التفاصيل الآن.',
             'keywords' => 'EFerz Refund Policy, 30 Day Money Back Guarantee Agency, Risk Free Software Development',
             'slug' => 'refund',
         ),
@@ -337,7 +337,7 @@ function eferz_theme_scripts() {
 
     wp_enqueue_style(
         'eferz-wp-fonts',
-        'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:ital,wght@0,700;0,800;0,900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap',
         array(),
         null
     );
@@ -453,14 +453,14 @@ function eferz_seo_schema_jsonld() {
             array(
                 '@type'        => array('Organization', 'ProfessionalService'),
                 '@id'          => 'https://eferz.com/#organization',
-                'name'         => 'EFerz Digital Agency',
-                'alternateName'=> 'وكالة إيفرز الرقمية',
-                'legalName'    => 'EFerz Digital Agency',
+                'name'         => 'EFerz',
+                'alternateName'=> 'EFerz Digital Agency',
+                'legalName'    => 'EFerz',
                 'url'          => 'https://eferz.com/',
                 'logo'         => get_template_directory_uri() . '/assets/eferz-logo.png',
-                'image'        => get_template_directory_uri() . '/assets/og-eferz.jpg',
-                'foundingDate' => '2020-10-10',
-                'description'  => 'Founded in 2020, EFerz Digital Agency is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity agency headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
+                'image'        => get_template_directory_uri() . '/assets/og-eferz-v2.jpg',
+                'foundingDate' => '2020',
+                'description'  => 'Founded in 2020, EFerz is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity company headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
                 'email'        => 'info@eferz.com',
                 'telephone'    => '+1-786-224-4112',
                 'priceRange'   => '$$-$$$$',
@@ -537,7 +537,7 @@ function eferz_seo_schema_jsonld() {
                 '@type'      => 'WebSite',
                 '@id'        => 'https://eferz.com/#website',
                 'url'        => 'https://eferz.com/',
-                'name'       => 'EFerz Digital Agency',
+                'name'       => 'EFerz',
                 'inLanguage' => array('en', 'ar'),
                 'publisher'  => array('@id' => 'https://eferz.com/#organization'),
             ),
@@ -551,18 +551,18 @@ function eferz_seo_schema_jsonld() {
                 'mainEntity' => array(
                     array(
                         '@type'          => 'Question',
-                        'name'           => 'What services does EFerz Digital Agency specialize in?',
+                        'name'           => 'What services does EFerz specialize in?',
                         'acceptedAnswer' => array(
                             '@type' => 'Answer',
-                            'text'  => 'EFerz Digital Agency builds custom AI agents and LLM automation, 3D WebGL and Three.js websites, full-stack SaaS software, Shopify Plus stores, Amazon FBA management, technical SEO, brand identity, and Zero Trust cloud cybersecurity.',
+                            'text'  => 'EFerz builds custom AI agents and LLM automation, 3D WebGL and Three.js websites, full-stack SaaS software, Shopify Plus stores, Amazon FBA management, technical SEO, brand identity, and Zero Trust cloud cybersecurity.',
                         ),
                     ),
                     array(
                         '@type'          => 'Question',
-                        'name'           => 'Where are EFerz Digital Agency offices located?',
+                        'name'           => 'Where are EFerz offices located?',
                         'acceptedAnswer' => array(
                             '@type' => 'Answer',
-                            'text'  => 'EFerz Digital Agency is headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Saudi Arabia) and Karachi (Pakistan), serving enterprise and growth clients worldwide.',
+                            'text'  => 'EFerz is headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Saudi Arabia) and Karachi (Pakistan), serving enterprise and growth clients worldwide.',
                         ),
                     ),
                     array(
@@ -699,7 +699,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
 
     $html_body = '
     <div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; background: #0b0e17; color: #ffffff; padding: 28px; border-radius: 16px; border: 1px solid #d02128;">
-        <h2 style="margin-top: 0; color: #d02128; text-transform: uppercase; letter-spacing: 1px;">New Verified Project Inquiry — EFerz Digital Agency</h2>
+        <h2 style="margin-top: 0; color: #d02128; text-transform: uppercase; letter-spacing: 1px;">New Verified Project Inquiry — EFerz</h2>
         <p style="color: #cbd5e1; font-size: 13px;">Verified via Anti-Spam Human Security Quiz on eferz.com</p>
         <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px;">
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8; width: 150px;"><strong>Full Name:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($name) . '</td></tr>
@@ -723,7 +723,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
     return new WP_REST_Response(array(
         'success'   => true,
         'mail_sent' => (bool) $mail_sent,
-        'message'   => 'Your inquiry has been received and dispatched to EFerz Digital Agency.',
+        'message'   => 'Your inquiry has been received and dispatched to EFerz.',
     ), 200);
 }
 

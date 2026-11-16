@@ -50,6 +50,11 @@ if ($is_elementor_page && !$is_wc_flow) {
                 </div>
 
                 <div class="eferz-wc-actions">
+                    <?php if (function_exists('wc_get_page_id') && wc_get_page_id('shop') > 0) : ?>
+                        <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="eferz-wp-pill-btn">
+                            <span><?php esc_html_e('Shop', 'eferz'); ?></span>
+                        </a>
+                    <?php endif; ?>
                     <?php if (function_exists('wc_get_cart_url') && !is_cart()) : ?>
                         <a href="<?php echo esc_url(wc_get_cart_url()); ?>" class="eferz-wp-pill-btn">
                             <span>Cart (<span class="eferz-cart-count"><?php echo esc_html(function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0); ?></span>)</span>
@@ -57,11 +62,11 @@ if ($is_elementor_page && !$is_wc_flow) {
                     <?php endif; ?>
                     <?php if (function_exists('wc_get_page_permalink') && !is_account_page()) : ?>
                         <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>" class="eferz-wp-pill-btn">
-                            <span><?php esc_html_e('Account', 'eferz'); ?></span>
+                            <span><?php esc_html_e('My Account', 'eferz'); ?></span>
                         </a>
                     <?php endif; ?>
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="eferz-wp-cta" style="display:inline-flex;">
-                        <span>&larr; Agency Home</span>
+                        <span>&larr; Home</span>
                     </a>
                 </div>
             </div>
