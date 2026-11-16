@@ -110,6 +110,41 @@ body:not(.eferz-flagship-active) input[type="radio"] {
   text-decoration: none;
 }
 
+.eferz-wp-brand-logo-wrap {
+  width: 2.55rem;
+  height: 2.55rem;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 2px solid rgba(208, 33, 40, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.24rem;
+  box-shadow: 0 0 22px var(--ef-red-glow), 0 4px 14px rgba(0, 0, 0, 0.45);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eferz-wp-brand:hover .eferz-wp-brand-logo-wrap {
+  transform: scale(1.04);
+  box-shadow: 0 0 28px rgba(208, 33, 40, 0.65), 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+.eferz-wp-brand-logo-wrap--sm {
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0.2rem;
+}
+
+.eferz-wp-logo-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
 .eferz-wp-brand-mark {
   width: 2.15rem;
   height: 2.15rem;

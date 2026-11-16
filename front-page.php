@@ -7,21 +7,23 @@
  * @version 1.1.0
  */
 $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'keywords' => 'EFerz Digital Agency, AI Development Agency, 3D WebGL Website Design, Shopify Plus, Amazon FBA, Technical SEO, Cybersecurity', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
+$eferz_og_image = get_template_directory_uri() . '/assets/og-eferz.jpg';
+$eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?> class="dark scroll-smooth theme-galaxy">
 <head>
     <meta charset="<?php bloginfo('charset'); ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <?php if (!did_action('wp_head') && !current_theme_supports('title-tag')): ?>
     <title><?php echo esc_html($eferz_seo['title']); ?></title>
-    <?php endif; ?>
     <meta name="description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
     <meta name="keywords" content="<?php echo esc_attr($eferz_seo['keywords']); ?>" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#121212" />
     <meta name="author" content="EFerz Digital Agency" />
     <link rel="canonical" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
+    <link rel="icon" type="image/png" href="<?php echo esc_url($eferz_favicon); ?>" />
+    <link rel="apple-touch-icon" href="<?php echo esc_url($eferz_favicon); ?>" />
     <link rel="alternate" hreflang="en" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
     <link rel="alternate" hreflang="ar" href="<?php echo esc_url($eferz_seo['canonical'] . '?lang=ar'); ?>" />
     <link rel="alternate" hreflang="x-default" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
@@ -32,16 +34,18 @@ $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : ar
     <meta property="og:site_name" content="EFerz Digital Agency" />
     <meta property="og:locale" content="<?php echo $eferz_seo['is_ar'] ? 'ar_SA' : 'en_US'; ?>" />
     <meta property="og:locale:alternate" content="<?php echo $eferz_seo['is_ar'] ? 'en_US' : 'ar_SA'; ?>" />
-    <meta property="og:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
-    <meta property="og:image:alt" content="EFerz Digital Agency Logo" />
+    <meta property="og:image" content="<?php echo esc_url($eferz_og_image); ?>" />
+    <meta property="og:image:secure_url" content="<?php echo esc_url($eferz_og_image); ?>" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="EFerz Digital Agency — Nothing Is Impossible In The IT World" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@eferzofficial" />
     <meta name="twitter:title" content="<?php echo esc_attr($eferz_seo['title']); ?>" />
     <meta name="twitter:description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
-    <meta name="twitter:image" content="https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png" />
-    <meta name="twitter:image:alt" content="EFerz Digital Agency Logo" />
+    <meta name="twitter:image" content="<?php echo esc_url($eferz_og_image); ?>" />
+    <meta name="twitter:image:alt" content="EFerz Digital Agency — Nothing Is Impossible In The IT World" />
     <link rel="preload" as="video" href="<?php echo get_template_directory_uri(); ?>/videos/intro_cinematic.mp4" type="video/mp4">
     
     <!-- Premium Google Fonts -->
@@ -160,7 +164,7 @@ $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : ar
           <p><?php echo esc_html($eferz_seo['desc']); ?></p>
           <h2>Enterprise Digital Capabilities — USA, Saudi Arabia &amp; Pakistan</h2>
           <p>EFerz Digital Agency engineers custom AI agents, LLM automation workflows, 3D WebGL &amp; Three.js flagship websites, Shopify Plus e-commerce platforms, Amazon FBA private label management, technical SEO strategies, brand identity UI/UX systems, iOS &amp; Android apps, and Zero Trust cloud cybersecurity.</p>
-          <p>Headquarters: 701 E Commercial Blvd, Fort Lauderdale, FL 33334, USA (+1-786-224-4112) · Riyadh, Saudi Arabia (+966-539-046410) · Karachi, Pakistan · info@eferz.com</p>
+          <p>Headquarters: 701 E Commercial Blvd, Fort Lauderdale, FL 33334, USA (+1-786-224-4112) &middot; Riyadh, Saudi Arabia (+966-539-046410) &middot; Karachi, Pakistan (+92-345-3397459) &middot; info@eferz.com</p>
         </main>
       </div>
     </div>

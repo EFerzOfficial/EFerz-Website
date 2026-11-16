@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://eferz.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://eferz.com/" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/services" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/services?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/work</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/work" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/work?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/clients</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/clients" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/clients?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/team</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/team" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/team?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/about" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/about?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/blog" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/blog?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/contact" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/contact?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/lets-build</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://eferz.com/lets-build" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://eferz.com/lets-build?lang=ar" />
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/privacy</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/terms</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://eferz.com/refund</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+</urlset>

@@ -4,7 +4,7 @@
  * Always renders the clean EFerz obsidian studio header (never overridden by old Elementor headers).
  *
  * @package EFerz
- * @version 1.2.1
+ * @version 1.2.2
  */
 ?><!doctype html>
 <html <?php language_attributes(); ?> class="theme-galaxy">
@@ -12,17 +12,25 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <link rel="profile" href="https://gmpg.org/xfn/11">
+    <link rel="icon" type="image/png" href="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-logo.png'); ?>">
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('eferz-wp-body'); ?>>
 <?php wp_body_open(); ?>
 
 <header id="eferz-header" class="eferz-wp-header">
-    <a href="<?php echo esc_url(home_url('/')); ?>" class="eferz-wp-brand">
-        <span class="eferz-wp-brand-mark" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L14.9 9.1L22 12L14.9 14.9L12 22L9.1 14.9L2 12L9.1 9.1L12 2Z" fill="#ffffff"/>
-            </svg>
+    <a href="<?php echo esc_url(home_url('/')); ?>" class="eferz-wp-brand" aria-label="EFerz Digital Agency Home">
+        <span class="eferz-wp-brand-logo-wrap">
+            <img
+                src="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-logo.png'); ?>"
+                alt="EFerz Digital Agency Logo"
+                width="34"
+                height="34"
+                class="eferz-wp-logo-img skip-lazy no-lazy"
+                data-no-lazy="1"
+                loading="eager"
+                decoding="sync"
+            />
         </span>
         <span class="eferz-wp-brand-text">
             <span class="eferz-wp-brand-name">EFERZ</span>

@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.2.1');
+define('EFERZ_THEME_VERSION', '1.2.2');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence & WooPayments Stripe/Apple Pay)
@@ -198,7 +198,7 @@ function eferz_get_route_seo() {
     );
 
     $cfg = $routes[$route] ?? $routes['agency'];
-    $base_url = 'https://eferz.com/' . ($cfg['slug'] ? $cfg['slug'] : '');
+    $base_url = 'https://eferz.com/' . ($cfg['slug'] ? $cfg['slug'] . '/' : '');
     return array(
         'route'     => isset($routes[$route]) ? $route : 'agency',
         'is_ar'     => $is_ar,
@@ -207,6 +207,54 @@ function eferz_get_route_seo() {
         'keywords'  => $cfg['keywords'],
         'canonical' => $base_url,
     );
+}
+
+/**
+ * Prevent WordPress & Yoast SEO from misidentifying rewritten SPA routes (/services, /about, /work, /team, etc.)
+ * as the Blog Archive, CPT Archive, or 404, and suppress duplicate Yoast frontend tags ONLY on SPA routes
+ * so WhatsApp/Facebook/LinkedIn/Google always read the exact route-specific title, description, canonical & og:image.
+ * Inner WordPress pages, Blog posts, and all WooCommerce catalog/product/cart/checkout pages retain full Yoast SEO.
+ */
+add_action('wp', function() {
+    if (!eferz_is_spa_request()) {
+        return;
+    }
+    global $wp_query;
+    if ($wp_query) {
+        $wp_query->is_404               = false;
+        $wp_query->is_home              = false;
+        $wp_query->is_archive           = false;
+        $wp_query->is_post_type_archive = false;
+        $wp_query->is_posts_page        = false;
+    }
+    status_header(200);
+    remove_action('wp_head', 'rel_canonical');
+    remove_action('wp_head', 'wp_shortlink_wp_head', 10);
+    remove_action('wp_head', '_wp_render_title_tag', 1);
+    remove_action('wp_head', 'noindex', 1);
+}, 1);
+
+add_filter('wpseo_frontend_presenters', function($presenters) {
+    return eferz_is_spa_request() ? array() : $presenters;
+}, 999999);
+
+foreach (array(
+    'wpseo_title',
+    'wpseo_metadesc',
+    'wpseo_canonical',
+    'wpseo_opengraph_title',
+    'wpseo_opengraph_desc',
+    'wpseo_opengraph_url',
+    'wpseo_opengraph_type',
+    'wpseo_opengraph_image',
+    'wpseo_twitter_title',
+    'wpseo_twitter_description',
+    'wpseo_twitter_image',
+    'wpseo_json_ld_output',
+) as $eferz_yoast_hook) {
+    add_filter($eferz_yoast_hook, function($val) {
+        return eferz_is_spa_request() ? false : $val;
+    }, 999999);
 }
 
 function eferz_theme_setup() {
@@ -409,8 +457,8 @@ function eferz_seo_schema_jsonld() {
                 'alternateName'=> 'وكالة إيفرز الرقمية',
                 'legalName'    => 'EFerz Digital Agency',
                 'url'          => 'https://eferz.com/',
-                'logo'         => 'https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png',
-                'image'        => 'https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png',
+                'logo'         => get_template_directory_uri() . '/assets/eferz-logo.png',
+                'image'        => get_template_directory_uri() . '/assets/og-eferz.jpg',
                 'foundingDate' => '2020-10-10',
                 'description'  => 'Founded in 2020, EFerz Digital Agency is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity agency headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
                 'email'        => 'info@eferz.com',
@@ -421,6 +469,7 @@ function eferz_seo_schema_jsonld() {
                 'contactPoint' => array(
                     array('@type' => 'ContactPoint', 'telephone' => '+1-786-224-4112', 'contactType' => 'sales', 'areaServed' => array('US', 'Worldwide'), 'availableLanguage' => array('English', 'Arabic')),
                     array('@type' => 'ContactPoint', 'telephone' => '+966-539-046410', 'contactType' => 'customer support', 'areaServed' => array('SA', 'AE', 'Worldwide'), 'availableLanguage' => array('Arabic', 'English')),
+                    array('@type' => 'ContactPoint', 'telephone' => '+92-345-3397459', 'contactType' => 'technical support', 'areaServed' => array('PK', 'Worldwide'), 'availableLanguage' => array('English', 'Urdu')),
                 ),
                 'founders'     => array(
                     array(
@@ -577,19 +626,27 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
         ), 400);
     }
 
-    // 3. Sanitize Input Fields
-    $name    = sanitize_text_field($params['name'] ?? '');
-    $email   = sanitize_email($params['email'] ?? '');
-    $phone   = sanitize_text_field($params['phone'] ?? '');
-    $company = sanitize_text_field($params['company'] ?? '');
-    $service = sanitize_text_field($params['service'] ?? 'General Inquiry');
-    $message = sanitize_textarea_field($params['message'] ?? '');
-    $source  = sanitize_text_field($params['source'] ?? 'EFerz Website');
+    // 3. Sanitize Input Fields & Verify Communication Opt-In Consent
+    $name        = sanitize_text_field($params['name'] ?? '');
+    $email       = sanitize_email($params['email'] ?? '');
+    $phone       = sanitize_text_field($params['phone'] ?? '');
+    $company     = sanitize_text_field($params['company'] ?? '');
+    $service     = sanitize_text_field($params['service'] ?? 'General Inquiry');
+    $message     = sanitize_textarea_field($params['message'] ?? '');
+    $source      = sanitize_text_field($params['source'] ?? 'EFerz Website');
+    $sms_consent = !empty($params['sms_consent']);
 
     if (empty($name) || empty($email) || !is_email($email)) {
         return new WP_REST_Response(array(
             'success' => false,
             'message' => 'Please provide a valid name and email address.',
+        ), 400);
+    }
+
+    if (!$sms_consent) {
+        return new WP_REST_Response(array(
+            'success' => false,
+            'message' => 'Please confirm the SMS, WhatsApp & phone call communication consent checkbox before submitting.',
         ), 400);
     }
 
@@ -599,16 +656,17 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
         $leads = array();
     }
     $new_lead = array(
-        'id'         => uniqid('eferz_'),
-        'date'       => current_time('mysql'),
-        'name'       => $name,
-        'email'      => $email,
-        'phone'      => $phone,
-        'company'    => $company,
-        'service'    => $service,
-        'message'    => $message,
-        'source'     => $source,
-        'ip'         => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
+        'id'          => uniqid('eferz_'),
+        'date'        => current_time('mysql'),
+        'name'        => $name,
+        'email'       => $email,
+        'phone'       => $phone,
+        'sms_consent' => $sms_consent ? 'Opted In (SMS/WhatsApp/Call)' : 'No',
+        'company'     => $company,
+        'service'     => $service,
+        'message'     => $message,
+        'source'      => $source,
+        'ip'          => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
     );
     array_unshift($leads, $new_lead);
     update_option('eferz_contact_leads', array_slice($leads, 0, 500), false);
@@ -647,6 +705,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8; width: 150px;"><strong>Full Name:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($name) . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Email Address:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #38bdf8;"><a href="mailto:' . esc_attr($email) . '" style="color: #38bdf8;">' . esc_html($email) . '</a></td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Phone / WhatsApp:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($phone ?: 'N/A') . '</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>SMS / Call Consent:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #10b981;">' . esc_html($sms_consent ? 'Opted In (SMS, WhatsApp & Phone Updates — Reply STOP to opt out)' : 'Not Provided') . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Company / Brand:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($company ?: 'N/A') . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Primary Service:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #f59e0b;">' . esc_html($service) . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Project Brief:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff; white-space: pre-wrap;">' . esc_html($message) . '</td></tr>
@@ -702,6 +761,7 @@ function eferz_render_admin_leads_page() {
                         <th style="width:150px;">Name</th>
                         <th style="width:180px;">Email</th>
                         <th style="width:130px;">Phone / WhatsApp</th>
+                        <th style="width:120px;">SMS Consent</th>
                         <th style="width:140px;">Company</th>
                         <th style="width:180px;">Service</th>
                         <th>Project Brief / Message</th>
@@ -714,6 +774,7 @@ function eferz_render_admin_leads_page() {
                             <td><strong><?php echo esc_html($lead['name'] ?? ''); ?></strong></td>
                             <td><a href="mailto:<?php echo esc_attr($lead['email'] ?? ''); ?>"><?php echo esc_html($lead['email'] ?? ''); ?></a></td>
                             <td><?php echo esc_html($lead['phone'] ?? ''); ?></td>
+                            <td><?php echo esc_html($lead['sms_consent'] ?? 'Opted In'); ?></td>
                             <td><?php echo esc_html($lead['company'] ?? ''); ?></td>
                             <td><?php echo esc_html($lead['service'] ?? ''); ?></td>
                             <td><?php echo nl2br(esc_html($lead['message'] ?? '')); ?></td>
