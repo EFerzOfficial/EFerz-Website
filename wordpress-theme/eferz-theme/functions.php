@@ -14,28 +14,39 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.2.1');
+define('EFERZ_THEME_VERSION', '1.2.4');
 
 /**
- * 1. HTTP Security & Trust Headers (Compatible with Wordfence & WooPayments Stripe/Apple Pay)
+ * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
  */
 function eferz_send_security_headers() {
     if (!headers_sent()) {
+        @header_remove('X-Powered-By');
+        @header_remove('Referrer-Policy');
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
-        header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Referrer-Policy: strict-origin-when-cross-origin', true);
+        header("Content-Security-Policy: upgrade-insecure-requests; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com;");
         header('Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=(self "https://js.stripe.com" "https://checkout.stripe.com" "https://pay.google.com")');
         if (is_ssl()) {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         }
     }
 }
-add_action('send_headers', 'eferz_send_security_headers');
+add_action('send_headers', 'eferz_send_security_headers', 999);
 
-// Disable XML-RPC pingbacks & obscure WP version for security scanners
+// Disable XML-RPC pingbacks & obscure WP version / unnecessary discovery headers for security scanners
 add_filter('xmlrpc_enabled', '__return_false');
+add_filter('the_generator', '__return_empty_string');
 remove_action('wp_head', 'wp_generator');
+remove_action('wp_head', 'rsd_link');
+remove_action('wp_head', 'wlwmanifest_link');
+remove_action('wp_head', 'wp_shortlink_wp_head');
+remove_action('template_redirect', 'wp_shortlink_header', 11);
+remove_action('template_redirect', 'rest_output_link_header', 11);
+remove_action('wp_head', 'rest_output_link_wp_head', 10);
+remove_action('wp_head', 'wp_oembed_add_discovery_links', 10);
 
 /**
  * Determine if the current request belongs to the React 3D SPA (and NOT WooCommerce, Elementor, WordPress posts/pages, or AJAX/API).
@@ -141,15 +152,15 @@ function eferz_get_route_seo() {
         ),
         'about' => array(
             'title' => 'About EFerz | Global AI & Tech Agency (USA · KSA · PAK)',
-            'titleAr' => 'عن وكالة إيفرز | شركة تقنية عالمية منذ 2020',
-            'desc' => 'Founded October 2020 in Fort Lauderdale USA with Riyadh & Karachi offices, EFerz engineers scalable AI, WebGL & cloud systems. Learn how we build.',
-            'descAr' => 'تأسست إيفرز في أكتوبر 2020 في أمريكا مع مكاتب في الرياض وكراتشي لبناء أنظمة الذكاء الاصطناعي ومواقع WebGL والحوسبة السحابية. اكتشف قصتنا.',
-            'keywords' => 'About EFerz Digital Agency, Founded October 10 2020, Global IT & AI Company USA KSA PAK, Software Agency Mission & Core Pillars',
+            'titleAr' => 'عن إيفرز | شركة تقنية عالمية منذ 2020',
+            'desc' => 'Founded in 2020 in Fort Lauderdale USA with Riyadh & Karachi offices, EFerz engineers scalable AI, WebGL & cloud systems. Learn how we build.',
+            'descAr' => 'تأسست إيفرز في عام 2020 في أمريكا مع مكاتب في الرياض وكراتشي لبناء أنظمة الذكاء الاصطناعي ومواقع WebGL والحوسبة السحابية. اكتشف قصتنا.',
+            'keywords' => 'About EFerz, Founded in 2020, Global IT & AI Company USA KSA PAK, Software Agency Mission & Core Pillars',
             'slug' => 'about',
         ),
         'blog' => array(
             'title' => 'Engineering, AI, SEO & WebGL Blog Playbooks | EFerz',
-            'titleAr' => 'مدونة الهندسة والذكاء الاصطناعي والسيو | وكالة إيفرز',
+            'titleAr' => 'مدونة الهندسة والذكاء الاصطناعي والسيو | إيفرز',
             'desc' => 'Read technical guides from EFerz engineers on LLMs, 3D WebGL performance, Core Web Vitals, technical SEO & Shopify conversion optimization. Explore now.',
             'descAr' => 'اقرأ أدلة هندسية من خبراء إيفرز حول الذكاء الاصطناعي، أداء مواقع WebGL، مؤشرات Core Web Vitals وتحسين محركات البحث سيو. تصفح المقالات الآن.',
             'keywords' => 'AI Engineering Blog, 3D WebGL & Next.js Performance Guide, Technical SEO Playbook, Shopify Plus Conversion Optimization, Enterprise Cybersecurity Best Practices',
@@ -160,12 +171,12 @@ function eferz_get_route_seo() {
             'titleAr' => 'تواصل مع إيفرز | ابدأ مشروعك الرقمي اليوم',
             'desc' => 'Launch your AI, software, e-commerce or SEO project with EFerz. Connect with our Fort Lauderdale USA, Riyadh KSA & Pakistan teams for a free quote.',
             'descAr' => 'أطلق مشروعك في الذكاء الاصطناعي أو الويب أو المتاجر الإلكترونية مع إيفرز. تواصل مع مكاتبنا في أمريكا والرياض وباكستان للحصول على استشارة مجانية.',
-            'keywords' => 'Contact EFerz Digital Agency, Hire Web & AI Developers USA KSA, Request Software Development Proposal, Riyadh & Florida IT Consultation',
+            'keywords' => 'Contact EFerz, Hire Web & AI Developers USA KSA, Request Software Development Proposal, Riyadh & Florida IT Consultation',
             'slug' => 'contact',
         ),
         'lets-build' => array(
             'title' => 'Let’s Build 3D Studio | Interactive WebGL Configurator',
-            'titleAr' => 'استوديو البناء ثلاثي الأبعاد التفاعلي | وكالة إيفرز',
+            'titleAr' => 'استوديو البناء ثلاثي الأبعاد التفاعلي | إيفرز',
             'desc' => 'Customize a live 3D WebGL brand experience with your logo, colors & packaging inside the EFerz Interactive 3D Studio. Try the real-time demo.',
             'descAr' => 'صمم تجربة موقع ثلاثية الأبعاد حية بشعارك وألوان علامتك ومنتجاتك داخل استوديو إيفرز التفاعلي في الوقت الفعلي. جرّب العرض المباشر الآن.',
             'keywords' => 'Interactive 3D Website Builder, Live WebGL Product Customizer, 3D Beverage Can & Packaging Configurator, EFerz 3D Studio Demo',
@@ -173,32 +184,32 @@ function eferz_get_route_seo() {
         ),
         'privacy' => array(
             'title' => 'Privacy Policy & Data Protection Standards | EFerz',
-            'titleAr' => 'سياسة الخصوصية وحماية البيانات | وكالة إيفرز',
-            'desc' => 'Review EFerz Digital Agency privacy policy covering GDPR, CCPA compliance, enterprise encryption & client confidentiality. Read our data practices.',
-            'descAr' => 'اطلع على سياسة الخصوصية الرسمية في وكالة إيفرز الرقمية ومعايير الامتثال GDPR والتشفير وحماية سرية بيانات العملاء. اقرأ التفاصيل كاملة.',
+            'titleAr' => 'سياسة الخصوصية وحماية البيانات | إيفرز',
+            'desc' => 'Review EFerz privacy policy covering GDPR, CCPA compliance, enterprise encryption & client confidentiality. Read our data practices.',
+            'descAr' => 'اطلع على سياسة الخصوصية الرسمية في إيفرز ومعايير الامتثال GDPR والتشفير وحماية سرية بيانات العملاء. اقرأ التفاصيل كاملة.',
             'keywords' => 'EFerz Privacy Policy, GDPR CCPA Data Protection, Client Confidentiality & Security',
             'slug' => 'privacy',
         ),
         'terms' => array(
             'title' => 'Terms of Service & Enterprise SLA Terms | EFerz',
-            'titleAr' => 'شروط الخدمة واتفاقية العملاء | وكالة إيفرز',
-            'desc' => 'Read EFerz Digital Agency Terms of Service, 100% client IP ownership, milestone billing & SLA commitments for software projects. View terms.',
-            'descAr' => 'اقرأ شروط الخدمة واتفاقية مستوى الخدمة وضمان نقل الملكية الفكرية بنسبة 100% لمشاريع البرمجة والتصميم في وكالة إيفرز. تصفح الشروط الآن.',
+            'titleAr' => 'شروط الخدمة واتفاقية العملاء | إيفرز',
+            'desc' => 'Read EFerz Terms of Service, 100% client IP ownership, milestone billing & SLA commitments for software projects. View terms.',
+            'descAr' => 'اقرأ شروط الخدمة واتفاقية مستوى الخدمة وضمان نقل الملكية الفكرية بنسبة 100% لمشاريع البرمجة والتصميم في إيفرز. تصفح الشروط الآن.',
             'keywords' => 'EFerz Terms of Service, 100% IP Ownership Software Agreement, Digital Agency SLA Terms',
             'slug' => 'terms',
         ),
         'refund' => array(
             'title' => 'Refund Policy & 30-Day Project Guarantee | EFerz',
-            'titleAr' => 'سياسة الاسترداد وضمان 30 يوماً | وكالة إيفرز',
-            'desc' => 'Explore EFerz Digital Agency 30-Day Money-Back Guarantee and milestone approval policy for risk-free digital & software delivery. Learn more.',
-            'descAr' => 'تعرف على سياسة الاسترداد وضمان الرضا لمدة 30 يوماً واعتماد مراحل التسليم الآمن للمشاريع مع وكالة إيفرز الرقمية. اطلع على التفاصيل الآن.',
+            'titleAr' => 'سياسة الاسترداد وضمان 30 يوماً | إيفرز',
+            'desc' => 'Explore EFerz 30-Day Money-Back Guarantee and milestone approval policy for risk-free digital & software delivery. Learn more.',
+            'descAr' => 'تعرف على سياسة الاسترداد وضمان الرضا لمدة 30 يوماً واعتماد مراحل التسليم الآمن للمشاريع مع إيفرز. اطلع على التفاصيل الآن.',
             'keywords' => 'EFerz Refund Policy, 30 Day Money Back Guarantee Agency, Risk Free Software Development',
             'slug' => 'refund',
         ),
     );
 
     $cfg = $routes[$route] ?? $routes['agency'];
-    $base_url = 'https://eferz.com/' . ($cfg['slug'] ? $cfg['slug'] : '');
+    $base_url = 'https://eferz.com/' . ($cfg['slug'] ? $cfg['slug'] . '/' : '');
     return array(
         'route'     => isset($routes[$route]) ? $route : 'agency',
         'is_ar'     => $is_ar,
@@ -207,6 +218,54 @@ function eferz_get_route_seo() {
         'keywords'  => $cfg['keywords'],
         'canonical' => $base_url,
     );
+}
+
+/**
+ * Prevent WordPress & Yoast SEO from misidentifying rewritten SPA routes (/services, /about, /work, /team, etc.)
+ * as the Blog Archive, CPT Archive, or 404, and suppress duplicate Yoast frontend tags ONLY on SPA routes
+ * so WhatsApp/Facebook/LinkedIn/Google always read the exact route-specific title, description, canonical & og:image.
+ * Inner WordPress pages, Blog posts, and all WooCommerce catalog/product/cart/checkout pages retain full Yoast SEO.
+ */
+add_action('wp', function() {
+    if (!eferz_is_spa_request()) {
+        return;
+    }
+    global $wp_query;
+    if ($wp_query) {
+        $wp_query->is_404               = false;
+        $wp_query->is_home              = false;
+        $wp_query->is_archive           = false;
+        $wp_query->is_post_type_archive = false;
+        $wp_query->is_posts_page        = false;
+    }
+    status_header(200);
+    remove_action('wp_head', 'rel_canonical');
+    remove_action('wp_head', 'wp_shortlink_wp_head', 10);
+    remove_action('wp_head', '_wp_render_title_tag', 1);
+    remove_action('wp_head', 'noindex', 1);
+}, 1);
+
+add_filter('wpseo_frontend_presenters', function($presenters) {
+    return eferz_is_spa_request() ? array() : $presenters;
+}, 999999);
+
+foreach (array(
+    'wpseo_title',
+    'wpseo_metadesc',
+    'wpseo_canonical',
+    'wpseo_opengraph_title',
+    'wpseo_opengraph_desc',
+    'wpseo_opengraph_url',
+    'wpseo_opengraph_type',
+    'wpseo_opengraph_image',
+    'wpseo_twitter_title',
+    'wpseo_twitter_description',
+    'wpseo_twitter_image',
+    'wpseo_json_ld_output',
+) as $eferz_yoast_hook) {
+    add_filter($eferz_yoast_hook, function($val) {
+        return eferz_is_spa_request() ? false : $val;
+    }, 999999);
 }
 
 function eferz_theme_setup() {
@@ -289,7 +348,7 @@ function eferz_theme_scripts() {
 
     wp_enqueue_style(
         'eferz-wp-fonts',
-        'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:ital,wght@0,700;0,800;0,900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap',
         array(),
         null
     );
@@ -405,14 +464,15 @@ function eferz_seo_schema_jsonld() {
             array(
                 '@type'        => array('Organization', 'ProfessionalService'),
                 '@id'          => 'https://eferz.com/#organization',
-                'name'         => 'EFerz Digital Agency',
-                'alternateName'=> 'وكالة إيفرز الرقمية',
-                'legalName'    => 'EFerz Digital Agency',
+                'name'         => 'EFerz',
+                'alternateName'=> 'EFerz Digital Agency',
+                'legalName'    => 'EFerz',
                 'url'          => 'https://eferz.com/',
-                'logo'         => 'https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png',
-                'image'        => 'https://eferz.com/wp-content/uploads/2026/08/Logo-scaled.png',
+                'logo'         => get_template_directory_uri() . '/assets/eferz-logo.png',
+                'image'        => get_template_directory_uri() . '/assets/og-eferz-v2.jpg',
                 'foundingDate' => '2020-10-10',
-                'description'  => 'Founded in 2020, EFerz Digital Agency is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity agency headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
+                'publishingPrinciples' => 'https://eferz.com/privacy/',
+                'description'  => 'Founded on October 10, 2020, EFerz is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity company headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
                 'email'        => 'info@eferz.com',
                 'telephone'    => '+1-786-224-4112',
                 'priceRange'   => '$$-$$$$',
@@ -421,6 +481,7 @@ function eferz_seo_schema_jsonld() {
                 'contactPoint' => array(
                     array('@type' => 'ContactPoint', 'telephone' => '+1-786-224-4112', 'contactType' => 'sales', 'areaServed' => array('US', 'Worldwide'), 'availableLanguage' => array('English', 'Arabic')),
                     array('@type' => 'ContactPoint', 'telephone' => '+966-539-046410', 'contactType' => 'customer support', 'areaServed' => array('SA', 'AE', 'Worldwide'), 'availableLanguage' => array('Arabic', 'English')),
+                    array('@type' => 'ContactPoint', 'telephone' => '+92-345-3397459', 'contactType' => 'technical support', 'areaServed' => array('PK', 'Worldwide'), 'availableLanguage' => array('English', 'Urdu')),
                 ),
                 'founders'     => array(
                     array(
@@ -488,7 +549,7 @@ function eferz_seo_schema_jsonld() {
                 '@type'      => 'WebSite',
                 '@id'        => 'https://eferz.com/#website',
                 'url'        => 'https://eferz.com/',
-                'name'       => 'EFerz Digital Agency',
+                'name'       => 'EFerz',
                 'inLanguage' => array('en', 'ar'),
                 'publisher'  => array('@id' => 'https://eferz.com/#organization'),
             ),
@@ -502,18 +563,18 @@ function eferz_seo_schema_jsonld() {
                 'mainEntity' => array(
                     array(
                         '@type'          => 'Question',
-                        'name'           => 'What services does EFerz Digital Agency specialize in?',
+                        'name'           => 'What services does EFerz specialize in?',
                         'acceptedAnswer' => array(
                             '@type' => 'Answer',
-                            'text'  => 'EFerz Digital Agency builds custom AI agents and LLM automation, 3D WebGL and Three.js websites, full-stack SaaS software, Shopify Plus stores, Amazon FBA management, technical SEO, brand identity, and Zero Trust cloud cybersecurity.',
+                            'text'  => 'EFerz builds custom AI agents and LLM automation, 3D WebGL and Three.js websites, full-stack SaaS software, Shopify Plus stores, Amazon FBA management, technical SEO, brand identity, and Zero Trust cloud cybersecurity.',
                         ),
                     ),
                     array(
                         '@type'          => 'Question',
-                        'name'           => 'Where are EFerz Digital Agency offices located?',
+                        'name'           => 'Where are EFerz offices located?',
                         'acceptedAnswer' => array(
                             '@type' => 'Answer',
-                            'text'  => 'EFerz Digital Agency is headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Saudi Arabia) and Karachi (Pakistan), serving enterprise and growth clients worldwide.',
+                            'text'  => 'EFerz is headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Saudi Arabia) and Karachi (Pakistan), serving enterprise and growth clients worldwide.',
                         ),
                     ),
                     array(
@@ -577,19 +638,27 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
         ), 400);
     }
 
-    // 3. Sanitize Input Fields
-    $name    = sanitize_text_field($params['name'] ?? '');
-    $email   = sanitize_email($params['email'] ?? '');
-    $phone   = sanitize_text_field($params['phone'] ?? '');
-    $company = sanitize_text_field($params['company'] ?? '');
-    $service = sanitize_text_field($params['service'] ?? 'General Inquiry');
-    $message = sanitize_textarea_field($params['message'] ?? '');
-    $source  = sanitize_text_field($params['source'] ?? 'EFerz Website');
+    // 3. Sanitize Input Fields & Verify Communication Opt-In Consent
+    $name        = sanitize_text_field($params['name'] ?? '');
+    $email       = sanitize_email($params['email'] ?? '');
+    $phone       = sanitize_text_field($params['phone'] ?? '');
+    $company     = sanitize_text_field($params['company'] ?? '');
+    $service     = sanitize_text_field($params['service'] ?? 'General Inquiry');
+    $message     = sanitize_textarea_field($params['message'] ?? '');
+    $source      = sanitize_text_field($params['source'] ?? 'EFerz Website');
+    $sms_consent = !empty($params['sms_consent']);
 
     if (empty($name) || empty($email) || !is_email($email)) {
         return new WP_REST_Response(array(
             'success' => false,
             'message' => 'Please provide a valid name and email address.',
+        ), 400);
+    }
+
+    if (!$sms_consent) {
+        return new WP_REST_Response(array(
+            'success' => false,
+            'message' => 'Please confirm the SMS, WhatsApp & phone call communication consent checkbox before submitting.',
         ), 400);
     }
 
@@ -599,16 +668,17 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
         $leads = array();
     }
     $new_lead = array(
-        'id'         => uniqid('eferz_'),
-        'date'       => current_time('mysql'),
-        'name'       => $name,
-        'email'      => $email,
-        'phone'      => $phone,
-        'company'    => $company,
-        'service'    => $service,
-        'message'    => $message,
-        'source'     => $source,
-        'ip'         => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
+        'id'          => uniqid('eferz_'),
+        'date'        => current_time('mysql'),
+        'name'        => $name,
+        'email'       => $email,
+        'phone'       => $phone,
+        'sms_consent' => $sms_consent ? 'Opted In (SMS/WhatsApp/Call)' : 'No',
+        'company'     => $company,
+        'service'     => $service,
+        'message'     => $message,
+        'source'      => $source,
+        'ip'          => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
     );
     array_unshift($leads, $new_lead);
     update_option('eferz_contact_leads', array_slice($leads, 0, 500), false);
@@ -641,12 +711,13 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
 
     $html_body = '
     <div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; background: #0b0e17; color: #ffffff; padding: 28px; border-radius: 16px; border: 1px solid #d02128;">
-        <h2 style="margin-top: 0; color: #d02128; text-transform: uppercase; letter-spacing: 1px;">New Verified Project Inquiry — EFerz Digital Agency</h2>
+        <h2 style="margin-top: 0; color: #d02128; text-transform: uppercase; letter-spacing: 1px;">New Verified Project Inquiry — EFerz</h2>
         <p style="color: #cbd5e1; font-size: 13px;">Verified via Anti-Spam Human Security Quiz on eferz.com</p>
         <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px;">
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8; width: 150px;"><strong>Full Name:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($name) . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Email Address:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #38bdf8;"><a href="mailto:' . esc_attr($email) . '" style="color: #38bdf8;">' . esc_html($email) . '</a></td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Phone / WhatsApp:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($phone ?: 'N/A') . '</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>SMS / Call Consent:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #10b981;">' . esc_html($sms_consent ? 'Opted In (SMS, WhatsApp & Phone Updates — Reply STOP to opt out)' : 'Not Provided') . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Company / Brand:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($company ?: 'N/A') . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Primary Service:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #f59e0b;">' . esc_html($service) . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Project Brief:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff; white-space: pre-wrap;">' . esc_html($message) . '</td></tr>
@@ -664,7 +735,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
     return new WP_REST_Response(array(
         'success'   => true,
         'mail_sent' => (bool) $mail_sent,
-        'message'   => 'Your inquiry has been received and dispatched to EFerz Digital Agency.',
+        'message'   => 'Your inquiry has been received and dispatched to EFerz.',
     ), 200);
 }
 
@@ -702,6 +773,7 @@ function eferz_render_admin_leads_page() {
                         <th style="width:150px;">Name</th>
                         <th style="width:180px;">Email</th>
                         <th style="width:130px;">Phone / WhatsApp</th>
+                        <th style="width:120px;">SMS Consent</th>
                         <th style="width:140px;">Company</th>
                         <th style="width:180px;">Service</th>
                         <th>Project Brief / Message</th>
@@ -714,6 +786,7 @@ function eferz_render_admin_leads_page() {
                             <td><strong><?php echo esc_html($lead['name'] ?? ''); ?></strong></td>
                             <td><a href="mailto:<?php echo esc_attr($lead['email'] ?? ''); ?>"><?php echo esc_html($lead['email'] ?? ''); ?></a></td>
                             <td><?php echo esc_html($lead['phone'] ?? ''); ?></td>
+                            <td><?php echo esc_html($lead['sms_consent'] ?? 'Opted In'); ?></td>
                             <td><?php echo esc_html($lead['company'] ?? ''); ?></td>
                             <td><?php echo esc_html($lead['service'] ?? ''); ?></td>
                             <td><?php echo nl2br(esc_html($lead['message'] ?? '')); ?></td>
@@ -809,3 +882,32 @@ add_filter('body_class', function($classes) {
 
     return $classes;
 }, 999999);
+
+/**
+ * Serve RFC 9116 /.well-known/security.txt & prevent demo/test WooCommerce products from indexing
+ */
+add_action('template_redirect', function() {
+    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+    if ($req_path === '.well-known/security.txt' || $req_path === 'security.txt') {
+        status_header(200);
+        header('Content-Type: text/plain; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        echo "Contact: mailto:security@eferz.com\n";
+        echo "Contact: mailto:info@eferz.com\n";
+        echo "Canonical: https://eferz.com/.well-known/security.txt\n";
+        echo "Policy: https://eferz.com/privacy/\n";
+        echo "Preferred-Languages: en, ar\n";
+        echo "Expires: 2027-12-31T23:59:59.000Z\n";
+        exit;
+    }
+}, 1);
+
+add_filter('wp_robots', function($robots) {
+    $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
+    if (strpos($req_path, 'demo-payment') !== false || strpos($req_path, 'test-payment') !== false) {
+        $robots['noindex'] = true;
+        $robots['nofollow'] = true;
+        unset($robots['index'], $robots['follow']);
+    }
+    return $robots;
+}, 999);

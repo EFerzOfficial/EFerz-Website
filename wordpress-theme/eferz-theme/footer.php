@@ -1,34 +1,44 @@
 <?php
 /**
  * EFerz Theme Footer (Inner WordPress & WooCommerce Pages)
- * Always renders the clean EFerz obsidian footer (never overridden by old Elementor footer 2605).
+ * Matches the main flagship site footer aesthetic and EFerz corporate entity naming.
  *
  * @package EFerz
- * @version 1.2.1
+ * @version 1.2.3
  */
 ?>
 <footer id="footer" class="eferz-wp-footer">
     <div class="eferz-wp-footer-grid">
         <div>
             <div class="eferz-wp-brand" style="margin-bottom: 0.85rem;">
-                <span class="eferz-wp-brand-mark" aria-hidden="true">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2L14.9 9.1L22 12L14.9 14.9L12 22L9.1 14.9L2 12L9.1 9.1L12 2Z" fill="#ffffff"/>
-                    </svg>
+                <span class="eferz-wp-brand-logo-wrap eferz-wp-brand-logo-wrap--sm">
+                    <img
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-logo.png'); ?>"
+                        alt="EFerz Logo"
+                        width="28"
+                        height="28"
+                        class="eferz-wp-logo-img skip-lazy no-lazy"
+                        data-no-lazy="1"
+                        loading="eager"
+                    />
                 </span>
-                <span class="eferz-wp-brand-name">EFERZ DIGITAL AGENCY</span>
+                <span class="eferz-wp-brand-text">
+                    <span class="eferz-wp-brand-name">EFERZ</span>
+                    <span class="eferz-wp-brand-sub">Nothing Is Impossible In The IT World</span>
+                </span>
             </div>
             <p class="eferz-wp-footer-desc">
-                Global AI, 3D WebGL, software engineering, e-commerce, SEO, and cloud cybersecurity studio — Nothing Is Impossible In The IT World.
+                Founded in 2020. Global AI, 3D WebGL, software engineering, e-commerce, SEO, and cloud cybersecurity powerhouse — serving enterprise &amp; growth brands worldwide.
             </p>
         </div>
 
         <div>
-            <h4><?php esc_html_e('Studio', 'eferz'); ?></h4>
+            <h4><?php esc_html_e('Navigation', 'eferz'); ?></h4>
             <ul>
-                <li><a href="<?php echo esc_url(home_url('/')); ?>">Agency Home</a></li>
-                <li><a href="<?php echo esc_url(home_url('/services')); ?>">Enterprise Services</a></li>
+                <li><a href="<?php echo esc_url(home_url('/')); ?>">Home</a></li>
+                <li><a href="<?php echo esc_url(home_url('/services')); ?>">Services</a></li>
                 <li><a href="<?php echo esc_url(home_url('/work')); ?>">Selected Work</a></li>
+                <li><a href="<?php echo esc_url(home_url('/about')); ?>">About EFerz</a></li>
                 <li><a href="<?php echo esc_url(home_url('/contact')); ?>">Start a Project</a></li>
             </ul>
         </div>
@@ -37,16 +47,17 @@
             <h4><?php esc_html_e('Global Hubs', 'eferz'); ?></h4>
             <ul>
                 <li>Email: <a href="mailto:info@eferz.com">info@eferz.com</a></li>
-                <li>USA (FL): <a href="tel:+17862244112">+1 (786) 224-4112</a></li>
-                <li>KSA (Riyadh): <a href="tel:+966539046410">+966 53 904 6410</a></li>
+                <li>USA Call / WhatsApp: <a href="tel:+17862244112">+1 (786) 224-4112</a></li>
+                <li>KSA Call / WhatsApp: <a href="tel:+966539046410">+966 (539) 046410</a></li>
+                <li>PAK Call / WhatsApp: <a href="tel:+923453397459">+92 345 3397459</a></li>
                 <li><a href="<?php echo esc_url(home_url('/privacy')); ?>">Privacy</a> &bull; <a href="<?php echo esc_url(home_url('/terms')); ?>">Terms</a> &bull; <a href="<?php echo esc_url(home_url('/refund')); ?>">Refunds</a></li>
             </ul>
         </div>
     </div>
 
     <div class="eferz-wp-footer-bottom">
-        <div>&copy; <?php echo esc_html(date('Y')); ?> EFerz Digital Agency. All Rights Reserved.</div>
-        <div>Powered by <a href="https://eferz.com" target="_blank" rel="noopener">EFerz.com</a></div>
+        <div>&copy; <?php echo esc_html(date('Y')); ?> EFerz. All Rights Reserved.</div>
+        <div>Nothing Is Impossible In The IT World &bull; <a href="https://eferz.com" target="_blank" rel="noopener">eferz.com</a></div>
     </div>
 </footer>
 

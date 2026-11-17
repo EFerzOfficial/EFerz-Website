@@ -14,28 +14,39 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.2.3');
+define('EFERZ_THEME_VERSION', '1.2.4');
 
 /**
- * 1. HTTP Security & Trust Headers (Compatible with Wordfence & WooPayments Stripe/Apple Pay)
+ * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
  */
 function eferz_send_security_headers() {
     if (!headers_sent()) {
+        @header_remove('X-Powered-By');
+        @header_remove('Referrer-Policy');
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
-        header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Referrer-Policy: strict-origin-when-cross-origin', true);
+        header("Content-Security-Policy: upgrade-insecure-requests; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com;");
         header('Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=(self "https://js.stripe.com" "https://checkout.stripe.com" "https://pay.google.com")');
         if (is_ssl()) {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         }
     }
 }
-add_action('send_headers', 'eferz_send_security_headers');
+add_action('send_headers', 'eferz_send_security_headers', 999);
 
-// Disable XML-RPC pingbacks & obscure WP version for security scanners
+// Disable XML-RPC pingbacks & obscure WP version / unnecessary discovery headers for security scanners
 add_filter('xmlrpc_enabled', '__return_false');
+add_filter('the_generator', '__return_empty_string');
 remove_action('wp_head', 'wp_generator');
+remove_action('wp_head', 'rsd_link');
+remove_action('wp_head', 'wlwmanifest_link');
+remove_action('wp_head', 'wp_shortlink_wp_head');
+remove_action('template_redirect', 'wp_shortlink_header', 11);
+remove_action('template_redirect', 'rest_output_link_header', 11);
+remove_action('wp_head', 'rest_output_link_wp_head', 10);
+remove_action('wp_head', 'wp_oembed_add_discovery_links', 10);
 
 /**
  * Determine if the current request belongs to the React 3D SPA (and NOT WooCommerce, Elementor, WordPress posts/pages, or AJAX/API).
@@ -459,8 +470,9 @@ function eferz_seo_schema_jsonld() {
                 'url'          => 'https://eferz.com/',
                 'logo'         => get_template_directory_uri() . '/assets/eferz-logo.png',
                 'image'        => get_template_directory_uri() . '/assets/og-eferz-v2.jpg',
-                'foundingDate' => '2020',
-                'description'  => 'Founded in 2020, EFerz is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity company headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
+                'foundingDate' => '2020-10-10',
+                'publishingPrinciples' => 'https://eferz.com/privacy/',
+                'description'  => 'Founded on October 10, 2020, EFerz is a global IT, AI, 3D WebGL, eCommerce, SEO, and Cybersecurity company headquartered in Fort Lauderdale, Florida, USA with regional offices in Riyadh, Saudi Arabia and Karachi, Pakistan — serving clients worldwide.',
                 'email'        => 'info@eferz.com',
                 'telephone'    => '+1-786-224-4112',
                 'priceRange'   => '$$-$$$$',
@@ -870,3 +882,32 @@ add_filter('body_class', function($classes) {
 
     return $classes;
 }, 999999);
+
+/**
+ * Serve RFC 9116 /.well-known/security.txt & prevent demo/test WooCommerce products from indexing
+ */
+add_action('template_redirect', function() {
+    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+    if ($req_path === '.well-known/security.txt' || $req_path === 'security.txt') {
+        status_header(200);
+        header('Content-Type: text/plain; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        echo "Contact: mailto:security@eferz.com\n";
+        echo "Contact: mailto:info@eferz.com\n";
+        echo "Canonical: https://eferz.com/.well-known/security.txt\n";
+        echo "Policy: https://eferz.com/privacy/\n";
+        echo "Preferred-Languages: en, ar\n";
+        echo "Expires: 2027-12-31T23:59:59.000Z\n";
+        exit;
+    }
+}, 1);
+
+add_filter('wp_robots', function($robots) {
+    $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
+    if (strpos($req_path, 'demo-payment') !== false || strpos($req_path, 'test-payment') !== false) {
+        $robots['noindex'] = true;
+        $robots['nofollow'] = true;
+        unset($robots['index'], $robots['follow']);
+    }
+    return $robots;
+}, 999);

@@ -4,7 +4,7 @@
  * Matches the main React flagship floating specular glass navigation bar.
  *
  * @package EFerz
- * @version 1.2.3
+ * @version 1.2.4
  */
 ?><!doctype html>
 <html <?php language_attributes(); ?> class="theme-galaxy">
@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <link rel="profile" href="https://gmpg.org/xfn/11">
     <link rel="icon" type="image/png" href="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-logo.png'); ?>">
+    <style>html,body{background-color:#06070c;color:#fffdff;}</style>
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('eferz-wp-body'); ?>>

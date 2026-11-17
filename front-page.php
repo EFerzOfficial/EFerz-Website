@@ -88,7 +88,7 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
         display: block;
         margin: 0;
         padding: 0;
-        background-color: #121212;
+        background-color: #06070c;
         color: #fffdff;
       }
       #root {
@@ -96,6 +96,18 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
         min-height: 100vh;
         position: relative;
         z-index: 1;
+        background-color: #06070c;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
       }
       /* Enforce Cairo font for Arabic & RTL */
       :lang(ar),
@@ -139,35 +151,29 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
 
     <?php wp_head(); ?>
 </head>
-<body <?php body_class('bg-[#121212] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
+<body <?php body_class('bg-[#06070c] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
-    <div id="root">
-      <div class="sr-only" aria-hidden="true">
-        <header>
-          <nav aria-label="Primary Navigation">
-            <a href="https://eferz.com/">Home</a>
-            <a href="https://eferz.com/services">Services</a>
-            <a href="https://eferz.com/work">Portfolio &amp; Case Studies</a>
-            <a href="https://eferz.com/clients">Clients &amp; Reviews</a>
-            <a href="https://eferz.com/team">Leadership Team</a>
-            <a href="https://eferz.com/about">About EFerz</a>
-            <a href="https://eferz.com/blog">Engineering &amp; SEO Blog</a>
-            <a href="https://eferz.com/lets-build">Interactive 3D Studio</a>
-            <a href="https://eferz.com/contact">Contact Us</a>
-            <a href="https://eferz.com/privacy">Privacy Policy</a>
-            <a href="https://eferz.com/terms">Terms of Service</a>
-            <a href="https://eferz.com/refund">Refund Policy</a>
-          </nav>
-        </header>
-        <main>
-          <h1><?php echo esc_html($eferz_seo['title']); ?></h1>
-          <p><?php echo esc_html($eferz_seo['desc']); ?></p>
-          <h2>Enterprise Digital Capabilities — USA, Saudi Arabia &amp; Pakistan</h2>
-          <p>EFerz engineers custom AI agents, LLM automation workflows, 3D WebGL &amp; Three.js flagship websites, Shopify Plus e-commerce platforms, Amazon FBA private label management, technical SEO strategies, brand identity UI/UX systems, iOS &amp; Android apps, and Zero Trust cloud cybersecurity.</p>
-          <p>Headquarters: Fort Lauderdale, FL, USA (+1-786-224-4112) &middot; Riyadh, Saudi Arabia (+966-539-046410) &middot; Karachi, Pakistan (+92-345-3397459) &middot; info@eferz.com</p>
-        </main>
-      </div>
-    </div>
+    <div id="root"></div>
+    <noscript>
+      <main style="max-width:960px;margin:40px auto;padding:24px;color:#fffdff;font-family:system-ui,sans-serif;line-height:1.6;">
+        <h1><?php echo esc_html($eferz_seo['title']); ?></h1>
+        <p><?php echo esc_html($eferz_seo['desc']); ?></p>
+        <p>Founded on October 10, 2020 — EFerz (eferz.com) engineers custom AI agents, LLM automation, 3D WebGL websites, Shopify Plus stores, Amazon FBA management, technical SEO, UI/UX design, and Zero Trust cloud cybersecurity across Fort Lauderdale (USA), Riyadh (Saudi Arabia), and Karachi (Pakistan).</p>
+        <nav aria-label="Primary Navigation">
+          <a href="https://eferz.com/">Home</a> |
+          <a href="https://eferz.com/services/">Services</a> |
+          <a href="https://eferz.com/work/">Work</a> |
+          <a href="https://eferz.com/clients/">Clients</a> |
+          <a href="https://eferz.com/team/">Team</a> |
+          <a href="https://eferz.com/about/">About EFerz</a> |
+          <a href="https://eferz.com/blog/">Blog</a> |
+          <a href="https://eferz.com/contact/">Contact</a> |
+          <a href="https://eferz.com/privacy/">Privacy Policy</a> |
+          <a href="https://eferz.com/terms/">Terms of Service</a> |
+          <a href="https://eferz.com/refund/">Refund Policy</a>
+        </nav>
+      </main>
+    </noscript>
 
     <!-- React App Production Bundle (Auto-synced with latest build) -->
     <script type="module" crossorigin src="<?php echo esc_url($js_url); ?>"></script>

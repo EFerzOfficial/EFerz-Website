@@ -54,12 +54,16 @@ export const EFERZ_CONTACT_DETAILS = {
   primaryEmail: 'info@eferz.com',
   website: 'https://eferz.com',
   usaPhone: '+1 (786) 224-4112',
-  usaPhoneSecondary: '+1 (786) 317-3379',
-  whatsappPhone: '+1 (954) 336-2586',
-  whatsappUrl: 'https://wa.me/19543362586',
-  usaWhatsappPhone: '+1 (954) 336-2586',
-  usaWhatsappLink: 'https://wa.me/19543362586',
+  whatsappPhone: '+1 (786) 224-4112',
+  whatsappUrl: 'https://wa.me/17862244112',
+  usaWhatsappPhone: '+1 (786) 224-4112',
+  usaWhatsappLink: 'https://wa.me/17862244112',
   ksaPhone: '+966 (539) 046410',
+  ksaWhatsappPhone: '+966 (539) 046410',
+  ksaWhatsappLink: 'https://wa.me/966539046410',
+  pakPhone: '+92 345 3397459',
+  pakWhatsappPhone: '+92 345 3397459',
+  pakWhatsappLink: 'https://wa.me/923453397459',
   usaAddress: 'Fort Lauderdale, FL, USA 33319 (Please call before visiting)',
   ksaAddress:
     'Dammam Road, Khurais, Riyadh City, Saudi Arabia (Please call before visiting)',
@@ -95,9 +99,8 @@ export const EFERZ_CONTACT_DETAILS = {
       code: 'USA',
       phone: '+1 (786) 224-4112',
       phoneLabel: 'CALL (USA HQ)',
-      secondaryPhone: '+1 (954) 336-2586',
-      whatsappPhone: '+1 (954) 336-2586',
-      whatsappLink: 'https://wa.me/19543362586',
+      whatsappPhone: '+1 (786) 224-4112',
+      whatsappLink: 'https://wa.me/17862244112',
       whatsappLabel: 'WHATSAPP',
       address: 'Fort Lauderdale, FL, USA 33319',
       note: 'Global Headquarters — Please call before visiting',
@@ -108,6 +111,9 @@ export const EFERZ_CONTACT_DETAILS = {
       code: 'KSA',
       phone: '+966 (539) 046410',
       phoneLabel: 'CALL (KSA)',
+      whatsappPhone: '+966 (539) 046410',
+      whatsappLink: 'https://wa.me/966539046410',
+      whatsappLabel: 'WHATSAPP',
       address: 'Dammam Road, Khurais, Riyadh City, Saudi Arabia',
       note: 'Regional Office — Please call before visiting',
       email: 'info@eferz.com',
@@ -117,8 +123,8 @@ export const EFERZ_CONTACT_DETAILS = {
       code: 'PAK',
       phone: '+92 345 3397459',
       phoneLabel: 'CALL (PAKISTAN)',
-      whatsappPhone: '+1 (954) 336-2586',
-      whatsappLink: 'https://wa.me/19543362586',
+      whatsappPhone: '+92 345 3397459',
+      whatsappLink: 'https://wa.me/923453397459',
       whatsappLabel: 'WHATSAPP',
       address: 'Karachi, Pakistan — Engineering & Operations Hub',
       note: 'Serving Clients Worldwide Internationally',
@@ -128,13 +134,13 @@ export const EFERZ_CONTACT_DETAILS = {
 };
 
 export const EFERZ_ABOUT_CONTENT = {
-  kicker: 'ABOUT EFERZ DIGITAL AGENCY · FOUNDED ON 10 OCTOBER 2020',
+  kicker: 'ABOUT EFERZ · FOUNDED ON OCTOBER 10, 2020',
   headline:
     'All-In-One Global Digital Powerhouse Building Brands, Converting Websites & Securing Systems Worldwide.',
   subheadline:
     'Headquartered in the United States with regional offices in Saudi Arabia and Pakistan, EFerz entertains and serves clients worldwide across all international markets — delivering Web Design & Development, Digital Marketing, E-Commerce, Amazon FBA, Brand Identity, AI Solutions, and Cybersecurity.',
   storyParagraphs: [
-    'Founded on 10 October 2020, EFerz Digital Agency (EFerz.com) was built on a clear conviction: "Nothing is impossible in the IT world." Headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Kingdom of Saudi Arabia) and Karachi (Pakistan), we entertain and serve startups, SMBs, and global enterprises worldwide.',
+    'Founded on October 10, 2020, EFerz (eferz.com) was built on a clear conviction: "Nothing is impossible in the IT world." Headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Kingdom of Saudi Arabia) and Karachi (Pakistan), we entertain and serve startups, SMBs, and global enterprises worldwide.',
     'Rather than fragmenting your digital presence across multiple disconnected vendors, EFerz serves as your unified international technology and creative partner. From architecting high-converting custom websites and Shopify Plus / WooCommerce stores to scaling Amazon FBA operations, executing data-driven SEO & PPC campaigns, and hardening infrastructure with enterprise Cybersecurity — every discipline works in harmony for clients globally.',
     'In addition to our worldwide digital agency solutions, EFerz operates EFerz Connect from our South Florida headquarters, delivering high-speed residential and commercial connectivity alongside dedicated 24/7 technical support.',
   ],
@@ -165,7 +171,7 @@ export const EFERZ_ABOUT_CONTENT = {
     },
   ],
   milestones: [
-    { value: '2020', label: 'Founded on 10 October 2020' },
+    { value: '2020', label: 'Founded on October 10, 2020' },
     { value: '11+', label: 'Specialized IT & Digital Divisions' },
     { value: '60+', label: 'Worldwide Brands & Clients' },
     { value: '99.9%', label: 'Uptime & Security SLA' },
@@ -179,7 +185,7 @@ export const EFERZ_PRIVACY_POLICY: {
 } = {
   lastUpdated: 'July 10, 2025',
   intro:
-    'This Privacy Policy describes how EFerz Digital Agency ("EFerz", "we", "us", or "our") collects, uses, and discloses your personal information when you visit, use our services, make a purchase from eferz.com, or otherwise communicate with us. By using and accessing any of the Services, you agree to the collection, use, and disclosure of your information as described in this Privacy Policy.',
+    'This Privacy Policy describes how EFerz ("we", "us", or "our") collects, uses, and discloses your personal information when you visit, use our services, make a purchase from eferz.com, or otherwise communicate with us. By using and accessing any of the Services, you agree to the collection, use, and disclosure of your information as described in this Privacy Policy.',
   sections: [
     {
       id: 'collection',
@@ -246,7 +252,7 @@ export const EFERZ_TERMS_OF_SERVICE: {
 } = {
   lastUpdated: 'July 10, 2025',
   intro:
-    'Welcome to EFerz Digital Agency (eferz.com). These Terms of Service ("Terms") constitute a binding legal contract between EFerz and you ("User" or "Client"). By visiting our website, registering for, or using any EFerz services, you signify your informed consent to these Terms of Use and our Privacy Policy.',
+    'Welcome to EFerz (eferz.com). These Terms of Service ("Terms") constitute a binding legal contract between EFerz and you ("User" or "Client"). By visiting our website, registering for, or using any EFerz services, you signify your informed consent to these Terms of Use and our Privacy Policy.',
   sections: [
     {
       id: 'scope',
@@ -300,7 +306,7 @@ export const EFERZ_REFUND_POLICY: {
 } = {
   lastUpdated: 'July 10, 2025',
   intro:
-    'At EFerz Digital Agency, we stand behind the quality of our engineering, design, and digital marketing deliverables. New purchases are covered by our 30-Day Money-Back Guarantee subject to the official terms and verification procedures outlined below.',
+    'At EFerz, we stand behind the quality of our engineering, design, and digital marketing deliverables. New purchases are covered by our 30-Day Money-Back Guarantee subject to the official terms and verification procedures outlined below.',
   sections: [
     {
       id: 'guarantee',
