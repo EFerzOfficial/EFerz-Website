@@ -21,6 +21,7 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#121212" />
     <meta name="author" content="EFerz" />
+    <meta name="gridinsoft-key" content="xnorbyqh3wl9pijfl4bxh2vkwqjlmgqnsrouypv13vqcyzowsgldgqp1qprbcwqm" />
     <link rel="canonical" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
     <link rel="icon" type="image/png" href="<?php echo esc_url($eferz_favicon); ?>" />
     <link rel="apple-touch-icon" href="<?php echo esc_url($eferz_favicon); ?>" />
