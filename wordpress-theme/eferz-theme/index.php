@@ -4,8 +4,13 @@
  * Serves the React 3D SPA when on SPA routes, otherwise renders standard WordPress content.
  *
  * @package EFerz
- * @version 1.2.0
+ * @version 1.2.5
  */
+
+if (!defined('ABSPATH')) {
+    http_response_code(403);
+    exit;
+}
 
 if (function_exists('eferz_is_spa_request') && eferz_is_spa_request()) {
     require get_template_directory() . '/front-page.php';

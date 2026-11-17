@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.2.4');
+define('EFERZ_THEME_VERSION', '1.2.5');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -27,7 +27,7 @@ function eferz_send_security_headers() {
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
         header('Referrer-Policy: strict-origin-when-cross-origin', true);
-        header("Content-Security-Policy: upgrade-insecure-requests; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com;");
+        header("Content-Security-Policy: default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https: wss:; frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.google.com https://pay.google.com https:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com; upgrade-insecure-requests;");
         header('Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=(self "https://js.stripe.com" "https://checkout.stripe.com" "https://pay.google.com")');
         if (is_ssl()) {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
@@ -904,10 +904,35 @@ add_action('template_redirect', function() {
 
 add_filter('wp_robots', function($robots) {
     $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
-    if (strpos($req_path, 'demo-payment') !== false || strpos($req_path, 'test-payment') !== false) {
+    if (strpos($req_path, 'demo-payment') !== false || strpos($req_path, 'test-payment') !== false || is_author()) {
         $robots['noindex'] = true;
         $robots['nofollow'] = true;
         unset($robots['index'], $robots['follow']);
     }
     return $robots;
 }, 999);
+
+/**
+ * Harden against username enumeration (/author/admin/) & clean Yoast utility sitemaps
+ */
+add_action('template_redirect', function() {
+    if (is_author() && !is_admin()) {
+        global $wp_query;
+        $wp_query->set_404();
+        status_header(404);
+        header('X-Robots-Tag: noindex, nofollow', true);
+        nocache_headers();
+    }
+}, 2);
+
+add_filter('wp_sitemaps_add_provider', function($provider, $name) {
+    return ($name === 'users') ? false : $provider;
+}, 10, 2);
+
+add_filter('wpseo_sitemap_exclude_author', '__return_empty_array');
+add_filter('wpseo_sitemap_exclude_post_type', function($excluded, $post_type) {
+    if (in_array($post_type, array('mailpoet_page', 'elementor_library'), true)) {
+        return true;
+    }
+    return $excluded;
+}, 10, 2);
