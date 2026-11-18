@@ -19,7 +19,7 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
     <meta name="description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
     <meta name="keywords" content="<?php echo esc_attr($eferz_seo['keywords']); ?>" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="theme-color" content="#121212" />
+    <meta name="theme-color" content="#141414" />
     <meta name="author" content="EFerz" />
     <meta name="gridinsoft-key" content="xnorbyqh3wl9pijfl4bxh2vkwqjlmgqnsrouypv13vqcyzowsgldgqp1qprbcwqm" />
     <link rel="canonical" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
@@ -90,7 +90,7 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
         display: block;
         margin: 0;
         padding: 0;
-        background-color: #06070c;
+        background-color: #141414;
         color: #fffdff;
       }
       #root {
@@ -98,7 +98,7 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
         min-height: 100vh;
         position: relative;
         z-index: 1;
-        background-color: #06070c;
+        background-color: #141414;
       }
       .sr-only {
         position: absolute;
@@ -175,9 +175,9 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
 
     <?php wp_head(); ?>
 </head>
-<body <?php body_class('bg-[#06070c] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
+<body <?php body_class('bg-[#141414] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
-    <div id="root"><?php if ($eferz_seo['route'] === 'agency') : ?><style>.eferz-ssr-hero{position:fixed;inset:0;width:100%;height:100vh;display:flex;align-items:flex-end;background:#06070c;z-index:1;pointer-events:none;box-sizing:border-box}.eferz-ssr-pad{width:100%;max-width:1500px;margin:0 auto;padding:96px 56px 96px 16px;box-sizing:border-box}.eferz-ssr-h1{margin:16px 0 14px;font-family:"Sifonn","Sifonn-Basic","Outfit","Montserrat","Syne",system-ui,sans-serif;font-weight:900;font-size:1.5rem;line-height:1.06;letter-spacing:-.025em;color:#fffdff}@media(min-width:640px){.eferz-ssr-pad{padding:96px 40px 80px}.eferz-ssr-h1{margin:28px 0 20px;font-size:3rem;line-height:.98}}@media(min-width:768px){.eferz-ssr-pad{padding:96px 48px 64px}.eferz-ssr-h1{font-size:3.75rem}}@media(min-width:1024px){.eferz-ssr-pad{padding:96px 80px 64px}.eferz-ssr-h1{font-size:78px}}</style><section class="eferz-ssr-hero" aria-label="EFerz Hero"><div class="eferz-ssr-pad"><div style="max-width:56rem"><div style="display:inline-flex;align-items:center;gap:10px;padding-top:8px"><span style="width:14px;height:2px;background:#d02128;display:inline-block"></span><p style="margin:0;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,253,255,.9)"><span style="color:#d02128">EF</span><span>ERZ DIGITAL AGENCY</span></p></div><h1 class="eferz-ssr-h1"><span style="display:block">Nothing is</span><span style="display:block"><span style="-webkit-text-stroke:1.5px rgba(255,253,255,.45);color:transparent">impossible</span> in</span><span style="display:block">the IT world</span></h1><p style="margin:0;font-size:12px;font-weight:700;letter-spacing:.05em;color:rgba(255,253,255,.85)">Scroll to explore <span style="color:#d02128">&rarr;</span></p></div></div></section><?php endif; ?></div>
+    <div id="root"><?php if ($eferz_seo['route'] === 'agency') : ?><style>.eferz-ssr-hero{position:fixed;inset:0;width:100%;height:100vh;display:flex;align-items:flex-end;background:#141414;z-index:1;pointer-events:none;box-sizing:border-box}.eferz-ssr-hdr{position:fixed;top:0;left:0;right:0;padding:16px;display:flex;align-items:center;z-index:5;pointer-events:none;box-sizing:border-box}.eferz-ssr-hdr img{width:40px;height:40px;object-fit:contain;display:block}.eferz-ssr-pad{width:100%;max-width:1500px;margin:0 auto;padding:96px 56px 96px 16px;box-sizing:border-box}.eferz-ssr-h1{margin:16px 0 16px;font-family:"Sifonn","Sifonn-Basic","Outfit","Montserrat","Syne",system-ui,sans-serif;font-weight:900;font-size:1.5rem;line-height:1.06;letter-spacing:-.025em;color:#fffdff}.eferz-ssr-cur{display:inline-block;width:16px;height:28px;background:#d02128;margin-left:10px;vertical-align:middle}.eferz-ssr-term{display:inline-flex;align-items:center;gap:12px;padding:8px 14px;border-radius:8px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);font-family:"JetBrains Mono",monospace;font-size:11px;color:rgba(255,253,255,.9);margin-bottom:14px}.eferz-ssr-ftr{position:fixed;bottom:0;left:0;right:0;z-index:5;pointer-events:none}.eferz-ssr-ftr-in{width:100%;max-width:1560px;margin:0 auto;padding:8px 56px 10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;color:rgba(255,253,255,.65);box-sizing:border-box}@media(min-width:640px){.eferz-ssr-hdr{padding:24px 40px}.eferz-ssr-hdr img{width:48px;height:48px}.eferz-ssr-pad{padding:96px 40px 80px}.eferz-ssr-h1{margin:28px 0 28px;font-size:3rem;line-height:.98}.eferz-ssr-cur{width:28px;height:48px;margin-left:14px}.eferz-ssr-term{padding:10px 16px;font-size:14px;margin-bottom:16px}.eferz-ssr-ftr-in{padding:8px 80px 14px 48px;font-size:12px}}@media(min-width:768px){.eferz-ssr-pad{padding:96px 48px 64px}.eferz-ssr-h1{font-size:3.75rem}}@media(min-width:1024px){.eferz-ssr-hdr{padding:24px 48px}.eferz-ssr-hdr img{width:56px;height:56px}.eferz-ssr-pad{padding:96px 80px 64px}.eferz-ssr-h1{font-size:78px}.eferz-ssr-ftr-in{padding:8px 80px 14px 64px}}</style><div class="eferz-ssr-hdr"><img src="<?php echo esc_url(get_template_directory_uri() . '/textures/eferz_logo.webp'); ?>" alt="EFerz" width="56" height="56" class="skip-lazy no-lazy" data-no-lazy="1" /></div><section class="eferz-ssr-hero" aria-label="EFerz Hero"><div class="eferz-ssr-pad"><div style="max-width:56rem"><div style="display:inline-flex;align-items:center;gap:10px;padding-top:8px"><span style="width:14px;height:2px;background:#d02128;display:inline-block"></span><p style="margin:0;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,253,255,.9)"><span style="color:#d02128">EF</span><span>ERZ DIGITAL AGENCY</span></p></div><h1 class="eferz-ssr-h1"><span style="display:block">Nothing is</span><span style="display:block"><span style="-webkit-text-stroke:1.5px rgba(255,253,255,.45);-webkit-text-fill-color:transparent;color:transparent">impossible</span> in</span><span style="display:flex;align-items:center;flex-wrap:wrap"><span>the IT world</span><span class="eferz-ssr-cur"></span></span></h1><div class="eferz-ssr-term"><span style="color:#d02128;font-weight:700">$</span><span>compiling brand-id</span></div><p style="margin:0;font-size:13px;font-weight:700;letter-spacing:.05em;color:rgba(255,253,255,.85)">Scroll to explore <span style="color:#d02128">&rarr;</span></p></div></div></section><footer class="eferz-ssr-ftr"><div class="eferz-ssr-ftr-in">&copy; <?php echo esc_html(date('Y')); ?> EFerz. All Rights Reserved.</div></footer><?php endif; ?></div>
     <noscript>
       <main style="max-width:960px;margin:40px auto;padding:24px;color:#fffdff;font-family:system-ui,sans-serif;line-height:1.6;">
         <h1><?php echo esc_html($eferz_seo['title']); ?></h1>

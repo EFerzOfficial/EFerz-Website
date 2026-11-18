@@ -15,7 +15,7 @@
     <link rel="ard" href="https://eferz.com/.well-known/ard.json" />
     <link rel="profile" href="https://gmpg.org/xfn/11">
     <link rel="icon" type="image/png" href="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-logo.png'); ?>">
-    <style>html,body{background-color:#06070c;color:#fffdff;}</style>
+    <style>html,body{background-color:#141414;color:#fffdff;}</style>
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('eferz-wp-body'); ?>>
