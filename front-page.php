@@ -48,9 +48,6 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
     <meta name="twitter:image" content="<?php echo esc_url($eferz_og_image); ?>" />
     <meta name="twitter:image:alt" content="EFerz — Nothing Is Impossible In The IT World" />
     <link rel="ard" href="https://eferz.com/.well-known/ard.json" />
-<?php if ($eferz_seo['route'] === 'agency') : ?>
-    <link rel="preload" as="image" href="<?php echo esc_url(get_template_directory_uri() . '/videos/intro_poster.webp'); ?>" fetchpriority="high" />
-<?php endif; ?>
 
     <!-- Premium Google Fonts (Non-blocking async load) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -166,8 +163,9 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
     <?php if (!empty($vendor_url)) : ?>
     <link rel="modulepreload" crossorigin href="<?php echo esc_url($vendor_url); ?>" />
     <?php endif; ?>
+    <link rel="modulepreload" crossorigin href="<?php echo esc_url($js_url); ?>" />
 
-    <!-- React App Production CSS (Auto-synced with latest build; non-blocking on homepage where instant poster renders) -->
+    <!-- React App Production CSS (Auto-synced with latest build; non-blocking on homepage where instant SSR hero renders) -->
 <?php if ($eferz_seo['route'] === 'agency') : ?>
     <link rel="preload" as="style" crossorigin href="<?php echo esc_url($css_url); ?>" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" crossorigin href="<?php echo esc_url($css_url); ?>" /></noscript>
@@ -179,7 +177,7 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
 </head>
 <body <?php body_class('bg-[#06070c] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
-    <div id="root"><?php if ($eferz_seo['route'] === 'agency') : ?><img src="<?php echo esc_url(get_template_directory_uri() . '/videos/intro_poster.webp'); ?>" alt="EFerz Digital Agency" width="1280" height="720" fetchpriority="high" decoding="sync" class="skip-lazy no-lazy" data-no-lazy="1" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#06070c;z-index:1;pointer-events:none;" /><?php endif; ?></div>
+    <div id="root"><?php if ($eferz_seo['route'] === 'agency') : ?><style>.eferz-ssr-hero{position:fixed;inset:0;width:100%;height:100vh;display:flex;align-items:flex-end;background:#06070c;z-index:1;pointer-events:none;box-sizing:border-box}.eferz-ssr-pad{width:100%;max-width:1500px;margin:0 auto;padding:96px 56px 96px 16px;box-sizing:border-box}.eferz-ssr-h1{margin:16px 0 14px;font-family:"Sifonn","Sifonn-Basic","Outfit","Montserrat","Syne",system-ui,sans-serif;font-weight:900;font-size:1.5rem;line-height:1.06;letter-spacing:-.025em;color:#fffdff}@media(min-width:640px){.eferz-ssr-pad{padding:96px 40px 80px}.eferz-ssr-h1{margin:28px 0 20px;font-size:3rem;line-height:.98}}@media(min-width:768px){.eferz-ssr-pad{padding:96px 48px 64px}.eferz-ssr-h1{font-size:3.75rem}}@media(min-width:1024px){.eferz-ssr-pad{padding:96px 80px 64px}.eferz-ssr-h1{font-size:78px}}</style><section class="eferz-ssr-hero" aria-label="EFerz Hero"><div class="eferz-ssr-pad"><div style="max-width:56rem"><div style="display:inline-flex;align-items:center;gap:10px;padding-top:8px"><span style="width:14px;height:2px;background:#d02128;display:inline-block"></span><p style="margin:0;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,253,255,.9)"><span style="color:#d02128">EF</span><span>ERZ DIGITAL AGENCY</span></p></div><h1 class="eferz-ssr-h1"><span style="display:block">Nothing is</span><span style="display:block"><span style="-webkit-text-stroke:1.5px rgba(255,253,255,.45);color:transparent">impossible</span> in</span><span style="display:block">the IT world</span></h1><p style="margin:0;font-size:12px;font-weight:700;letter-spacing:.05em;color:rgba(255,253,255,.85)">Scroll to explore <span style="color:#d02128">&rarr;</span></p></div></div></section><?php endif; ?></div>
     <noscript>
       <main style="max-width:960px;margin:40px auto;padding:24px;color:#fffdff;font-family:system-ui,sans-serif;line-height:1.6;">
         <h1><?php echo esc_html($eferz_seo['title']); ?></h1>
