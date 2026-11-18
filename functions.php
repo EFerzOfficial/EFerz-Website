@@ -407,16 +407,14 @@ add_filter('w3tc_lazyload_can_process', function($can_process) {
     return eferz_is_spa_request() ? false : $can_process;
 }, 999);
 
-add_action('wp', function() {
+function eferz_strip_spa_plugin_hooks() {
     if (!eferz_is_spa_request()) {
         return;
     }
-    // Disable WordPress Emoji scripts/styles on SPA routes
     remove_action('wp_head', 'print_emoji_detection_script', 7);
     remove_action('wp_print_styles', 'print_emoji_styles');
-
-    // Prevent Elementor, WooCommerce, SiteKit GSI, Meta Pixel & TikTok from printing inline blocking scripts/styles on SPA
     remove_all_actions('wp_enqueue_scripts', 10);
+
     if (class_exists('\Elementor\Plugin')) {
         $el = \Elementor\Plugin::$instance;
         if (isset($el->frontend)) {
@@ -428,7 +426,14 @@ add_action('wp', function() {
 
     global $wp_filter;
     $keep_logged_in = is_user_logged_in() && is_admin_bar_showing();
-    $allowed_callbacks = array('eferz_seo_schema_jsonld', 'wp_enqueue_scripts', 'wp_print_styles', 'wp_print_head_scripts', 'wp_print_footer_scripts');
+    $allowed_callbacks = array(
+        'eferz_strip_spa_plugin_hooks',
+        'eferz_seo_schema_jsonld',
+        'wp_enqueue_scripts',
+        'wp_print_styles',
+        'wp_print_head_scripts',
+        'wp_print_footer_scripts',
+    );
     if ($keep_logged_in) {
         $allowed_callbacks = array_merge($allowed_callbacks, array('wp_admin_bar_render', '_admin_bar_bump_cb'));
     }
@@ -447,7 +452,11 @@ add_action('wp', function() {
             }
         }
     }
-}, 9999);
+}
+add_action('wp', 'eferz_strip_spa_plugin_hooks', 9999);
+add_action('wp_head', 'eferz_strip_spa_plugin_hooks', -999999);
+add_action('wp_body_open', 'eferz_strip_spa_plugin_hooks', -999999);
+add_action('wp_footer', 'eferz_strip_spa_plugin_hooks', -999999);
 
 /**
  * Keep WooCommerce Cart Counter updated during AJAX Add-to-Cart
