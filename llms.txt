@@ -1,0 +1,25 @@
+# EFerz Digital Agency
+
+> EFerz (https://eferz.com/) is a global AI automation, 3D WebGL web engineering, Shopify Plus, Amazon FBA, technical SEO, UI/UX product design, and Zero Trust cloud cybersecurity agency founded on October 10, 2020, with offices in Fort Lauderdale (USA), Riyadh (Saudi Arabia), and Karachi (Pakistan).
+
+## Core Services
+
+- [Enterprise Services Overview](https://eferz.com/services/): Full-stack web engineering, custom AI agents and LLM systems, interactive 3D WebGL websites, Shopify Plus, Amazon FBA management, technical SEO, PPC, mobile apps, and cloud cybersecurity.
+- [Interactive 3D Studio](https://eferz.com/lets-build/): Real-time WebGL product and brand configurator.
+- [Client Packages & Shop](https://eferz.com/shop/): Ready-to-launch web, Shopify, and digital startup packages.
+
+## Company & Portfolio
+
+- [Selected Work & Case Studies](https://eferz.com/work/): 17+ verified web, 3D interactive, e-commerce, and AI case studies.
+- [Verified Client Reviews](https://eferz.com/clients/): Client testimonials and global enterprise retention stories.
+- [About EFerz](https://eferz.com/about/): Company story since October 10, 2020, global footprint, and engineering standards.
+- [Leadership & Architects](https://eferz.com/team/): Executive leadership and principal software architects.
+- [Engineering & AI Blog](https://eferz.com/blog/): Technical playbooks covering AI engineering, WebGL performance, Core Web Vitals, technical SEO, and cloud security.
+
+## Policies, Contact & Security
+
+- [Contact & Project Inquiry](https://eferz.com/contact/): Direct consultation with our USA (`+1-786-224-4112`), Saudi Arabia (`+966-53-904-6410`), and Pakistan (`+92-345-3397459`) offices or `info@eferz.com`.
+- [Privacy Policy](https://eferz.com/privacy/): GDPR, CCPA, and enterprise data protection standards.
+- [Terms of Service](https://eferz.com/terms/): SLA and 100% client IP ownership commitments.
+- [Refund Policy](https://eferz.com/refund/): 30-day milestone guarantee terms.
+- [Security Contact (RFC 9116)](https://eferz.com/.well-known/security.txt): Vulnerability disclosure via `security@eferz.com`.

@@ -1,0 +1,30 @@
+{
+  "name": "EFerz Digital Agency Consultation",
+  "description": "Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO, and cloud cybersecurity services by EFerz.",
+  "url": "https://eferz.com/contact/",
+  "version": "1.0.0",
+  "provider": {
+    "organization": "EFerz",
+    "url": "https://eferz.com/"
+  },
+  "documentationUrl": "https://eferz.com/llms.txt",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "skills": [
+    {
+      "id": "project-inquiry",
+      "name": "Submit Project Inquiry",
+      "description": "Submit project scope and contact details to EFerz USA, KSA, or Pakistan offices.",
+      "tags": [
+        "ai",
+        "web-development",
+        "3d-webgl",
+        "shopify",
+        "seo",
+        "cybersecurity"
+      ]
+    }
+  ]
+}

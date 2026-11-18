@@ -1,35 +1,55 @@
 /* ==========================================================================
-   EFerz Digital Agency — WordPress, WooCommerce, WooPayments & Plugin Styles
-   Self-contained dark luxury styling for inner WP pages (zero Tailwind CDN).
+   EFerz — WordPress, WooCommerce, WooPayments & Plugin Styles
+   Self-contained obsidian glass aesthetic & Sifonn typography matching main site.
    Does NOT load on the React 3D SPA front-page routes.
    ========================================================================== */
 
+@font-face {
+  font-family: "Sifonn";
+  src: local("Sifonn"), local("Sifonn Basic"), local("Sifonn-Basic"), local("Sifonn Pro"), local("Sifonn-Pro");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sifonn-Basic";
+  src: local("Sifonn-Basic"), local("Sifonn Basic"), local("Sifonn");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
-  --ef-bg: #07090f;
-  --ef-surface: rgba(13, 17, 28, 0.9);
-  --ef-surface-solid: #0d111c;
-  --ef-surface-elevated: rgba(20, 26, 42, 0.94);
-  --ef-border: rgba(255, 255, 255, 0.13);
+  --ef-bg: #06070c;
+  --ef-surface: rgba(11, 14, 23, 0.86);
+  --ef-surface-solid: #0b0e17;
+  --ef-surface-elevated: rgba(17, 21, 35, 0.92);
+  --ef-border: rgba(255, 255, 255, 0.14);
   --ef-border-strong: rgba(255, 255, 255, 0.24);
   --ef-text: #fffdff;
-  --ef-text-muted: rgba(255, 255, 255, 0.76);
-  --ef-text-dim: rgba(255, 255, 255, 0.54);
-  --ef-red: #d02128;
-  --ef-red-bright: #ff4d49;
-  --ef-red-glow: rgba(208, 33, 40, 0.38);
-  --ef-radius-xl: 1.5rem;
-  --ef-radius-lg: 1rem;
-  --ef-radius-md: 0.75rem;
+  --ef-text-muted: rgba(255, 255, 255, 0.78);
+  --ef-text-dim: rgba(255, 255, 255, 0.56);
+  --ef-red: #ec3935;
+  --ef-red-deep: #d02128;
+  --ef-red-bright: #ff524d;
+  --ef-red-glow: rgba(236, 57, 53, 0.38);
+  --ef-cyan: #38bdf8;
+  --ef-font-display: "Sifonn", "Sifonn-Basic", "Outfit", "Montserrat", "Syne", sans-serif;
+  --ef-font-body: "Sifonn", "Sifonn-Basic", "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ef-font-mono: "JetBrains Mono", monospace;
+  --ef-radius-xl: 1.65rem;
+  --ef-radius-lg: 1.15rem;
+  --ef-radius-md: 0.8rem;
 }
 
 body:not(.eferz-flagship-active) {
   background-color: var(--ef-bg) !important;
   background-image:
-    radial-gradient(ellipse 80% 45% at 50% -10%, rgba(208, 33, 40, 0.16), transparent 65%),
-    radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.06), transparent 50%);
+    radial-gradient(ellipse 85% 48% at 50% -10%, rgba(236, 57, 53, 0.18), transparent 65%),
+    radial-gradient(circle at 86% 18%, rgba(56, 189, 248, 0.08), transparent 48%),
+    radial-gradient(circle at 14% 78%, rgba(208, 33, 40, 0.08), transparent 52%);
   background-attachment: fixed;
   color: var(--ef-text);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--ef-font-body);
   line-height: 1.65;
   margin: 0;
   padding: 0;
@@ -41,6 +61,25 @@ body:not(.eferz-flagship-active) *,
 body:not(.eferz-flagship-active) *::before,
 body:not(.eferz-flagship-active) *::after {
   box-sizing: border-box;
+  font-family: inherit;
+}
+
+body:not(.eferz-flagship-active) h1,
+body:not(.eferz-flagship-active) h2,
+body:not(.eferz-flagship-active) h3,
+body:not(.eferz-flagship-active) h4,
+body:not(.eferz-flagship-active) .eferz-wc-title,
+body:not(.eferz-flagship-active) .eferz-article-title,
+body:not(.eferz-flagship-active) .product_title,
+body:not(.eferz-flagship-active) .woocommerce-loop-product__title {
+  font-family: var(--ef-font-display) !important;
+  letter-spacing: -0.015em;
+}
+
+body:not(.eferz-flagship-active):lang(ar),
+body:not(.eferz-flagship-active)[dir="rtl"],
+body:not(.eferz-flagship-active)[dir="rtl"] * {
+  font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 body:not(.eferz-flagship-active) a {
@@ -67,7 +106,7 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 }
 
 /* ==========================================================================
-   Header & Mobile Drawer
+   Floating Obsidian Glass Header (Matching Flagship React Site Navbar)
    ========================================================================== */
 .eferz-wp-header {
   position: fixed;
@@ -75,20 +114,34 @@ body:not(.eferz-flagship-active) input[type="radio"] {
   left: 0;
   right: 0;
   z-index: 900;
+  padding: 0.65rem 0.85rem 0;
+  pointer-events: none;
+}
+
+.eferz-wp-header-inner {
+  pointer-events: auto;
+  max-width: 1320px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.85rem 1.25rem;
-  background: rgba(7, 9, 15, 0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--ef-border);
+  padding: 0.65rem 1rem;
+  border-radius: 1.35rem;
+  background: rgba(11, 14, 23, 0.82);
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.52), inset 0 1px 1px rgba(255, 255, 255, 0.22);
 }
 
 @media (min-width: 768px) {
   .eferz-wp-header {
-    padding: 0.95rem 3rem;
+    padding: 0.9rem 1.75rem 0;
+  }
+  .eferz-wp-header-inner {
+    padding: 0.72rem 1.4rem;
+    border-radius: 9999px;
   }
 }
 
@@ -108,6 +161,41 @@ body:not(.eferz-flagship-active) input[type="radio"] {
   gap: 0.7rem;
   color: #fff !important;
   text-decoration: none;
+}
+
+.eferz-wp-brand-logo-wrap {
+  width: 2.55rem;
+  height: 2.55rem;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 2px solid rgba(208, 33, 40, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.24rem;
+  box-shadow: 0 0 22px var(--ef-red-glow), 0 4px 14px rgba(0, 0, 0, 0.45);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eferz-wp-brand:hover .eferz-wp-brand-logo-wrap {
+  transform: scale(1.04);
+  box-shadow: 0 0 28px rgba(208, 33, 40, 0.65), 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+.eferz-wp-brand-logo-wrap--sm {
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0.2rem;
+}
+
+.eferz-wp-logo-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  display: block !important;
 }
 
 .eferz-wp-brand-mark {
@@ -130,18 +218,19 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 }
 
 .eferz-wp-brand-name {
+  font-family: var(--ef-font-display) !important;
   font-weight: 800;
   font-size: 0.95rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   line-height: 1.1;
   color: #ffffff;
 }
 
 .eferz-wp-brand-sub {
-  font-family: 'Space Grotesk', 'JetBrains Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.22em;
+  font-family: var(--ef-font-mono) !important;
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ef-red-bright);
   margin-top: 2px;
@@ -150,7 +239,7 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 .eferz-wp-nav {
   display: none;
   align-items: center;
-  gap: 1.75rem;
+  gap: 1.45rem;
 }
 
 @media (min-width: 1024px) {
@@ -160,9 +249,10 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 }
 
 .eferz-wp-nav a {
-  font-family: 'Space Grotesk', 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
+  font-family: var(--ef-font-display) !important;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ef-text-muted);
 }
@@ -181,16 +271,16 @@ body:not(.eferz-flagship-active) input[type="radio"] {
   display: none;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.58rem 1.2rem;
+  padding: 0.62rem 1.25rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #d02128, #ff3b30);
+  background: linear-gradient(135deg, #ec3935, #d02128);
   color: #fff !important;
-  font-family: 'Space Grotesk', 'JetBrains Mono', monospace;
+  font-family: var(--ef-font-mono) !important;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  box-shadow: 0 0 22px rgba(208, 33, 40, 0.4);
+  box-shadow: 0 6px 24px rgba(236, 57, 53, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -202,22 +292,24 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 
 .eferz-wp-cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 30px rgba(208, 33, 40, 0.65);
+  box-shadow: 0 10px 30px rgba(236, 57, 53, 0.62);
 }
 
 .eferz-wp-pill-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.55rem 0.95rem;
+  padding: 0.58rem 1rem;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--ef-border);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.14);
   color: #ffffff !important;
-  font-family: 'Space Grotesk', 'JetBrains Mono', monospace;
+  font-family: var(--ef-font-mono) !important;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
@@ -298,30 +390,30 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 }
 
 .eferz-wp-drawer-meta {
-  font-family: 'Space Grotesk', monospace;
+  font-family: var(--ef-font-mono) !important;
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.48);
 }
 
 /* ==========================================================================
-   Main Page & WooCommerce Shell
+   Main Page & WooCommerce Shell (Matching React View Shells)
    ========================================================================== */
 .eferz-wp-shell {
   position: relative;
   z-index: 10;
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 6.5rem 1rem 4.5rem;
+  padding: 6.25rem 1rem 4.5rem;
   min-height: calc(100vh - 220px);
 }
 
 .eferz-wp-shell--narrow {
-  max-width: 960px;
+  max-width: 980px;
 }
 
 .eferz-wp-shell--elementor {
   max-width: 100%;
-  padding: 5.25rem 0 2rem;
+  padding: 5.5rem 0 2rem;
 }
 
 @media (min-width: 768px) {
@@ -329,26 +421,27 @@ body:not(.eferz-flagship-active) input[type="radio"] {
     padding: 7.5rem 2.25rem 5rem;
   }
   .eferz-wp-shell--elementor {
-    padding: 5.5rem 0 2rem;
+    padding: 6rem 0 2rem;
   }
 }
 
 .eferz-wc-banner {
   margin-bottom: 1.75rem;
-  padding: 1.35rem 1.35rem;
+  padding: 1.45rem 1.35rem;
   border-radius: var(--ef-radius-xl);
-  background: linear-gradient(135deg, rgba(13, 17, 28, 0.94), rgba(22, 27, 45, 0.84));
-  border: 1px solid var(--ef-border);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(145deg, rgba(11, 14, 23, 0.92), rgba(20, 24, 38, 0.82));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.15rem;
 }
 
 @media (min-width: 768px) {
   .eferz-wc-banner {
-    padding: 1.85rem 2.25rem;
+    padding: 2rem 2.35rem;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -359,16 +452,16 @@ body:not(.eferz-flagship-active) input[type="radio"] {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.3rem 0.8rem;
+  padding: 0.34rem 0.88rem;
   border-radius: 9999px;
-  background: rgba(208, 33, 40, 0.18);
-  border: 1px solid rgba(208, 33, 40, 0.45);
+  background: rgba(236, 57, 53, 0.16);
+  border: 1px solid rgba(236, 57, 53, 0.45);
   color: var(--ef-red-bright);
-  font-family: 'Space Grotesk', 'JetBrains Mono', monospace;
+  font-family: var(--ef-font-mono) !important;
   font-size: 0.68rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.7rem;
 }
 
 .eferz-wc-badge-dot {
@@ -376,22 +469,24 @@ body:not(.eferz-flagship-active) input[type="radio"] {
   height: 6px;
   border-radius: 50%;
   background: var(--ef-red-bright);
+  box-shadow: 0 0 10px rgba(255, 82, 77, 0.8);
 }
 
 .eferz-wc-title {
   margin: 0;
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-family: var(--ef-font-display) !important;
+  font-size: clamp(1.55rem, 3.2vw, 2.55rem);
   font-weight: 900;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.12;
   color: #ffffff;
 }
 
 .eferz-wc-subtitle {
-  margin: 0.5rem 0 0;
-  font-size: 0.88rem;
+  margin: 0.55rem 0 0;
+  font-size: 0.92rem;
   color: var(--ef-text-muted);
-  max-width: 42rem;
+  max-width: 44rem;
 }
 
 .eferz-wc-actions {
@@ -404,16 +499,17 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 
 .eferz-wc-card {
   background: var(--ef-surface);
-  border: 1px solid var(--ef-border);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--ef-radius-xl);
-  padding: 1.25rem;
-  backdrop-filter: blur(22px);
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  padding: 1.3rem;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58), inset 0 1px 1px rgba(255, 255, 255, 0.18);
 }
 
 @media (min-width: 768px) {
   .eferz-wc-card {
-    padding: 2.25rem 2.5rem;
+    padding: 2.35rem 2.5rem;
   }
 }
 
@@ -583,19 +679,19 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 .wc-block-cart__submit-button,
 .wc-block-components-checkout-place-order-button,
 .wpcf7-form input[type="submit"] {
-  background: linear-gradient(135deg, #d02128, #ff3b30) !important;
+  background: linear-gradient(135deg, #ec3935, #d02128) !important;
   color: #ffffff !important;
   border: none !important;
   border-radius: 9999px !important;
-  padding: 0.78rem 1.55rem !important;
-  font-family: 'Space Grotesk', system-ui, sans-serif !important;
+  padding: 0.78rem 1.6rem !important;
+  font-family: var(--ef-font-mono) !important;
   font-weight: 700 !important;
-  font-size: 0.82rem !important;
-  letter-spacing: 0.08em !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
   cursor: pointer !important;
   transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-  box-shadow: 0 8px 24px rgba(208, 33, 40, 0.35) !important;
+  box-shadow: 0 8px 24px rgba(236, 57, 53, 0.36), inset 0 1px 1px rgba(255, 255, 255, 0.24) !important;
   text-decoration: none !important;
   line-height: 1.25 !important;
 }
@@ -720,6 +816,7 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 
 .woocommerce div.product .product_title {
   color: #ffffff !important;
+  font-family: var(--ef-font-display) !important;
   font-size: clamp(1.6rem, 3vw, 2.35rem) !important;
   font-weight: 800 !important;
   line-height: 1.15 !important;
@@ -730,8 +827,8 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 .woocommerce div.product span.price,
 .woocommerce ul.products li.product .price {
   color: var(--ef-red-bright) !important;
-  font-family: 'Space Grotesk', monospace !important;
-  font-size: 1.35rem !important;
+  font-family: var(--ef-font-mono) !important;
+  font-size: 1.32rem !important;
   font-weight: 800 !important;
   margin: 0 0 1rem !important;
 }
@@ -1044,9 +1141,9 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 .woocommerce table.shop_table thead th {
   border-top: none !important;
   background: rgba(255, 255, 255, 0.04);
-  font-family: 'Space Grotesk', monospace;
-  font-size: 0.76rem;
-  letter-spacing: 0.1em;
+  font-family: var(--ef-font-mono) !important;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ef-text-muted) !important;
 }
@@ -1362,6 +1459,7 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 
 .eferz-article-title {
   margin: 0 0 0.65rem;
+  font-family: var(--ef-font-display) !important;
   font-size: clamp(1.75rem, 3.5vw, 2.75rem);
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -1370,7 +1468,7 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 }
 
 .eferz-article-meta {
-  font-family: 'Space Grotesk', monospace;
+  font-family: var(--ef-font-mono) !important;
   font-size: 0.78rem;
   color: var(--ef-text-dim);
   display: flex;
@@ -1388,6 +1486,7 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 .eferz-entry-content h3,
 .eferz-entry-content h4 {
   color: #ffffff;
+  font-family: var(--ef-font-display) !important;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
   font-weight: 800;
@@ -1414,8 +1513,9 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 .eferz-archive-card {
   background: var(--ef-surface);
   border: 1px solid var(--ef-border);
-  border-radius: var(--ef-radius-lg);
-  padding: 1.35rem;
+  border-radius: var(--ef-radius-xl);
+  padding: 1.45rem;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.14);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1425,8 +1525,9 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 .eferz-wp-footer {
   position: relative;
   z-index: 20;
-  border-top: 1px solid var(--ef-border);
-  background: #04060b;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(4, 6, 11, 0.94);
+  backdrop-filter: blur(22px);
   padding: 3rem 1.25rem 2.25rem;
   color: #ffffff;
 }
@@ -1438,7 +1539,7 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 }
 
 .eferz-wp-footer-grid {
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto 2rem;
   display: grid;
   grid-template-columns: 1fr;
@@ -1452,8 +1553,8 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 }
 
 .eferz-wp-footer-desc {
-  font-size: 0.84rem;
-  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.66);
   max-width: 24rem;
   margin: 0;
   line-height: 1.65;
@@ -1461,8 +1562,8 @@ body:not(.eferz-flagship-active) input[type="radio"] {
 
 .eferz-wp-footer h4 {
   margin: 0 0 0.75rem;
-  font-family: 'Space Grotesk', monospace;
-  font-size: 0.75rem;
+  font-family: var(--ef-font-mono) !important;
+  font-size: 0.74rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ef-red-bright);
@@ -1475,21 +1576,21 @@ body:not(.eferz-flagship-active) input[type="radio"] {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   color: var(--ef-text-muted);
 }
 
 .eferz-wp-footer-bottom {
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
   padding-top: 1.35rem;
-  border-top: 1px solid var(--ef-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  font-family: 'Space Grotesk', monospace;
-  font-size: 0.76rem;
+  font-family: var(--ef-font-mono) !important;
+  font-size: 0.74rem;
   color: var(--ef-text-dim);
 }

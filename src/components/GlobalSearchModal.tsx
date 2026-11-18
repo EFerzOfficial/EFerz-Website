@@ -136,7 +136,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         title: 'Start a Project (Contact Us)',
         titleAr: 'ابدأ مشروعك (اتصل بنا)',
         subtitle:
-          'info@eferz.com · Call: +1 (786) 224-4112 · WhatsApp: +1 (954) 336-2586 · KSA: +966 (539) 046410',
+          'info@eferz.com · USA: +1 (786) 224-4112 · KSA: +966 (539) 046410 · PAK: +92 345 3397459',
         subtitleAr:
           'تواصل معنا مباشرة في أمريكا والمملكة العربية السعودية',
         category: 'Page',

@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.2.6');
+define('EFERZ_THEME_VERSION', '1.2.7');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -29,6 +29,7 @@ function eferz_send_security_headers() {
         header('Referrer-Policy: strict-origin-when-cross-origin', true);
         header("Content-Security-Policy: default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https: wss:; frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.google.com https://pay.google.com https:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com; upgrade-insecure-requests;");
         header('Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=(self "https://js.stripe.com" "https://checkout.stripe.com" "https://pay.google.com")');
+        header('Link: <https://eferz.com/.well-known/ard.json>; rel="ard"', false);
         if (is_ssl()) {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         }
@@ -364,6 +365,89 @@ function eferz_theme_scripts() {
     );
 }
 add_action('wp_enqueue_scripts', 'eferz_theme_scripts', 50);
+
+/**
+ * Eliminate ALL unused WordPress, Elementor, WooCommerce, Jetpack, CF7 & SiteKit CSS/JS
+ * on React 3D SPA routes (kills ~4,900 ms render-blocking & console errors without affecting /shop or inner pages).
+ */
+function eferz_spa_dequeue_bloat() {
+    if (!eferz_is_spa_request()) {
+        return;
+    }
+
+    global $wp_styles, $wp_scripts;
+    $keep_logged_in = is_user_logged_in() && is_admin_bar_showing();
+
+    if ($wp_styles && !empty($wp_styles->queue)) {
+        foreach ((array) $wp_styles->queue as $handle) {
+            if ($keep_logged_in && ($handle === 'admin-bar' || $handle === 'dashicons')) {
+                continue;
+            }
+            wp_dequeue_style($handle);
+            wp_deregister_style($handle);
+        }
+    }
+
+    if ($wp_scripts && !empty($wp_scripts->queue)) {
+        foreach ((array) $wp_scripts->queue as $handle) {
+            if ($keep_logged_in && $handle === 'admin-bar') {
+                continue;
+            }
+            wp_dequeue_script($handle);
+            wp_deregister_script($handle);
+        }
+    }
+}
+add_action('wp_enqueue_scripts', 'eferz_spa_dequeue_bloat', 999999);
+add_action('wp_print_styles', 'eferz_spa_dequeue_bloat', 999999);
+add_action('wp_print_scripts', 'eferz_spa_dequeue_bloat', 999999);
+add_action('wp_print_footer_scripts', 'eferz_spa_dequeue_bloat', 1);
+
+add_filter('w3tc_lazyload_can_process', function($can_process) {
+    return eferz_is_spa_request() ? false : $can_process;
+}, 999);
+
+add_action('wp', function() {
+    if (!eferz_is_spa_request()) {
+        return;
+    }
+    // Disable WordPress Emoji scripts/styles on SPA routes
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('wp_print_styles', 'print_emoji_styles');
+
+    // Prevent Elementor, WooCommerce, SiteKit GSI, Meta Pixel & TikTok from printing inline blocking scripts/styles on SPA
+    remove_all_actions('wp_enqueue_scripts', 10);
+    if (class_exists('\Elementor\Plugin')) {
+        $el = \Elementor\Plugin::$instance;
+        if (isset($el->frontend)) {
+            remove_action('wp_enqueue_scripts', array($el->frontend, 'enqueue_styles'));
+            remove_action('wp_enqueue_scripts', array($el->frontend, 'enqueue_scripts'));
+            remove_action('wp_footer', array($el->frontend, 'wp_footer'));
+        }
+    }
+
+    global $wp_filter;
+    $keep_logged_in = is_user_logged_in() && is_admin_bar_showing();
+    $allowed_callbacks = array('eferz_seo_schema_jsonld', 'wp_enqueue_scripts', 'wp_print_styles', 'wp_print_head_scripts', 'wp_print_footer_scripts');
+    if ($keep_logged_in) {
+        $allowed_callbacks = array_merge($allowed_callbacks, array('wp_admin_bar_render', '_admin_bar_bump_cb'));
+    }
+
+    foreach (array('wp_head', 'wp_body_open', 'wp_footer') as $hook_name) {
+        if (!isset($wp_filter[$hook_name]) || !isset($wp_filter[$hook_name]->callbacks)) {
+            continue;
+        }
+        foreach ($wp_filter[$hook_name]->callbacks as $priority => $callbacks) {
+            foreach ($callbacks as $cb_id => $cb) {
+                $fn = $cb['function'] ?? null;
+                $fn_name = is_string($fn) ? $fn : '';
+                if (!in_array($fn_name, $allowed_callbacks, true)) {
+                    remove_action($hook_name, $fn, $priority);
+                }
+            }
+        }
+    }
+}, 9999);
 
 /**
  * Keep WooCommerce Cart Counter updated during AJAX Add-to-Cart
@@ -884,10 +968,11 @@ add_filter('body_class', function($classes) {
 }, 999999);
 
 /**
- * Serve RFC 9116 /.well-known/security.txt & prevent demo/test WooCommerce products from indexing
+ * Serve RFC 9116 /.well-known/security.txt, /llms.txt, /.well-known/ard.json & /.well-known/agent-card.json immediately
  */
 add_action('template_redirect', function() {
     $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+
     if ($req_path === '.well-known/security.txt' || $req_path === 'security.txt') {
         status_header(200);
         header('Content-Type: text/plain; charset=utf-8');
@@ -900,7 +985,82 @@ add_action('template_redirect', function() {
         echo "Expires: 2027-12-31T23:59:59.000Z\n";
         exit;
     }
-}, 1);
+
+    if ($req_path === 'llms.txt') {
+        status_header(200);
+        header('Content-Type: text/markdown; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        echo "# EFerz Digital Agency\n\n";
+        echo "> EFerz (https://eferz.com/) is a global AI automation, 3D WebGL web engineering, Shopify Plus, Amazon FBA, technical SEO, UI/UX product design, and Zero Trust cloud cybersecurity agency founded on October 10, 2020, with offices in Fort Lauderdale (USA), Riyadh (Saudi Arabia), and Karachi (Pakistan).\n\n";
+        echo "## Core Services\n\n";
+        echo "- [Enterprise Services Overview](https://eferz.com/services/): Full-stack web engineering, custom AI agents and LLM systems, interactive 3D WebGL websites, Shopify Plus, Amazon FBA management, technical SEO, PPC, mobile apps, and cloud cybersecurity.\n";
+        echo "- [Interactive 3D Studio](https://eferz.com/lets-build/): Real-time WebGL product and brand configurator.\n";
+        echo "- [Client Packages & Shop](https://eferz.com/shop/): Ready-to-launch web, Shopify, and digital startup packages.\n\n";
+        echo "## Company & Portfolio\n\n";
+        echo "- [Selected Work & Case Studies](https://eferz.com/work/): 17+ verified web, 3D interactive, e-commerce, and AI case studies.\n";
+        echo "- [Verified Client Reviews](https://eferz.com/clients/): Client testimonials and global enterprise retention stories.\n";
+        echo "- [About EFerz](https://eferz.com/about/): Company story since October 10, 2020, global footprint, and engineering standards.\n";
+        echo "- [Leadership & Architects](https://eferz.com/team/): Executive leadership and principal software architects.\n";
+        echo "- [Engineering & AI Blog](https://eferz.com/blog/): Technical playbooks covering AI engineering, WebGL performance, Core Web Vitals, technical SEO, and cloud security.\n\n";
+        echo "## Policies, Contact & Security\n\n";
+        echo "- [Contact & Project Inquiry](https://eferz.com/contact/): Direct consultation with our USA (+1-786-224-4112), Saudi Arabia (+966-53-904-6410), and Pakistan (+92-345-3397459) offices or info@eferz.com.\n";
+        echo "- [Privacy Policy](https://eferz.com/privacy/): GDPR, CCPA, and enterprise data protection standards.\n";
+        echo "- [Terms of Service](https://eferz.com/terms/): SLA and 100% client IP ownership commitments.\n";
+        echo "- [Refund Policy](https://eferz.com/refund/): 30-day milestone guarantee terms.\n";
+        echo "- [Security Contact (RFC 9116)](https://eferz.com/.well-known/security.txt): Vulnerability disclosure via security@eferz.com.\n";
+        exit;
+    }
+
+    if ($req_path === '.well-known/ard.json' || $req_path === 'ard.json' || $req_path === '.well-known/ard-manifest.json') {
+        status_header(200);
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        echo wp_json_encode(array(
+            '$schema' => 'https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ard-entry.schema.json',
+            'entries' => array(
+                array(
+                    'identifier' => 'urn:air:eferz.com:agents:project-consultation',
+                    'displayName' => 'EFerz Project Consultation & Agency Services',
+                    'type' => 'application/a2a-agent-card+json',
+                    'url' => 'https://eferz.com/.well-known/agent-card.json',
+                    'representativeQueries' => array(
+                        'Request a quote for custom AI agents, 3D WebGL websites, or Shopify Plus from EFerz',
+                        'Contact EFerz offices in Fort Lauderdale USA, Riyadh Saudi Arabia, or Karachi Pakistan',
+                        'Explore EFerz digital agency services, case studies, and web packages',
+                    ),
+                ),
+            ),
+        ), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    if ($req_path === '.well-known/agent-card.json') {
+        status_header(200);
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        echo wp_json_encode(array(
+            'name' => 'EFerz Digital Agency Consultation',
+            'description' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO, and cloud cybersecurity services by EFerz.',
+            'url' => 'https://eferz.com/contact/',
+            'version' => '1.0.0',
+            'provider' => array(
+                'organization' => 'EFerz',
+                'url' => 'https://eferz.com/',
+            ),
+            'documentationUrl' => 'https://eferz.com/llms.txt',
+            'capabilities' => array('streaming' => false, 'pushNotifications' => false),
+            'skills' => array(
+                array(
+                    'id' => 'project-inquiry',
+                    'name' => 'Submit Project Inquiry',
+                    'description' => 'Submit project scope and contact details to EFerz USA, KSA, or Pakistan offices.',
+                    'tags' => array('ai', 'web-development', '3d-webgl', 'shopify', 'seo', 'cybersecurity'),
+                ),
+            ),
+        ), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        exit;
+    }
+}, 0);
 
 add_filter('wp_robots', function($robots) {
     $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));

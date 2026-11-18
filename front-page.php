@@ -47,12 +47,16 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
     <meta name="twitter:description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
     <meta name="twitter:image" content="<?php echo esc_url($eferz_og_image); ?>" />
     <meta name="twitter:image:alt" content="EFerz — Nothing Is Impossible In The IT World" />
-    <link rel="preload" as="video" href="<?php echo get_template_directory_uri(); ?>/videos/intro_cinematic.mp4" type="video/mp4">
-    
-    <!-- Premium Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:ital,wght@0,700;0,800;0,900;1,900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Cabinet+Grotesk:wght@800;900&family=Clash+Display:wght@700;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="ard" href="https://eferz.com/.well-known/ard.json" />
+<?php if ($eferz_seo['route'] === 'agency') : ?>
+    <link rel="preload" as="image" href="<?php echo esc_url(get_template_directory_uri() . '/videos/intro_poster.webp'); ?>" fetchpriority="high" />
+<?php endif; ?>
+
+    <!-- Premium Google Fonts (Non-blocking async load) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:ital,wght@0,700;0,800;0,900;1,900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:ital,wght@0,700;0,800;0,900;1,900&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
     
     <!-- Theme Base Definition & Fetch Interceptor -->
     <script>
@@ -136,25 +140,46 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
         $css_url = $theme_assets_uri . '/index-2HbYwzZu.css';
       }
 
-      // Dynamically locate latest built JS bundle
-      $js_glob = glob($theme_assets_dir . '/index-*.js');
+      // Dynamically locate latest built JS bundle (exclude .js.map)
+      $js_glob = array_values(array_filter((array) glob($theme_assets_dir . '/index-*.js'), function($f) {
+        return substr($f, -3) === '.js';
+      }));
       if (!empty($js_glob)) {
         usort($js_glob, function($a, $b) { return filemtime($b) - filemtime($a); });
         $latest_js = basename($js_glob[0]);
         $js_url = $theme_assets_uri . '/' . $latest_js . '?v=' . filemtime($js_glob[0]);
       } else {
-        $js_url = $theme_assets_uri . '/index-B_-PlTxi.js';
+        $js_url = $theme_assets_uri . '/index-CPonsMAP.js';
+      }
+
+      // Modulepreload vendor chunk if present
+      $vendor_glob = array_values(array_filter((array) glob($theme_assets_dir . '/vendor-*.js'), function($f) {
+        return substr($f, -3) === '.js';
+      }));
+      $vendor_url = '';
+      if (!empty($vendor_glob)) {
+        usort($vendor_glob, function($a, $b) { return filemtime($b) - filemtime($a); });
+        $vendor_url = $theme_assets_uri . '/' . basename($vendor_glob[0]);
       }
     ?>
 
-    <!-- React App Production CSS (Auto-synced with latest build) -->
-    <link rel="stylesheet" crossorigin href="<?php echo esc_url($css_url); ?>">
+    <?php if (!empty($vendor_url)) : ?>
+    <link rel="modulepreload" crossorigin href="<?php echo esc_url($vendor_url); ?>" />
+    <?php endif; ?>
+
+    <!-- React App Production CSS (Auto-synced with latest build; non-blocking on homepage where instant poster renders) -->
+<?php if ($eferz_seo['route'] === 'agency') : ?>
+    <link rel="preload" as="style" crossorigin href="<?php echo esc_url($css_url); ?>" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" crossorigin href="<?php echo esc_url($css_url); ?>" /></noscript>
+<?php else : ?>
+    <link rel="stylesheet" crossorigin href="<?php echo esc_url($css_url); ?>" />
+<?php endif; ?>
 
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('bg-[#06070c] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
-    <div id="root"></div>
+    <div id="root"><?php if ($eferz_seo['route'] === 'agency') : ?><img src="<?php echo esc_url(get_template_directory_uri() . '/videos/intro_poster.webp'); ?>" alt="EFerz Digital Agency" width="1280" height="720" fetchpriority="high" decoding="sync" class="skip-lazy no-lazy" data-no-lazy="1" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#06070c;z-index:1;pointer-events:none;" /><?php endif; ?></div>
     <noscript>
       <main style="max-width:960px;margin:40px auto;padding:24px;color:#fffdff;font-family:system-ui,sans-serif;line-height:1.6;">
         <h1><?php echo esc_html($eferz_seo['title']); ?></h1>
@@ -178,6 +203,30 @@ $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
 
     <!-- React App Production Bundle (Auto-synced with latest build) -->
     <script type="module" crossorigin src="<?php echo esc_url($js_url); ?>"></script>
+
+    <?php if (!is_user_logged_in()) : ?>
+    <script>
+      window.addEventListener('load', function() {
+        var fired = false;
+        function loadGA() {
+          if (fired) return;
+          fired = true;
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function(){ dataLayer.push(arguments); };
+          gtag('js', new Date());
+          gtag('config', 'GT-M38TKDT9');
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=GT-M38TKDT9';
+          document.head.appendChild(s);
+        }
+        setTimeout(loadGA, 4000);
+        ['pointerdown', 'keydown', 'scroll'].forEach(function(ev) {
+          window.addEventListener(ev, loadGA, { once: true, passive: true });
+        });
+      });
+    </script>
+    <?php endif; ?>
 
     <?php wp_footer(); ?>
 </body>

@@ -15,6 +15,19 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-dom/client'],
   },
+  build: {
+    sourcemap: true,
+    minify: 'esbuild',
+    target: 'es2020',
+    chunkSizeWarningLimit: 3000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
+        },
+      },
+    },
+  },
   server: {
     port: 3000,
     host: '0.0.0.0',

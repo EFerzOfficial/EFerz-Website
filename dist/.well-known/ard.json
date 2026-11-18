@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ard-entry.schema.json",
+  "entries": [
+    {
+      "identifier": "urn:air:eferz.com:agents:project-consultation",
+      "displayName": "EFerz Project Consultation & Inquiry API",
+      "type": "application/a2a-agent-card+json",
+      "url": "https://eferz.com/.well-known/agent-card.json",
+      "representativeQueries": [
+        "Request a quote for a custom AI agent, 3D WebGL website, or Shopify Plus store from EFerz",
+        "Contact EFerz offices in Fort Lauderdale USA, Riyadh Saudi Arabia, or Karachi Pakistan",
+        "Explore EFerz digital agency services, pricing packages, and portfolio case studies"
+      ]
+    }
+  ]
+}

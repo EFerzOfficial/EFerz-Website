@@ -1153,7 +1153,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
       instagram: 'https://www.instagram.com/khubaibkhan_kk/',
     },
     bio: [
-      'As Founder & President of EFerz Digital Agency (founded in 2020), Khubaib Khan spearheads the agency’s global vision across our USA Headquarters in Fort Lauderdale, Florida, regional offices in Saudi Arabia (Riyadh) and Pakistan (Karachi), and international client ecosystems worldwide.',
+      'As Founder & President of EFerz (founded in 2020), Khubaib Khan spearheads the agency’s global vision across our USA Headquarters in Fort Lauderdale, Florida, regional offices in Saudi Arabia (Riyadh) and Pakistan (Karachi), and international client ecosystems worldwide.',
       'Combining deep expertise in enterprise IT strategy, AI-driven automation, 3D WebGL platforms, and global e-commerce scaling, he leads executive strategy and ensures every client partnership lives up to EFerz’s founding creed: "Nothing Is Impossible In The IT World."',
     ],
   },
@@ -1200,7 +1200,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     photo: '/assets/aistudio/Syed_Ahmed_3d79a4c0.png',
     objectPosition: 'center top',
     bio: [
-      'As Business Development Manager at EFerz Digital Agency, Syed Ahmed manages international client onboarding, strategic consultation, and tailored project roadmaps for startups and established enterprises worldwide.',
+      'As Business Development Manager at EFerz, Syed Ahmed manages international client onboarding, strategic consultation, and tailored project roadmaps for startups and established enterprises worldwide.',
       'He bridges the gap between client growth targets and EFerz’s engineering, marketing, and creative departments — ensuring rapid response times, clear milestone scoping, and high-converting digital strategies.',
     ],
   },
@@ -1226,7 +1226,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     photo: '/assets/aistudio/Syed_Owais_1f8d91ac.png',
     objectPosition: 'center top',
     bio: [
-      'As Operations Coordinator at EFerz Digital Agency, Syed Owais orchestrates day-to-day project execution, cross-functional sprint workflows, and quality assurance standards across our USA, Saudi Arabia, and Pakistan hubs.',
+      'As Operations Coordinator at EFerz, Syed Owais orchestrates day-to-day project execution, cross-functional sprint workflows, and quality assurance standards across our USA, Saudi Arabia, and Pakistan hubs.',
       'He ensures every client deliverable — from software engineering and cybersecurity audits to branding and digital marketing campaigns — stays strictly on schedule and exceeds international SLA benchmarks.',
     ],
   },

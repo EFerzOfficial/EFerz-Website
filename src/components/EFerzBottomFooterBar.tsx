@@ -353,7 +353,7 @@ export const EFerzBottomFooterBar: React.FC<EFerzBottomFooterBarProps> = ({
                     </a>
                   </div>
 
-                  {/* Direct WhatsApp Line: +1 (954) 336-2586 */}
+                  {/* Direct WhatsApp Line: +1 (786) 224-4112 */}
                   <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-[#d02128]/15 border border-[#d02128]/40">
                     <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-white font-semibold">
                       <MessageCircle className="w-3.5 h-3.5 text-[#d02128]" />
@@ -379,7 +379,7 @@ export const EFerzBottomFooterBar: React.FC<EFerzBottomFooterBarProps> = ({
 
                 {/* KSA Office */}
                 <div className="p-4 rounded-2xl bg-[#07090f]/75 border border-white/25 backdrop-blur-2xl space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <span className="text-xs font-mono font-bold text-white flex items-center gap-1.5">
                       <Globe2 className="w-3.5 h-3.5 text-[#d02128]" />
                       <span>
@@ -388,14 +388,26 @@ export const EFerzBottomFooterBar: React.FC<EFerzBottomFooterBarProps> = ({
                           : 'SAUDI ARABIA (KSA)'}
                       </span>
                     </span>
-                    <a
-                      href="tel:+966539046410"
-                      dir="ltr"
-                      className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#d02128] hover:underline"
-                    >
-                      <PhoneCall className="w-3 h-3" />
-                      <span>Call: {EFERZ_CONTACT_DETAILS.ksaPhone}</span>
-                    </a>
+                    <div className="flex items-center gap-3">
+                      <a
+                        href="tel:+966539046410"
+                        dir="ltr"
+                        className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#d02128] hover:underline"
+                      >
+                        <PhoneCall className="w-3 h-3" />
+                        <span>Call: {EFERZ_CONTACT_DETAILS.ksaPhone}</span>
+                      </a>
+                      <a
+                        href="https://wa.me/966539046410"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        dir="ltr"
+                        className="inline-flex items-center gap-1 text-xs font-mono font-bold text-emerald-400 hover:underline"
+                      >
+                        <MessageCircle className="w-3 h-3" />
+                        <span>WhatsApp</span>
+                      </a>
+                    </div>
                   </div>
                   <div className="flex items-start gap-2 text-white/85 text-[11px] leading-relaxed">
                     <MapPin className="w-3.5 h-3.5 text-[#d02128] shrink-0 mt-0.5" />
@@ -484,8 +496,8 @@ export const EFerzBottomFooterBar: React.FC<EFerzBottomFooterBarProps> = ({
           <div className="flex items-center truncate">
             <span className="truncate">
               {isRTL
-                ? `© ${new Date().getFullYear()} وكالة EFerz الرقمية. جميع الحقوق محفوظة.`
-                : `© ${new Date().getFullYear()} EFerz Digital Agency. All Rights Reserved.`}
+                ? `© ${new Date().getFullYear()} إيفرز (EFerz). جميع الحقوق محفوظة.`
+                : `© ${new Date().getFullYear()} EFerz. All Rights Reserved.`}
             </span>
           </div>
         </div>
