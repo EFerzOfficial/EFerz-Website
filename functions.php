@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.5.4
+ * @version 1.5.5
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.5.4');
+define('EFERZ_THEME_VERSION', '1.5.5');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -444,7 +444,7 @@ add_action('wp_print_scripts', 'eferz_spa_dequeue_bloat', 999999);
 add_action('wp_print_footer_scripts', 'eferz_spa_dequeue_bloat', 1);
 
 add_filter('w3tc_lazyload_can_process', function($can_process) {
-    return eferz_is_spa_request() ? false : $can_process;
+    return (eferz_is_spa_request() || (function_exists('eferz_is_platform_request') && eferz_is_platform_request())) ? false : $can_process;
 }, 999);
 
 /**
@@ -1320,6 +1320,18 @@ add_filter('wp_redirect', function($location) {
 }, 999);
 
 function eferz_attach_platform_branding_hooks() {
+    if (!defined('DONOTLAZYLOAD')) {
+        define('DONOTLAZYLOAD', true);
+    }
+    add_filter('jetpack_remove_login_form', '__return_true', 999);
+    add_filter('jetpack_sso_bypass_login_forward_wpcom', '__return_true', 999);
+    add_filter('jetpack_sso_default_to_sso_login', '__return_false', 999);
+    if (class_exists('Jetpack_SSO') && method_exists('Jetpack_SSO', 'get_instance')) {
+        $jp_sso = Jetpack_SSO::get_instance();
+        remove_action('login_form', array($jp_sso, 'login_form'));
+        remove_action('login_enqueue_scripts', array($jp_sso, 'login_enqueue_scripts'));
+        remove_filter('login_body_class', array($jp_sso, 'login_body_class'));
+    }
     add_filter('login_display_language_dropdown', '__return_false', 999);
     add_filter('login_headerurl', function() {
         return home_url('/');
@@ -1327,7 +1339,7 @@ function eferz_attach_platform_branding_hooks() {
     add_filter('login_headertext', function() {
         $logo_url = esc_url(get_template_directory_uri() . '/assets/eferz-nav-logo.webp');
         return '<span class="efp-brand">'
-            . '<span class="efp-logo-ring"><img src="' . $logo_url . '" alt="EFerz" width="44" height="44" /></span>'
+            . '<span class="efp-logo-ring"><img src="' . $logo_url . '" alt="EFerz" width="44" height="44" class="skip-lazy no-lazyload" data-no-lazy="1" /></span>'
             . '<span class="efp-wordmark"><strong>EF</strong>ERZ PLATFORM</span>'
             . '<span class="efp-sub">ENCRYPTED EXECUTIVE GATEWAY</span>'
             . '</span>';
@@ -1336,9 +1348,10 @@ function eferz_attach_platform_branding_hooks() {
         return 'EFerz Platform — Secure Access Gateway';
     }, 999, 2);
     add_filter('login_body_class', function($classes) {
+        $classes = array_values(array_diff((array) $classes, array('jetpack-sso', 'jetpack-sso-form-display')));
         $classes[] = 'eferz-platform-login';
         return $classes;
-    }, 999);
+    }, 9999);
     $ef_translate_login = function($translated, $text, $domain_or_ctx = 'default', $domain = null) {
         $dom = ($domain !== null) ? $domain : $domain_or_ctx;
         if ($dom !== 'default' && $dom !== '') {
@@ -1627,8 +1640,22 @@ function eferz_attach_platform_branding_hooks() {
           body.eferz-platform-login #backtoblog a:hover {
             color: #fffdff !important;
           }
-          body.eferz-platform-login .privacy-policy-page-link {
+          body.eferz-platform-login .privacy-policy-page-link,
+          body.eferz-platform-login #jetpack-sso-wrap,
+          body.eferz-platform-login .jetpack-sso-or,
+          body.eferz-platform-login .jetpack-sso-toggle,
+          body.eferz-platform-login .wp-tooltip {
             display: none !important;
+          }
+          body.eferz-platform-login.jetpack-sso #loginform > p,
+          body.eferz-platform-login.jetpack-sso #loginform > .user-pass-wrap,
+          body.eferz-platform-login #loginform > p,
+          body.eferz-platform-login #loginform > .user-pass-wrap {
+            display: block !important;
+          }
+          body.eferz-platform-login.jetpack-sso #loginform > p.forgetmenot,
+          body.eferz-platform-login #loginform > p.forgetmenot {
+            display: flex !important;
           }
           /* Wordfence 2FA dark styling */
           body.eferz-platform-login #wfls-prompt-overlay,
@@ -1658,6 +1685,13 @@ function eferz_attach_platform_branding_hooks() {
 }
 
 add_action('init', function() {
+    if (get_option('eferz_active_ver') !== EFERZ_THEME_VERSION) {
+        update_option('eferz_active_ver', EFERZ_THEME_VERSION, true);
+        if (function_exists('w3tc_flush_all')) {
+            w3tc_flush_all();
+        }
+    }
+
     if (wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
         return;
     }
