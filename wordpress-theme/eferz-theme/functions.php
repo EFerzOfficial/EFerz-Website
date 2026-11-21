@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.5.2
+ * @version 1.5.3
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.5.2');
+define('EFERZ_THEME_VERSION', '1.5.3');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -120,7 +120,7 @@ function eferz_is_spa_request() {
     $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
     $first_seg = strtolower(explode('/', $req_path)[0] ?? '');
 
-    $wc_or_wp_reserved = array('shop', 'cart', 'checkout', 'my-account', 'product', 'product-category', 'product-tag', 'order-pay', 'order-received', 'wp-json', 'wc-api', 'wp-login.php', 'wp-admin', 'wp-content', 'wp-includes', 'feed');
+    $wc_or_wp_reserved = array('platform', 'shop', 'cart', 'checkout', 'my-account', 'product', 'product-category', 'product-tag', 'order-pay', 'order-received', 'wp-json', 'wc-api', 'wp-login.php', 'wp-admin', 'wp-content', 'wp-includes', 'feed');
     if (in_array($first_seg, $wc_or_wp_reserved, true)) {
         return false;
     }
@@ -170,17 +170,17 @@ function eferz_get_route_seo() {
         'work' => array(
             'title' => 'Case Studies: 3D Web, AI & E-Commerce Portfolio | EFerz',
             'titleAr' => 'معرض الأعمال: مواقع 3D ومتاجر وذكاء اصطناعي | إيفرز',
-            'desc' => 'Explore 17+ verified EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
-            'descAr' => 'تصفح أكثر من 17 مشروعاً موثقاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
-            'keywords' => 'Web Design Portfolio, E-Commerce Case Studies, 3D Interactive Website Showcase, UI UX Design Case Studies, Shopify & WordPress Portfolio, Enterprise Software Projects',
+            'desc' => 'Explore 17+ EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
+            'descAr' => 'تصفح أكثر من 17 مشروعاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
+            'keywords' => '',
             'slug' => 'work',
         ),
         'clients' => array(
-            'title' => 'Verified Client Reviews & Global Case Studies | EFerz',
+            'title' => 'Client Reviews & Global Case Studies | EFerz',
             'titleAr' => 'آراء العملاء العالميين وقصص النجاح | وكالة إيفرز',
-            'desc' => 'Headquartered in Florida USA with offices in Riyadh & Pakistan, EFerz delivers 98% client retention across AI, web & growth. Read CEO testimonials.',
-            'descAr' => 'مقرنا في أمريكا مع مكاتب في الرياض وباكستان بنسبة احتفاظ 98% في الذكاء الاصطناعي والويب والتسويق الرقمي. اقرأ شهادات المؤسسين والعملاء.',
-            'keywords' => 'EFerz Client Reviews, Verified Digital Agency Testimonials, Enterprise Software Client Stories, Top Rated Web & AI Agency USA KSA Pakistan Worldwide',
+            'desc' => 'Headquartered in Fort Lauderdale USA with offices in Riyadh & Karachi, EFerz serves enterprise clients across AI, web & growth. Read client testimonials.',
+            'descAr' => 'مقرنا الرئيسي في أمريكا مع مكاتب في الرياض وكراتشي لخدمة العملاء في الذكاء الاصطناعي والويب والتسويق الرقمي. اقرأ شهادات العملاء.',
+            'keywords' => '',
             'slug' => 'clients',
         ),
         'team' => array(
@@ -188,7 +188,7 @@ function eferz_get_route_seo() {
             'titleAr' => 'فريق القيادة ومهندسو البرمجيات والذكاء | إيفرز',
             'desc' => 'Meet EFerz leadership: Khubaib Khan, Salman Shahid, Irfan Mirza & principal WebGL, AI and cybersecurity architects across USA, KSA & Pakistan.',
             'descAr' => 'تعرف على قيادة وكالة إيفرز: خبيب خان، سلمان شاهد، عرفان مرزا وفريق مهندسي الذكاء الاصطناعي والويب والأمن السيبراني. تواصل مع فريقنا الآن.',
-            'keywords' => 'EFerz Leadership Team, Khubaib Khan EFerz, Salman Shahid EFerz, Irfan Mirza EFerz, Principal Software Architects, AI & WebGL Engineers',
+            'keywords' => '',
             'slug' => 'team',
         ),
         'about' => array(
@@ -196,7 +196,7 @@ function eferz_get_route_seo() {
             'titleAr' => 'عن إيفرز | شركة تقنية عالمية منذ 2020',
             'desc' => 'Founded in 2020 in Fort Lauderdale USA with Riyadh & Karachi offices, EFerz engineers scalable AI, WebGL & cloud systems. Learn how we build.',
             'descAr' => 'تأسست إيفرز في عام 2020 في أمريكا مع مكاتب في الرياض وكراتشي لبناء أنظمة الذكاء الاصطناعي ومواقع WebGL والحوسبة السحابية. اكتشف قصتنا.',
-            'keywords' => 'About EFerz, Founded in 2020, Global IT & AI Company USA KSA PAK, Software Agency Mission & Core Pillars',
+            'keywords' => '',
             'slug' => 'about',
         ),
         'blog' => array(
@@ -204,7 +204,7 @@ function eferz_get_route_seo() {
             'titleAr' => 'مدونة الهندسة والذكاء الاصطناعي والسيو | إيفرز',
             'desc' => 'Read technical guides from EFerz engineers on LLMs, 3D WebGL performance, Core Web Vitals, technical SEO & Shopify conversion optimization. Explore now.',
             'descAr' => 'اقرأ أدلة هندسية من خبراء إيفرز حول الذكاء الاصطناعي، أداء مواقع WebGL، مؤشرات Core Web Vitals وتحسين محركات البحث سيو. تصفح المقالات الآن.',
-            'keywords' => 'AI Engineering Blog, 3D WebGL & Next.js Performance Guide, Technical SEO Playbook, Shopify Plus Conversion Optimization, Enterprise Cybersecurity Best Practices',
+            'keywords' => '',
             'slug' => 'blog',
         ),
         'contact' => array(
@@ -212,7 +212,7 @@ function eferz_get_route_seo() {
             'titleAr' => 'تواصل مع إيفرز | ابدأ مشروعك الرقمي اليوم',
             'desc' => 'Launch your AI, software, e-commerce or SEO project with EFerz. Connect with our Fort Lauderdale USA, Riyadh KSA & Pakistan teams for a free quote.',
             'descAr' => 'أطلق مشروعك في الذكاء الاصطناعي أو الويب أو المتاجر الإلكترونية مع إيفرز. تواصل مع مكاتبنا في أمريكا والرياض وباكستان للحصول على استشارة مجانية.',
-            'keywords' => 'Contact EFerz, Hire Web & AI Developers USA KSA, Request Software Development Proposal, Riyadh & Florida IT Consultation',
+            'keywords' => '',
             'slug' => 'contact',
         ),
         'lets-build' => array(
@@ -220,7 +220,7 @@ function eferz_get_route_seo() {
             'titleAr' => 'استوديو البناء ثلاثي الأبعاد التفاعلي | إيفرز',
             'desc' => 'Customize a live 3D WebGL brand experience with your logo, colors & packaging inside the EFerz Interactive 3D Studio. Try the real-time demo.',
             'descAr' => 'صمم تجربة موقع ثلاثية الأبعاد حية بشعارك وألوان علامتك ومنتجاتك داخل استوديو إيفرز التفاعلي في الوقت الفعلي. جرّب العرض المباشر الآن.',
-            'keywords' => 'Interactive 3D Website Builder, Live WebGL Product Customizer, 3D Beverage Can & Packaging Configurator, EFerz 3D Studio Demo',
+            'keywords' => '',
             'slug' => 'lets-build',
         ),
         'privacy' => array(
@@ -228,7 +228,7 @@ function eferz_get_route_seo() {
             'titleAr' => 'سياسة الخصوصية وحماية البيانات | إيفرز',
             'desc' => 'Review EFerz privacy policy covering GDPR, CCPA compliance, enterprise encryption & client confidentiality. Read our data practices.',
             'descAr' => 'اطلع على سياسة الخصوصية الرسمية في إيفرز ومعايير الامتثال GDPR والتشفير وحماية سرية بيانات العملاء. اقرأ التفاصيل كاملة.',
-            'keywords' => 'EFerz Privacy Policy, GDPR CCPA Data Protection, Client Confidentiality & Security',
+            'keywords' => '',
             'slug' => 'privacy',
         ),
         'terms' => array(
@@ -236,15 +236,15 @@ function eferz_get_route_seo() {
             'titleAr' => 'شروط الخدمة واتفاقية العملاء | إيفرز',
             'desc' => 'Read EFerz Terms of Service, 100% client IP ownership, milestone billing & SLA commitments for software projects. View terms.',
             'descAr' => 'اقرأ شروط الخدمة واتفاقية مستوى الخدمة وضمان نقل الملكية الفكرية بنسبة 100% لمشاريع البرمجة والتصميم في إيفرز. تصفح الشروط الآن.',
-            'keywords' => 'EFerz Terms of Service, 100% IP Ownership Software Agreement, Digital Agency SLA Terms',
+            'keywords' => '',
             'slug' => 'terms',
         ),
         'refund' => array(
-            'title' => 'Refund Policy & 30-Day Project Guarantee | EFerz',
+            'title' => 'Refund Policy & 30-Day Money-Back Guarantee | EFerz',
             'titleAr' => 'سياسة الاسترداد وضمان 30 يوماً | إيفرز',
             'desc' => 'Explore EFerz 30-Day Money-Back Guarantee and milestone approval policy for risk-free digital & software delivery. Learn more.',
             'descAr' => 'تعرف على سياسة الاسترداد وضمان الرضا لمدة 30 يوماً واعتماد مراحل التسليم الآمن للمشاريع مع إيفرز. اطلع على التفاصيل الآن.',
-            'keywords' => 'EFerz Refund Policy, 30 Day Money Back Guarantee Agency, Risk Free Software Development',
+            'keywords' => '',
             'slug' => 'refund',
         ),
     );
@@ -808,14 +808,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
         ), 400);
     }
 
-    if (!$sms_consent) {
-        return new WP_REST_Response(array(
-            'success' => false,
-            'message' => 'Please confirm the SMS, WhatsApp & phone call communication consent checkbox before submitting.',
-        ), 400);
-    }
-
-    // 4. Store Submission in WordPress Database (so ZERO leads are ever lost!)
+    // 4. Store Submission in WordPress Database (SMS consent is optional per TCPA / A2P 10DLC)
     $leads = get_option('eferz_contact_leads', array());
     if (!is_array($leads)) {
         $leads = array();
@@ -826,7 +819,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
         'name'        => $name,
         'email'       => $email,
         'phone'       => $phone,
-        'sms_consent' => $sms_consent ? 'Opted In (SMS/WhatsApp/Call)' : 'No',
+        'sms_consent' => $sms_consent ? 'Opted In (SMS/WhatsApp/Call)' : 'Not Opted In (Email Only)',
         'company'     => $company,
         'service'     => $service,
         'message'     => $message,
@@ -870,7 +863,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8; width: 150px;"><strong>Full Name:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($name) . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Email Address:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #38bdf8;"><a href="mailto:' . esc_attr($email) . '" style="color: #38bdf8;">' . esc_html($email) . '</a></td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Phone / WhatsApp:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($phone ?: 'N/A') . '</td></tr>
-            <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>SMS / Call Consent:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #10b981;">' . esc_html($sms_consent ? 'Opted In (SMS, WhatsApp & Phone Updates — Reply STOP to opt out)' : 'Not Provided') . '</td></tr>
+            <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>SMS / Call Consent:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: ' . ($sms_consent ? '#10b981' : '#94a3b8') . ';">' . esc_html($sms_consent ? 'Opted In (SMS, WhatsApp & Phone Updates — Reply STOP to opt out)' : 'Not Opted In (Email Only)') . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Company / Brand:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff;">' . esc_html($company ?: 'N/A') . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Primary Service:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #f59e0b;">' . esc_html($service) . '</td></tr>
             <tr><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #94a3b8;"><strong>Project Brief:</strong></td><td style="padding: 10px; border-bottom: 1px solid #1e293b; color: #ffffff; white-space: pre-wrap;">' . esc_html($message) . '</td></tr>
@@ -1294,6 +1287,81 @@ add_action('template_redirect', function() {
     $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
     if ($req_path === 'eferz-pages-sitemap.xml') {
         eferz_render_flagship_sitemap_xml();
+        exit;
+    }
+}, 1);
+
+/**
+ * Custom Backend Login Gate (/platform):
+ * - Visiting /platform opens login (or redirects directly to Dashboard if already logged in).
+ * - Unauthenticated requests to /wp-admin or direct /wp-login.php redirect cleanly to home (/).
+ * - Preserves admin-ajax.php, admin-post.php, cron, REST API, WooCommerce My Account & Wordfence 2FA.
+ */
+function eferz_is_platform_request() {
+    $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
+    return ($req_path === 'platform');
+}
+
+function eferz_rewrite_login_to_platform($url) {
+    if (is_string($url) && strpos($url, 'wp-login.php') !== false) {
+        $url = str_replace('wp-login.php', 'platform/', $url);
+    }
+    return $url;
+}
+add_filter('site_url', 'eferz_rewrite_login_to_platform', 999);
+add_filter('network_site_url', 'eferz_rewrite_login_to_platform', 999);
+add_filter('login_url', function($login_url, $redirect = '', $force_reauth = false) {
+    return eferz_rewrite_login_to_platform($login_url);
+}, 999, 3);
+add_filter('wp_redirect', function($location) {
+    return eferz_rewrite_login_to_platform($location);
+}, 999);
+
+add_action('init', function() {
+    if (wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
+        return;
+    }
+
+    // 1. Handle /platform backend login doorway
+    if (eferz_is_platform_request()) {
+        if (!defined('DONOTCACHEPAGE')) {
+            define('DONOTCACHEPAGE', true);
+        }
+        nocache_headers();
+        if (!headers_sent()) {
+            header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0', true);
+            header('X-Robots-Tag: noindex, nofollow', true);
+        }
+        $action_param = isset($_REQUEST['action']) ? sanitize_text_field(wp_unslash($_REQUEST['action'])) : '';
+        $is_reauth = !empty($_GET['reauth']);
+        if (is_user_logged_in() && $_SERVER['REQUEST_METHOD'] === 'GET' && empty($action_param) && !$is_reauth) {
+            wp_safe_redirect(admin_url());
+            exit;
+        }
+        if (!defined('EFERZ_PLATFORM_LOGIN_GATE')) {
+            define('EFERZ_PLATFORM_LOGIN_GATE', true);
+        }
+        global $pagenow, $wpdb, $wp_locale, $error, $interim_login, $action, $user_login, $errors, $redirect_to, $reauth, $rememberme, $user, $wp_version, $shake_error_codes, $message, $http_post;
+        $pagenow = 'wp-login.php';
+        require ABSPATH . 'wp-login.php';
+        exit;
+    }
+
+    // 2. Redirect logged-out direct visitors on /wp-admin to homepage (without breaking admin-ajax/post)
+    $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
+    if ((is_admin() || preg_match('#^wp-admin(/|$)#', $req_path)) && !is_user_logged_in()) {
+        $script = basename(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH));
+        if (!in_array($script, array('admin-ajax.php', 'admin-post.php'), true)) {
+            wp_safe_redirect(home_url('/'), 302);
+            exit;
+        }
+    }
+}, 1);
+
+// 3. Block direct access to /wp-login.php unless routed internally through /platform
+add_action('login_init', function() {
+    if (!defined('EFERZ_PLATFORM_LOGIN_GATE')) {
+        wp_safe_redirect(home_url('/'), 302);
         exit;
     }
 }, 1);

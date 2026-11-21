@@ -88,8 +88,8 @@ export const EFerzBottomFooterBar: React.FC<EFerzBottomFooterBarProps> = ({
       id: 'about',
       label: isRTL ? 'من نحن' : 'About Us',
       desc: isRTL
-        ? 'قصتنا ورسالتنا وتواجدنا العالمي منذ 2019'
-        : 'Our story, mission & global presence since 2019',
+        ? 'قصتنا ورسالتنا وتواجدنا العالمي منذ 2020'
+        : 'Our story, mission & global presence since 2020',
     },
     {
       id: 'blog',

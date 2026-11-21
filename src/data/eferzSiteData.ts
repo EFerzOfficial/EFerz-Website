@@ -138,9 +138,9 @@ export const EFERZ_ABOUT_CONTENT = {
   headline:
     'All-In-One Global Digital Powerhouse Building Brands, Converting Websites & Securing Systems Worldwide.',
   subheadline:
-    'Headquartered in the United States with regional offices in Saudi Arabia and Pakistan, EFerz entertains and serves clients worldwide across all international markets — delivering Web Design & Development, Digital Marketing, E-Commerce, Amazon FBA, Brand Identity, AI Solutions, and Cybersecurity.',
+    'Headquartered in the United States with regional offices in Saudi Arabia and Pakistan, EFerz partners with and serves clients worldwide across all international markets — delivering Web Design & Development, Digital Marketing, E-Commerce, Amazon FBA, Brand Identity, AI Solutions, and Cybersecurity.',
   storyParagraphs: [
-    'Founded on October 10, 2020, EFerz (eferz.com) was built on a clear conviction: "Nothing is impossible in the IT world." Headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Kingdom of Saudi Arabia) and Karachi (Pakistan), we entertain and serve startups, SMBs, and global enterprises worldwide.',
+    'Founded on October 10, 2020, EFerz (eferz.com) was built on a clear conviction: "Nothing is impossible in the IT world." Headquartered in Fort Lauderdale, Florida (USA) with regional offices in Riyadh (Kingdom of Saudi Arabia) and Karachi (Pakistan), we serve startups, SMBs, and global enterprises worldwide.',
     'Rather than fragmenting your digital presence across multiple disconnected vendors, EFerz serves as your unified international technology and creative partner. From architecting high-converting custom websites and Shopify Plus / WooCommerce stores to scaling Amazon FBA operations, executing data-driven SEO & PPC campaigns, and hardening infrastructure with enterprise Cybersecurity — every discipline works in harmony for clients globally.',
     'In addition to our worldwide digital agency solutions, EFerz operates EFerz Connect from our South Florida headquarters, delivering high-speed residential and commercial connectivity alongside dedicated 24/7 technical support.',
   ],
