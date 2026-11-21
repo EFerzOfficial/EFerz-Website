@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.1.0
+ * @version 1.5.2
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.5.1');
+define('EFERZ_THEME_VERSION', '1.5.2');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -36,6 +36,51 @@ function eferz_send_security_headers() {
     }
 }
 add_action('send_headers', 'eferz_send_security_headers', 999);
+
+/**
+ * Enable Nginx / W3TC proxy caching on anonymous SPA routes by stripping tracking Set-Cookie (_fbp)
+ * and stripping duplicate Referrer-Policy headers before HTTP response flush.
+ */
+function eferz_optimize_final_response_headers() {
+    if (headers_sent()) {
+        return;
+    }
+
+    @header_remove('Referrer-Policy');
+    header('Referrer-Policy: strict-origin-when-cross-origin', true);
+
+    if (function_exists('eferz_is_spa_request') && eferz_is_spa_request() && !is_user_logged_in()) {
+        $cookies = array();
+        foreach (headers_list() as $hdr) {
+            if (stripos($hdr, 'Set-Cookie:') === 0) {
+                $val = trim(substr($hdr, 11));
+                if (stripos($val, '_fbp=') !== 0 && stripos($val, '_fbc=') !== 0) {
+                    $cookies[] = $val;
+                }
+            }
+        }
+        @header_remove('Set-Cookie');
+        foreach ($cookies as $cookie_val) {
+            header('Set-Cookie: ' . $cookie_val, false);
+        }
+        header('Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400', true);
+        @header_remove('Pragma');
+    }
+}
+
+add_action('template_redirect', function() {
+    if (function_exists('header_register_callback')) {
+        header_register_callback('eferz_optimize_final_response_headers');
+    }
+}, 1);
+
+add_filter('wp_headers', function($headers) {
+    if (is_array($headers) && function_exists('eferz_is_spa_request') && eferz_is_spa_request() && !is_user_logged_in()) {
+        $headers['Cache-Control'] = 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400';
+        unset($headers['Pragma'], $headers['Expires']);
+    }
+    return $headers;
+}, 9999);
 
 // Disable XML-RPC pingbacks & obscure WP version / unnecessary discovery headers for security scanners
 add_filter('xmlrpc_enabled', '__return_false');
@@ -89,11 +134,6 @@ function eferz_is_spa_request() {
     // Allow regular WordPress posts, custom post types (The7 Projects/Testimonials/Team), inner Pages, archives, and search to render normally
     if (is_singular() || is_archive() || is_search() || is_author() || is_home()) {
         return false;
-    }
-
-    // Route friendly unknown SPA paths to SPA, but avoid catching missing static files
-    if (is_404() && !preg_match('/\.(css|js|map|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico|xml|txt|json)$/i', $req_path)) {
-        return true;
     }
 
     return false;
@@ -406,6 +446,26 @@ add_action('wp_print_footer_scripts', 'eferz_spa_dequeue_bloat', 1);
 add_filter('w3tc_lazyload_can_process', function($can_process) {
     return eferz_is_spa_request() ? false : $can_process;
 }, 999);
+
+/**
+ * Safely defer non-critical frontend JS on inner WordPress/WooCommerce pages
+ * while preserving WooCommerce Blocks, Stripe checkout & jQuery dependencies.
+ */
+add_filter('script_loader_tag', function($tag, $handle, $src) {
+    if (is_admin() || eferz_is_spa_request() || empty($src)) {
+        return $tag;
+    }
+    if (strpos($tag, ' defer') !== false || strpos($tag, ' async') !== false || strpos($tag, 'type="module"') !== false || strpos($tag, "type='module'") !== false) {
+        return $tag;
+    }
+    $exclude_prefixes = array('jquery', 'wc-', 'woocommerce', 'stripe', 'wp-', 'react', 'elementor', 'eferz-');
+    foreach ($exclude_prefixes as $prefix) {
+        if (strpos($handle, $prefix) === 0 || strpos($src, 'js.stripe.com') !== false) {
+            return $tag;
+        }
+    }
+    return str_replace(' src=', ' defer src=', $tag);
+}, 20, 3);
 
 function eferz_strip_spa_plugin_hooks() {
     if (!eferz_is_spa_request()) {
@@ -820,6 +880,7 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
 
     $headers = array(
         'Content-Type: text/html; charset=UTF-8',
+        'From: EFerz Website <info@eferz.com>',
         'Reply-To: ' . $name . ' <' . $email . '>',
     );
 
@@ -951,6 +1012,14 @@ add_filter('template_include', function($template) {
         }
     }
 
+    // 4. Genuine 404 responses -> force clean theme 404.php (blocks page builder / Soft-404 overrides)
+    if (is_404()) {
+        $not_found = get_template_directory() . '/404.php';
+        if (file_exists($not_found)) {
+            return $not_found;
+        }
+    }
+
     return $template;
 }, 999999);
 
@@ -1073,7 +1142,7 @@ add_action('template_redirect', function() {
 
 add_filter('wp_robots', function($robots) {
     $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
-    if (strpos($req_path, 'demo-payment') !== false || strpos($req_path, 'test-payment') !== false || is_author()) {
+    if (is_404() || strpos($req_path, 'demo-payment') !== false || strpos($req_path, 'test-payment') !== false || is_author()) {
         $robots['noindex'] = true;
         $robots['nofollow'] = true;
         unset($robots['index'], $robots['follow']);
@@ -1082,12 +1151,32 @@ add_filter('wp_robots', function($robots) {
 }, 999);
 
 /**
- * Harden against username enumeration (/author/admin/) & clean Yoast utility sitemaps
+ * Harden against Soft-404s, legacy /about-us slug duplicates, & username enumeration (/author/admin/)
  */
 add_action('template_redirect', function() {
-    if (is_author() && !is_admin()) {
-        global $wp_query;
-        $wp_query->set_404();
+    if (is_admin() || wp_doing_ajax() || wp_doing_cron()) {
+        return;
+    }
+
+    $req_path = strtolower(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
+
+    if ($req_path === 'about-us') {
+        wp_redirect('https://eferz.com/about/', 301);
+        exit;
+    }
+    if ($req_path === 'home') {
+        wp_redirect('https://eferz.com/', 301);
+        exit;
+    }
+
+    global $wp_query;
+    $is_wc = function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url());
+    $is_empty_unknown = !$is_wc && !eferz_is_spa_request() && !is_front_page() && !is_home() && !is_search() && !is_archive() && !is_feed() && !is_robots() && !is_trackback() && $wp_query && !$wp_query->have_posts();
+
+    if (is_author() || is_404() || $is_empty_unknown) {
+        if ($wp_query) {
+            $wp_query->set_404();
+        }
         status_header(404);
         header('X-Robots-Tag: noindex, nofollow', true);
         nocache_headers();
@@ -1105,3 +1194,106 @@ add_filter('wpseo_sitemap_exclude_post_type', function($excluded, $post_type) {
     }
     return $excluded;
 }, 10, 2);
+
+/**
+ * Exclude noindex WooCommerce utility pages from Yoast page-sitemap.xml
+ */
+add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_ids) {
+    if (!is_array($excluded_ids)) {
+        $excluded_ids = array();
+    }
+    foreach (array('cart', 'checkout', 'my-account', 'order-track') as $slug) {
+        $page = get_page_by_path($slug);
+        if ($page && isset($page->ID)) {
+            $excluded_ids[] = (int) $page->ID;
+        }
+    }
+    if (function_exists('wc_get_page_id')) {
+        foreach (array('cart', 'checkout', 'myaccount') as $wc_key) {
+            $pid = (int) wc_get_page_id($wc_key);
+            if ($pid > 0) {
+                $excluded_ids[] = $pid;
+            }
+        }
+    }
+    return array_values(array_unique(array_filter(array_map('intval', $excluded_ids))));
+}, 20);
+
+/**
+ * Output XML for Flagship SPA Sitemap (/eferz-pages-sitemap.xml) so Google indexes all 12 React routes + hreflang
+ */
+function eferz_render_flagship_sitemap_xml() {
+    $routes = array(
+        ''           => '1.0',
+        'services'   => '0.9',
+        'work'       => '0.9',
+        'clients'    => '0.8',
+        'team'       => '0.8',
+        'about'      => '0.8',
+        'blog'       => '0.8',
+        'contact'    => '0.9',
+        'lets-build' => '0.8',
+        'privacy'    => '0.4',
+        'terms'      => '0.4',
+        'refund'     => '0.4',
+    );
+    $lastmod = gmdate('Y-m-d\TH:i:s+00:00');
+    $og_img  = esc_url(get_template_directory_uri() . '/assets/og-eferz-v2.jpg');
+
+    status_header(200);
+    header('Content-Type: application/xml; charset=UTF-8');
+    header('X-Robots-Tag: noindex, follow', true);
+    header('Cache-Control: public, max-age=3600');
+
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
+    foreach ($routes as $slug => $prio) {
+        $url = 'https://eferz.com/' . ($slug !== '' ? $slug . '/' : '');
+        echo "  <url>\n";
+        echo '    <loc>' . esc_url($url) . "</loc>\n";
+        echo '    <lastmod>' . esc_html($lastmod) . "</lastmod>\n";
+        echo '    <priority>' . esc_html($prio) . "</priority>\n";
+        echo '    <xhtml:link rel="alternate" hreflang="en" href="' . esc_url($url) . "\" />\n";
+        echo '    <xhtml:link rel="alternate" hreflang="ar" href="' . esc_url($url . '?lang=ar') . "\" />\n";
+        echo '    <xhtml:link rel="alternate" hreflang="x-default" href="' . esc_url($url) . "\" />\n";
+        if ($slug === '' || $slug === 'services' || $slug === 'work') {
+            echo "    <image:image>\n";
+            echo '      <image:loc>' . $og_img . "</image:loc>\n";
+            echo "      <image:title>EFerz Digital Agency</image:title>\n";
+            echo "    </image:image>\n";
+        }
+        echo "  </url>\n";
+    }
+    echo "</urlset>\n";
+}
+
+add_filter('wpseo_sitemap_index', function($sitemap_index) {
+    $lastmod = gmdate('Y-m-d\TH:i:s+00:00');
+    $sitemap_index .= "\t<sitemap>\n\t\t<loc>https://eferz.com/eferz-pages-sitemap.xml</loc>\n\t\t<lastmod>" . esc_html($lastmod) . "</lastmod>\n\t</sitemap>\n";
+    return $sitemap_index;
+}, 20);
+
+add_action('init', function() {
+    if (function_exists('wpseo_register_sitemap')) {
+        wpseo_register_sitemap('eferz-pages', function() {
+            global $wpseo_sitemaps;
+            ob_start();
+            eferz_render_flagship_sitemap_xml();
+            $xml = ob_get_clean();
+            if ($wpseo_sitemaps && method_exists($wpseo_sitemaps, 'set_sitemap')) {
+                $wpseo_sitemaps->set_sitemap($xml);
+            } else {
+                echo $xml;
+                exit;
+            }
+        });
+    }
+}, 20);
+
+add_action('template_redirect', function() {
+    $req_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+    if ($req_path === 'eferz-pages-sitemap.xml') {
+        eferz_render_flagship_sitemap_xml();
+        exit;
+    }
+}, 1);

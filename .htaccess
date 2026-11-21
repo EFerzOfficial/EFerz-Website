@@ -12,6 +12,7 @@ DirectoryIndex index.php
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
+    Header always unset Referrer-Policy
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     Header always set Content-Security-Policy "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https: wss:; frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.google.com https://pay.google.com https:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com; upgrade-insecure-requests;"

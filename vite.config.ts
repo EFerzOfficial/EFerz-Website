@@ -16,7 +16,7 @@ export default defineConfig({
     include: ['react', 'react-dom', 'react-dom/client'],
   },
   build: {
-    sourcemap: true,
+    sourcemap: false,
     minify: 'esbuild',
     target: 'es2020',
     chunkSizeWarningLimit: 3000,

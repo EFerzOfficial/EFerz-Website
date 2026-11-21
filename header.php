@@ -4,7 +4,7 @@
  * Matches the main React flagship floating specular glass navigation bar.
  *
  * @package EFerz
- * @version 1.2.7
+ * @version 1.5.2
  */
 ?><!doctype html>
 <html <?php language_attributes(); ?> class="theme-galaxy">
@@ -26,13 +26,14 @@
         <a href="<?php echo esc_url(home_url('/')); ?>" class="eferz-wp-brand" aria-label="EFerz Home">
             <span class="eferz-wp-brand-logo-wrap">
                 <img
-                    src="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-logo.png'); ?>"
+                    src="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-nav-logo.webp'); ?>"
                     alt="EFerz Logo"
                     width="34"
                     height="34"
                     class="eferz-wp-logo-img skip-lazy no-lazy"
                     data-no-lazy="1"
                     loading="eager"
+                    fetchpriority="high"
                     decoding="sync"
                 />
             </span>
@@ -71,7 +72,7 @@
         <div class="eferz-wp-brand">
             <span class="eferz-wp-brand-logo-wrap eferz-wp-brand-logo-wrap--sm">
                 <img
-                    src="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-logo.png'); ?>"
+                    src="<?php echo esc_url(get_template_directory_uri() . '/assets/eferz-nav-logo.webp'); ?>"
                     alt="EFerz Logo"
                     width="28"
                     height="28"
