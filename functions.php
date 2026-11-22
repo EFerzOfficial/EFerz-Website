@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.1');
+define('EFERZ_THEME_VERSION', '1.6.2');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -1202,6 +1202,39 @@ add_action('template_redirect', function() {
     }
     if ($req_path === 'home') {
         wp_redirect('https://eferz.com/', 301);
+        exit;
+    }
+    if ($req_path === 'contact-us') {
+        wp_redirect('https://eferz.com/contact/', 301);
+        exit;
+    }
+    if ($req_path === 'privacy-policy') {
+        wp_redirect('https://eferz.com/privacy/', 301);
+        exit;
+    }
+    if ($req_path === 'terms-and-conditions' || $req_path === 'terms-of-service') {
+        wp_redirect('https://eferz.com/terms/', 301);
+        exit;
+    }
+    if ($req_path === 'refund-policy') {
+        wp_redirect('https://eferz.com/refund/', 301);
+        exit;
+    }
+
+    $legacy_service_slugs = array(
+        'web-design-development',
+        'digital-marketing',
+        'e-commerce-solution',
+        'amazon-fba',
+        'social-accounts-management',
+        'content-writing',
+        'graphic-designing',
+        'brand-development',
+        'consulting-services',
+        'cyber-security',
+    );
+    if (in_array($req_path, $legacy_service_slugs, true)) {
+        wp_redirect('https://eferz.com/services/', 301);
         exit;
     }
 
