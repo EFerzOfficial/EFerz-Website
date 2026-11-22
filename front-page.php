@@ -4,7 +4,7 @@
  * Exact 100% React Application from AI Studio Build
  *
  * @package EFerz
- * @version 1.5.8
+ * @version 1.5.9
  */
 $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
 $eferz_og_image = get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
@@ -189,42 +189,60 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
     <?php if ($eferz_route === 'agency') : ?>
     <div id="eferz-cinematic-loader" aria-hidden="true">
       <style>
-        #eferz-cinematic-loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#08090d;background-image:radial-gradient(circle at 50% 46%,rgba(208,33,40,.18) 0%,rgba(208,33,40,.04) 34%,rgba(8,9,13,1) 70%);color:#fffdff;overflow:hidden;opacity:1;transform:scale(1);transition:opacity .48s cubic-bezier(.16,1,.3,1),transform .54s cubic-bezier(.16,1,.3,1);pointer-events:auto}
-        #eferz-cinematic-loader.is-ready{opacity:0;transform:scale(1.035);pointer-events:none}
-        #ef-ldr-cvs{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
-        .ef-ldr-core{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px}
-        .ef-ldr-orbit{position:relative;width:128px;height:128px;display:flex;align-items:center;justify-content:center;margin-bottom:26px}
-        .ef-ldr-ring-outer,.ef-ldr-ring-inner{position:absolute;inset:0;border-radius:50%;pointer-events:none}
-        .ef-ldr-ring-outer{border:1px solid rgba(255,255,255,.1);border-top-color:rgba(255,253,255,.72);border-right-color:rgba(236,57,53,.45);animation:efSpinCW 2.4s linear infinite}
-        .ef-ldr-ring-inner{inset:12px;border:1.5px solid rgba(208,33,40,.15);border-bottom-color:#ec3935;border-left-color:rgba(236,57,53,.75);box-shadow:0 0 28px rgba(208,33,40,.25);animation:efSpinCCW 1.65s linear infinite}
-        .ef-ldr-logo-box{position:relative;width:68px;height:68px;border-radius:20px;background:rgba(14,16,24,.9);border:1px solid rgba(255,255,255,.18);box-shadow:0 16px 42px rgba(0,0,0,.8),0 0 36px rgba(208,33,40,.34),inset 0 1px 1px rgba(255,255,255,.24);display:flex;align-items:center;justify-content:center;animation:efPulseLogo 2.2s ease-in-out infinite}
-        .ef-ldr-logo-box img{width:40px;height:40px;object-fit:contain;display:block}
-        .ef-ldr-word{font-family:"Outfit","Montserrat",system-ui,sans-serif;font-weight:900;font-size:24px;letter-spacing:.38em;text-indent:.38em;color:#fffdff;margin:0 0 6px;line-height:1.1}
+        #eferz-cinematic-loader{position:fixed;inset:0;z-index:9999;overflow:hidden;color:#fffdff;pointer-events:auto;user-select:none}
+        #eferz-cinematic-loader.is-opening{pointer-events:none}
+        .ef-ldr-curtain-top,.ef-ldr-curtain-bot{position:fixed;left:0;right:0;height:50.2%;background:#07080d;will-change:transform;transition:transform .74s cubic-bezier(.77,0,.175,1)}
+        .ef-ldr-curtain-top{top:0;background-image:radial-gradient(circle at 50% 96%,rgba(208,33,40,.18) 0%,rgba(208,33,40,.04) 36%,rgba(7,8,13,1) 72%);border-bottom:1px solid rgba(255,255,255,.06);transform:translate3d(0,0,0)}
+        .ef-ldr-curtain-bot{bottom:0;background-image:radial-gradient(circle at 50% 4%,rgba(208,33,40,.16) 0%,rgba(208,33,40,.03) 36%,rgba(7,8,13,1) 72%);border-top:1px solid rgba(255,255,255,.06);transform:translate3d(0,0,0)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-curtain-top{transform:translate3d(0,-104%,0);border-bottom-color:rgba(236,57,53,.75);box-shadow:0 12px 45px rgba(236,57,53,.28)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-curtain-bot{transform:translate3d(0,104%,0);border-top-color:rgba(236,57,53,.75);box-shadow:0 -12px 45px rgba(236,57,53,.28)}
+        .ef-ldr-seam{position:fixed;left:50%;top:50%;width:0;height:2px;transform:translate(-50%,-50%);background:linear-gradient(90deg,transparent,#ec3935,#fffdff,#ec3935,transparent);box-shadow:0 0 24px rgba(236,57,53,.95);opacity:0;z-index:4;pointer-events:none;transition:width .38s cubic-bezier(.16,1,.3,1),opacity .45s ease}
+        #eferz-cinematic-loader.is-seam .ef-ldr-seam{width:92vw;opacity:1}
+        #eferz-cinematic-loader.is-opening .ef-ldr-seam{width:100vw;opacity:0}
+        #ef-ldr-cvs{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:2;pointer-events:none;transition:opacity .48s cubic-bezier(.16,1,.3,1),transform .68s cubic-bezier(.16,1,.3,1)}
+        #eferz-cinematic-loader.is-opening #ef-ldr-cvs{opacity:0;transform:scale(1.16)}
+        .ef-ldr-center{position:fixed;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;transition:opacity .42s cubic-bezier(.16,1,.3,1),transform .64s cubic-bezier(.16,1,.3,1)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-center{opacity:0;transform:scale(1.12)}
+        .ef-ldr-rings{position:relative;width:186px;height:186px;display:flex;align-items:center;justify-content:center}
+        .ef-ldr-ring-a,.ef-ldr-ring-b{position:absolute;inset:0;border-radius:50%;pointer-events:none}
+        .ef-ldr-ring-a{border:1px solid rgba(255,255,255,.08);border-top-color:rgba(255,253,255,.65);border-right-color:rgba(236,57,53,.45);animation:efSpinCW 5.2s linear infinite}
+        .ef-ldr-ring-b{inset:16px;border:1px dashed rgba(236,57,53,.28);border-bottom-color:#ec3935;animation:efSpinCCW 3.6s linear infinite}
+        .ef-ldr-brand{margin-top:20px;display:flex;flex-direction:column;align-items:center;gap:6px}
+        .ef-ldr-word{font-family:"Outfit","Montserrat",system-ui,sans-serif;font-weight:900;font-size:20px;letter-spacing:.44em;text-indent:.44em;color:#fffdff;margin:0;line-height:1}
         .ef-ldr-word b{color:#ec3935;font-weight:900}
-        .ef-ldr-tag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,253,255,.58);margin:0 0 22px}
-        .ef-ldr-bar-wrap{width:220px;display:flex;flex-direction:column;gap:8px;align-items:center}
-        .ef-ldr-rail{width:100%;height:2px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
-        .ef-ldr-fill{height:100%;width:8%;border-radius:999px;background:linear-gradient(90deg,#d02128,#ec3935,#fffdff);box-shadow:0 0 14px rgba(236,57,53,.9);transition:width .18s ease-out}
-        .ef-ldr-pct{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:rgba(255,253,255,.68)}
+        .ef-ldr-tag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,253,255,.52);margin:0}
+        .ef-ldr-corner{position:fixed;right:clamp(22px,4.8vw,56px);bottom:clamp(22px,4.5vw,46px);z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none;transition:opacity .38s ease,transform .58s cubic-bezier(.16,1,.3,1)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-corner{opacity:0;transform:translate3d(0,22px,0)}
+        .ef-ldr-num-row{display:flex;align-items:baseline;gap:4px;line-height:.86}
+        .ef-ldr-pct{font-family:"Outfit","Montserrat",system-ui,sans-serif;font-weight:900;font-size:clamp(54px,8.8vw,118px);letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#fffdff;text-shadow:0 0 36px rgba(236,57,53,.24)}
+        .ef-ldr-sym{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:clamp(18px,2.4vw,30px);color:#ec3935;letter-spacing:.04em}
+        .ef-ldr-rail{width:clamp(132px,20vw,220px);height:2px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
+        .ef-ldr-fill{height:100%;width:6%;border-radius:999px;background:linear-gradient(90deg,#d02128,#ec3935,#fffdff);box-shadow:0 0 14px rgba(236,57,53,.95);transition:width .16s ease-out}
+        .ef-ldr-sub{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,253,255,.46)}
+        @media(max-width:640px){.ef-ldr-rings{width:146px;height:146px}.ef-ldr-ring-b{inset:13px}.ef-ldr-word{font-size:17px;letter-spacing:.38em}}
         @keyframes efSpinCW{to{transform:rotate(360deg)}}
         @keyframes efSpinCCW{to{transform:rotate(-360deg)}}
-        @keyframes efPulseLogo{0%,100%{transform:scale(1);box-shadow:0 16px 42px rgba(0,0,0,.8),0 0 32px rgba(208,33,40,.3),inset 0 1px 1px rgba(255,255,255,.24)}50%{transform:scale(1.04);box-shadow:0 18px 48px rgba(0,0,0,.85),0 0 44px rgba(236,57,53,.48),inset 0 1px 1px rgba(255,255,255,.32)}}
       </style>
+      <div class="ef-ldr-curtain-top"></div>
+      <div class="ef-ldr-curtain-bot"></div>
+      <div class="ef-ldr-seam"></div>
       <canvas id="ef-ldr-cvs"></canvas>
-      <div class="ef-ldr-core">
-        <div class="ef-ldr-orbit">
-          <div class="ef-ldr-ring-outer"></div>
-          <div class="ef-ldr-ring-inner"></div>
-          <div class="ef-ldr-logo-box">
-            <img src="<?php echo esc_url($theme_assets_uri . '/eferz-nav-logo.webp'); ?>" alt="EFerz" width="40" height="40" fetchpriority="high" decoding="sync" class="skip-lazy no-lazy" data-no-lazy="1" />
-          </div>
+      <div class="ef-ldr-center">
+        <div class="ef-ldr-rings">
+          <div class="ef-ldr-ring-a"></div>
+          <div class="ef-ldr-ring-b"></div>
         </div>
-        <p class="ef-ldr-word"><b>EF</b>ERZ</p>
-        <p class="ef-ldr-tag"><?php echo $eferz_is_ar ? 'لا شيء مستحيل في عالم التقنية' : 'NOTHING IS IMPOSSIBLE'; ?></p>
-        <div class="ef-ldr-bar-wrap">
-          <div class="ef-ldr-rail"><div class="ef-ldr-fill" id="ef-ldr-fill"></div></div>
-          <div class="ef-ldr-pct" id="ef-ldr-pct">08%</div>
+        <div class="ef-ldr-brand">
+          <p class="ef-ldr-word"><b>EF</b>ERZ</p>
+          <p class="ef-ldr-tag"><?php echo $eferz_is_ar ? 'لا شيء مستحيل في عالم التقنية' : 'NOTHING IS IMPOSSIBLE'; ?></p>
         </div>
+      </div>
+      <div class="ef-ldr-corner" dir="ltr">
+        <div class="ef-ldr-sub"><?php echo $eferz_is_ar ? 'جاري التحميل' : 'INITIALIZING'; ?></div>
+        <div class="ef-ldr-num-row">
+          <span class="ef-ldr-pct" id="ef-ldr-pct">06</span><span class="ef-ldr-sym">%</span>
+        </div>
+        <div class="ef-ldr-rail"><div class="ef-ldr-fill" id="ef-ldr-fill"></div></div>
       </div>
       <script>
         (function(){
@@ -235,51 +253,178 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           if (!ldr) return;
 
           var tStart = performance.now();
-          var progress = 8;
-          var done = false;
+          var progress = 6;
+          var readyToOpen = false;
+          var opening = false;
           var rafId = 0;
 
           var ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
           var w = window.innerWidth, h = window.innerHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
-          var stars = [];
+          var eStars = [], orbitStars = [];
+
+          function buildScene() {
+            eStars = [];
+            orbitStars = [];
+            var mob = w < 640;
+            var eScale = mob ? 0.135 : 0.175;
+            var cosA = Math.cos(-0.38), sinA = Math.sin(-0.38);
+
+            // Signature EFerz Star-Formed "e" Emblem (matching the 3D star-particle e_logo geometry)
+            var eCount = mob ? 118 : 168;
+            var barCount = Math.floor(eCount * 0.27);
+            for (var i = 0; i < eCount; i++) {
+              var vx = 0, vy = 0, hero = (i % 7 === 0);
+              if (i < barCount) {
+                var t = i / barCount;
+                vx = -238 + t * 492;
+                vy = -14 + (((i % 3) - 1) * 10 + (Math.random() - 0.5) * 14);
+              } else {
+                var p = (i - barCount) / (eCount - barCount);
+                var th = p * Math.PI * 1.76;
+                var band = ((i % 3) - 1) * 11 + (Math.random() - 0.5) * 14;
+                vx = (254 + band) * Math.cos(th);
+                vy = -(274 + band) * Math.sin(th);
+              }
+              var rx = (vx * cosA - vy * sinA) * eScale;
+              var ry = (vx * sinA + vy * cosA) * eScale;
+              eStars.push({
+                x: rx,
+                y: ry,
+                sz: hero ? 3.2 : (1.1 + Math.random() * 1.45),
+                hero: hero,
+                red: rx < 4,
+                phase: Math.random() * Math.PI * 2,
+                twk: 2.2 + Math.random() * 2.8
+              });
+            }
+
+            // Concentric circular orbiting stars revolving around the "e" icon
+            var orbCount = mob ? 58 : 102;
+            var minR = mob ? 76 : 96;
+            var maxR = Math.max(w, h) * 0.56;
+            for (var j = 0; j < orbCount; j++) {
+              var tier = j / orbCount;
+              var radius = minR + Math.pow(tier, 0.85) * (maxR - minR);
+              var isSpark = j < (mob ? 18 : 30);
+              var dir = (j % 5 === 0) ? -1 : 1;
+              orbitStars.push({
+                ang: Math.random() * Math.PI * 2,
+                r: radius,
+                spd: dir * ((isSpark ? 0.011 : 0.0042) + Math.random() * (isSpark ? 0.008 : 0.0045)) / (0.65 + tier * 1.35),
+                sz: isSpark ? (2.4 + Math.random() * 2.2) : (0.9 + Math.random() * 1.5),
+                spark: isSpark,
+                red: j % 3 !== 1,
+                phase: Math.random() * Math.PI * 2,
+                twk: 1.8 + Math.random() * 3.0
+              });
+            }
+          }
+
+          function drawStar4(x, y, rad, color, alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            var inner = rad * 0.24;
+            ctx.moveTo(x, y - rad);
+            ctx.quadraticCurveTo(x + inner * 0.45, y - inner * 0.45, x + rad, y);
+            ctx.quadraticCurveTo(x + inner * 0.45, y + inner * 0.45, x, y + rad);
+            ctx.quadraticCurveTo(x - inner * 0.45, y + inner * 0.45, x - rad, y);
+            ctx.quadraticCurveTo(x - inner * 0.45, y - inner * 0.45, x, y - rad);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          var ringsEl = ldr.querySelector('.ef-ldr-rings');
+          var cx = w * 0.5, cy = h * 0.5 - (w < 640 ? 28 : 30);
+          function syncCenter() {
+            if (ringsEl) {
+              var rc = ringsEl.getBoundingClientRect();
+              if (rc.width > 0) {
+                cx = rc.left + rc.width * 0.5;
+                cy = rc.top + rc.height * 0.5;
+                return;
+              }
+            }
+            cx = w * 0.5;
+            cy = h * 0.5 - (w < 640 ? 28 : 30);
+          }
+
           if (ctx) {
             var resize = function() {
               w = window.innerWidth; h = window.innerHeight;
               cvs.width = w * dpr; cvs.height = h * dpr;
               ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+              syncCenter();
             };
             resize();
-            window.addEventListener('resize', resize, { passive: true });
-            var n = w < 768 ? 42 : 78;
-            for (var i = 0; i < n; i++) {
-              var ang = Math.random() * Math.PI * 2;
-              var dist = 40 + Math.random() * Math.max(w, h) * 0.55;
-              stars.push({ ang: ang, dist: dist, spd: 0.45 + Math.random() * 1.15, sz: 0.8 + Math.random() * 1.7, red: i % 3 === 0 });
-            }
+            buildScene();
+            window.addEventListener('resize', function() { resize(); buildScene(); }, { passive: true });
           }
 
-          function tick() {
-            if (!done) {
-              progress += (92 - progress) * 0.045;
-              var p = Math.min(92, Math.round(progress));
+          function tick(now) {
+            var sec = (now || performance.now()) * 0.001;
+            if (!readyToOpen) {
+              progress += (94 - progress) * 0.048;
+              var p = Math.min(94, Math.round(progress));
               if (fill) fill.style.width = p + '%';
-              if (pct) pct.textContent = (p < 10 ? '0' : '') + p + '%';
+              if (pct) pct.textContent = (p < 10 ? '0' : '') + p;
             }
             if (ctx) {
               ctx.clearRect(0, 0, w, h);
-              var cx = w * 0.5, cy = h * 0.48;
-              for (var i = 0; i < stars.length; i++) {
-                var s = stars[i];
-                s.dist -= s.spd * (done ? 4.5 : 1.4);
-                s.ang += 0.0022;
-                if (s.dist < 18) { s.dist = Math.max(w, h) * 0.52; }
-                var x = cx + Math.cos(s.ang) * s.dist;
-                var y = cy + Math.sin(s.ang) * s.dist;
-                ctx.beginPath();
-                ctx.arc(x, y, s.sz, 0, Math.PI * 2);
-                ctx.fillStyle = s.red ? 'rgba(236,57,53,.72)' : 'rgba(255,253,255,.45)';
-                ctx.fill();
+              var mob = w < 640;
+
+              // Faint glowing orbital halo behind "e"
+              var grd = ctx.createRadialGradient(cx, cy, 4, cx, cy, mob ? 90 : 120);
+              grd.addColorStop(0, 'rgba(236,57,53,0.22)');
+              grd.addColorStop(0.5, 'rgba(208,33,40,0.07)');
+              grd.addColorStop(1, 'rgba(7,8,13,0)');
+              ctx.fillStyle = grd;
+              ctx.beginPath();
+              ctx.arc(cx, cy, mob ? 90 : 120, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Circular orbiting stars revolving around the "e" icon
+              var boost = opening ? 3.2 : 1;
+              for (var j = 0; j < orbitStars.length; j++) {
+                var o = orbitStars[j];
+                o.ang += o.spd * boost;
+                var rr = opening ? o.r * 1.06 : o.r;
+                var ox = cx + Math.cos(o.ang) * rr;
+                var oy = cy + Math.sin(o.ang) * rr;
+                var tw = 0.55 + 0.45 * Math.sin(sec * o.twk + o.phase);
+                var col = o.red ? '#ec3935' : '#fffdff';
+                if (o.spark) {
+                  drawStar4(ox, oy, o.sz * (0.85 + tw * 0.5), col, 0.45 + tw * 0.52);
+                } else {
+                  ctx.globalAlpha = 0.25 + tw * 0.55;
+                  ctx.fillStyle = col;
+                  ctx.beginPath();
+                  ctx.arc(ox, oy, o.sz, 0, Math.PI * 2);
+                  ctx.fill();
+                }
               }
+              ctx.globalAlpha = 1;
+
+              // Center Star-Formed "e" Icon
+              var pulse = 1 + Math.sin(sec * 2.4) * 0.025;
+              for (var i = 0; i < eStars.length; i++) {
+                var es = eStars[i];
+                var sx = cx + es.x * pulse;
+                var sy = cy + es.y * pulse;
+                var twE = 0.65 + 0.35 * Math.sin(sec * es.twk + es.phase);
+                var cE = es.red ? '#ec3935' : '#fffdff';
+                if (es.hero) {
+                  drawStar4(sx, sy, es.sz * (1.2 + twE * 0.65), cE, 0.72 + twE * 0.28);
+                } else {
+                  ctx.globalAlpha = 0.55 + twE * 0.45;
+                  ctx.fillStyle = cE;
+                  ctx.beginPath();
+                  ctx.arc(sx, sy, es.sz, 0, Math.PI * 2);
+                  ctx.fill();
+                }
+              }
+              ctx.globalAlpha = 1;
             }
             if (ldr && ldr.parentNode) {
               rafId = requestAnimationFrame(tick);
@@ -288,26 +433,28 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           rafId = requestAnimationFrame(tick);
 
           function dismiss() {
-            if (done) return;
-            done = true;
+            if (readyToOpen) return;
+            readyToOpen = true;
             if (fill) fill.style.width = '100%';
-            if (pct) pct.textContent = '100%';
+            if (pct) pct.textContent = '100';
+            ldr.classList.add('is-seam');
             setTimeout(function() {
               if (!ldr) return;
-              ldr.classList.add('is-ready');
+              opening = true;
+              ldr.classList.add('is-opening');
               setTimeout(function() {
                 if (rafId) cancelAnimationFrame(rafId);
                 if (ldr && ldr.parentNode) ldr.parentNode.removeChild(ldr);
-              }, 520);
-            }, 140);
+              }, 780);
+            }, 170);
           }
 
           window.__eferzHideLoader = function() {
             var elapsed = performance.now() - tStart;
-            var wait = Math.max(0, 520 - elapsed);
+            var wait = Math.max(0, 760 - elapsed);
             setTimeout(dismiss, wait);
           };
-          setTimeout(dismiss, 2600);
+          setTimeout(dismiss, 2800);
         })();
       </script>
     </div>

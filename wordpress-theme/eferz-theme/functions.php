@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.5.4
+ * @version 1.5.9
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.5.4');
+define('EFERZ_THEME_VERSION', '1.5.9');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -444,7 +444,7 @@ add_action('wp_print_scripts', 'eferz_spa_dequeue_bloat', 999999);
 add_action('wp_print_footer_scripts', 'eferz_spa_dequeue_bloat', 1);
 
 add_filter('w3tc_lazyload_can_process', function($can_process) {
-    return eferz_is_spa_request() ? false : $can_process;
+    return (eferz_is_spa_request() || (function_exists('eferz_is_platform_request') && eferz_is_platform_request())) ? false : $can_process;
 }, 999);
 
 /**
@@ -1306,7 +1306,11 @@ function eferz_is_platform_request() {
 
 function eferz_rewrite_login_to_platform($url) {
     if (is_string($url) && strpos($url, 'wp-login.php') !== false) {
-        $url = str_replace('wp-login.php', 'platform/', $url);
+        $target_host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $site_host   = strtolower((string) parse_url(home_url('/'), PHP_URL_HOST));
+        if ($target_host === '' || $target_host === $site_host || $target_host === 'eferz.com' || $target_host === 'www.eferz.com') {
+            $url = str_replace('wp-login.php', 'platform/', $url);
+        }
     }
     return $url;
 }
@@ -1319,7 +1323,58 @@ add_filter('wp_redirect', function($location) {
     return eferz_rewrite_login_to_platform($location);
 }, 999);
 
+function eferz_strip_jetpack_sso_hooks() {
+    global $wp_filter;
+    $hooks = array('login_init', 'login_form', 'login_enqueue_scripts', 'login_body_class', 'login_message', 'login_footer', 'authenticate');
+    foreach ($hooks as $hook_name) {
+        if (empty($wp_filter[$hook_name]) || empty($wp_filter[$hook_name]->callbacks)) {
+            continue;
+        }
+        foreach ($wp_filter[$hook_name]->callbacks as $priority => $callbacks) {
+            foreach ($callbacks as $cb) {
+                $fn = $cb['function'] ?? null;
+                $is_sso = false;
+                if (is_array($fn) && !empty($fn[0])) {
+                    $cls = is_object($fn[0]) ? get_class($fn[0]) : (string) $fn[0];
+                    if (stripos($cls, 'Jetpack_SSO') !== false || (stripos($cls, 'Jetpack') !== false && stripos($cls, 'SSO') !== false)) {
+                        $is_sso = true;
+                    }
+                } elseif (is_string($fn) && stripos($fn, 'jetpack') !== false && stripos($fn, 'sso') !== false) {
+                    $is_sso = true;
+                }
+                if ($is_sso) {
+                    remove_filter($hook_name, $fn, $priority);
+                }
+            }
+        }
+    }
+}
+
+add_action('after_setup_theme', function() {
+    if (function_exists('eferz_is_platform_request') && eferz_is_platform_request()) {
+        if (!defined('DONOTLAZYLOAD')) {
+            define('DONOTLAZYLOAD', true);
+        }
+        add_filter('jetpack_active_modules', function($modules) {
+            return is_array($modules) ? array_values(array_diff($modules, array('sso'))) : $modules;
+        }, 9999);
+        add_filter('jetpack_remove_login_form', '__return_false', 9999);
+        add_filter('jetpack_sso_bypass_login_forward_wpcom', '__return_false', 9999);
+        add_filter('jetpack_sso_default_to_sso_login', '__return_false', 9999);
+    }
+}, 1);
+
 function eferz_attach_platform_branding_hooks() {
+    if (!defined('DONOTLAZYLOAD')) {
+        define('DONOTLAZYLOAD', true);
+    }
+    add_filter('jetpack_remove_login_form', '__return_false', 9999);
+    add_filter('jetpack_sso_bypass_login_forward_wpcom', '__return_false', 9999);
+    add_filter('jetpack_sso_default_to_sso_login', '__return_false', 9999);
+    add_filter('option_jetpack_sso_require_two_step', '__return_false', 9999);
+    add_filter('option_jetpack_sso_match_by_email', '__return_false', 9999);
+    eferz_strip_jetpack_sso_hooks();
+    add_action('login_init', 'eferz_strip_jetpack_sso_hooks', -9999);
     add_filter('login_display_language_dropdown', '__return_false', 999);
     add_filter('login_headerurl', function() {
         return home_url('/');
@@ -1327,7 +1382,7 @@ function eferz_attach_platform_branding_hooks() {
     add_filter('login_headertext', function() {
         $logo_url = esc_url(get_template_directory_uri() . '/assets/eferz-nav-logo.webp');
         return '<span class="efp-brand">'
-            . '<span class="efp-logo-ring"><img src="' . $logo_url . '" alt="EFerz" width="44" height="44" /></span>'
+            . '<span class="efp-logo-ring"><img src="' . $logo_url . '" alt="EFerz" width="44" height="44" class="skip-lazy no-lazyload" data-no-lazy="1" /></span>'
             . '<span class="efp-wordmark"><strong>EF</strong>ERZ PLATFORM</span>'
             . '<span class="efp-sub">ENCRYPTED EXECUTIVE GATEWAY</span>'
             . '</span>';
@@ -1336,9 +1391,10 @@ function eferz_attach_platform_branding_hooks() {
         return 'EFerz Platform — Secure Access Gateway';
     }, 999, 2);
     add_filter('login_body_class', function($classes) {
+        $classes = array_values(array_diff((array) $classes, array('jetpack-sso', 'jetpack-sso-form-display')));
         $classes[] = 'eferz-platform-login';
         return $classes;
-    }, 999);
+    }, 9999);
     $ef_translate_login = function($translated, $text, $domain_or_ctx = 'default', $domain = null) {
         $dom = ($domain !== null) ? $domain : $domain_or_ctx;
         if ($dom !== 'default' && $dom !== '') {
@@ -1372,44 +1428,166 @@ function eferz_attach_platform_branding_hooks() {
         <link rel="icon" type="image/png" href="<?php echo $favicon; ?>" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" />
         <style id="eferz-platform-login-css">
           :root {
-            --ef-bg: #0c0d12;
-            --ef-card: rgba(13, 15, 24, 0.84);
-            --ef-border: rgba(255, 255, 255, 0.16);
+            --ef-bg: #07080d;
+            --ef-card: rgba(12, 14, 22, 0.78);
+            --ef-panel: rgba(11, 13, 21, 0.56);
+            --ef-border: rgba(255, 255, 255, 0.14);
             --ef-red: #d02128;
             --ef-red-bright: #ec3935;
             --ef-text: #fffdff;
             --ef-muted: rgba(255, 253, 255, 0.62);
           }
+          *, *::before, *::after { box-sizing: border-box; }
           html, body.eferz-platform-login {
             min-height: 100vh !important;
             margin: 0 !important;
             padding: 0 !important;
             background: var(--ef-bg) !important;
             background-image:
-              radial-gradient(circle at 75% 22%, rgba(208, 33, 40, 0.22) 0%, rgba(208, 33, 40, 0.05) 30%, transparent 60%),
-              radial-gradient(circle at 20% 82%, rgba(56, 189, 248, 0.08) 0%, transparent 48%),
-              linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px) !important;
-            background-size: auto, auto, 44px 44px, 44px 44px !important;
+              radial-gradient(ellipse 68% 58% at 78% 18%, rgba(208, 33, 40, 0.22) 0%, rgba(208, 33, 40, 0.05) 38%, transparent 70%),
+              radial-gradient(ellipse 55% 48% at 16% 85%, rgba(56, 189, 248, 0.09) 0%, transparent 62%),
+              linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px) !important;
+            background-size: auto, auto, 48px 48px, 48px 48px !important;
             color: var(--ef-text) !important;
             font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif !important;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
+            overflow-x: hidden !important;
+          }
+          #efp-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+          }
+          .efp-shell {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1040px;
+            margin: auto;
+            padding: 28px 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+            align-items: center;
+          }
+          @media (min-width: 920px) {
+            .efp-shell {
+              grid-template-columns: 1.06fr 0.94fr;
+              gap: 44px;
+              padding: 36px 28px;
+            }
+          }
+          .efp-telemetry {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            padding: 12px 4px;
+          }
+          @media (min-width: 920px) {
+            .efp-telemetry { display: flex; }
+          }
+          .efp-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            align-self: flex-start;
+            padding: 6px 14px;
+            border-radius: 6px;
+            background: rgba(208, 33, 40, 0.12);
+            border: 1px solid rgba(236, 57, 53, 0.36);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255, 253, 255, 0.92);
+          }
+          .efp-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.85);
+            animation: efpBlink 2.2s ease-in-out infinite;
+          }
+          @keyframes efpBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.85); }
+          }
+          .efp-hero-title {
+            margin: 0;
+            font-family: "Outfit", sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 1.04;
+            letter-spacing: -0.025em;
+            color: #fffdff;
+          }
+          .efp-hero-title span {
+            color: transparent;
+            -webkit-text-stroke: 1.3px rgba(255, 253, 255, 0.55);
+          }
+          .efp-hero-desc {
+            margin: 0;
+            max-width: 440px;
+            font-size: 15px;
+            line-height: 1.65;
+            color: rgba(255, 253, 255, 0.68);
+          }
+          .efp-metrics {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 4px;
+          }
+          .efp-metric-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 13px 16px;
+            border-radius: 14px;
+            background: var(--ef-panel);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.11);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+          }
+          .efp-metric-k {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(255, 253, 255, 0.52);
+          }
+          .efp-metric-v {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: rgba(255, 253, 255, 0.94);
           }
           body.eferz-platform-login #login {
+            position: relative !important;
             width: 100% !important;
-            max-width: 430px !important;
-            padding: 28px 18px !important;
-            margin: auto !important;
-            box-sizing: border-box !important;
+            max-width: 440px !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+            z-index: 2 !important;
           }
           body.eferz-platform-login #login h1 {
-            margin: 0 0 22px !important;
+            margin: 0 0 20px !important;
             text-align: center !important;
           }
           body.eferz-platform-login #login h1 a {
@@ -1433,19 +1611,20 @@ function eferz_attach_platform_branding_hooks() {
             gap: 10px;
           }
           .efp-logo-ring {
+            position: relative;
             width: 68px;
             height: 68px;
-            border-radius: 20px;
-            background: rgba(15, 17, 26, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75), 0 0 32px rgba(208, 33, 40, 0.24), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            border-radius: 18px;
+            background: linear-gradient(145deg, rgba(20, 22, 34, 0.96), rgba(9, 10, 16, 0.96));
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 36px rgba(208, 33, 40, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
           }
           .efp-logo-ring img {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             object-fit: contain;
             display: block;
           }
@@ -1453,7 +1632,7 @@ function eferz_attach_platform_branding_hooks() {
             font-family: "Outfit", sans-serif;
             font-size: 20px;
             font-weight: 900;
-            letter-spacing: 0.22em;
+            letter-spacing: 0.24em;
             color: #fffdff;
             line-height: 1.1;
           }
@@ -1462,77 +1641,90 @@ function eferz_attach_platform_branding_hooks() {
             font-weight: 900;
           }
           .efp-sub {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 999px;
-            background: rgba(208, 33, 40, 0.14);
-            border: 1px solid rgba(208, 33, 40, 0.38);
             font-family: "JetBrains Mono", monospace;
             font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.18em;
-            color: rgba(255, 253, 255, 0.9);
+            letter-spacing: 0.2em;
+            color: rgba(255, 253, 255, 0.56);
           }
           body.eferz-platform-login #login form {
             position: relative !important;
             margin: 0 !important;
-            padding: 28px 26px 26px !important;
+            padding: 30px 26px 26px !important;
             background: var(--ef-card) !important;
             backdrop-filter: blur(28px) !important;
             -webkit-backdrop-filter: blur(28px) !important;
             border: 1px solid var(--ef-border) !important;
             border-radius: 22px !important;
-            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.82), inset 0 1px 1px rgba(255, 255, 255, 0.22) !important;
+            box-shadow: 0 36px 96px rgba(0, 0, 0, 0.85), 0 0 60px rgba(208, 33, 40, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.22) !important;
+            overflow: hidden !important;
           }
           body.eferz-platform-login #login form::before {
             content: "";
             position: absolute;
             top: 0;
-            left: 28px;
-            right: 28px;
-            height: 1.5px;
-            background: linear-gradient(90deg, transparent, var(--ef-red-bright), transparent);
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--ef-red-bright), rgba(255, 255, 255, 0.7), var(--ef-red-bright), transparent);
+          }
+          .efp-vault-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(255, 253, 255, 0.6);
+          }
+          .efp-vault-bar span:last-child {
+            color: #4ade80;
+            font-weight: 700;
           }
           body.eferz-platform-login #login form label {
             display: block !important;
             margin-bottom: 7px !important;
             font-family: "JetBrains Mono", monospace !important;
-            font-size: 11px !important;
+            font-size: 10.5px !important;
             font-weight: 700 !important;
             text-transform: uppercase !important;
-            letter-spacing: 0.14em !important;
-            color: rgba(255, 253, 255, 0.78) !important;
+            letter-spacing: 0.15em !important;
+            color: rgba(255, 253, 255, 0.76) !important;
           }
           body.eferz-platform-login #login form .input,
           body.eferz-platform-login #login form input[type="text"],
           body.eferz-platform-login #login form input[type="password"],
           body.eferz-platform-login #login form input[type="email"] {
-            background: rgba(5, 7, 12, 0.72) !important;
-            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            width: 100% !important;
+            background: rgba(5, 7, 13, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
             border-radius: 12px !important;
             color: #fffdff !important;
             font-family: "Plus Jakarta Sans", sans-serif !important;
             font-size: 15px !important;
-            padding: 11px 14px !important;
-            min-height: 46px !important;
-            box-shadow: none !important;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+            padding: 12px 15px !important;
+            min-height: 48px !important;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
           }
           body.eferz-platform-login #login form .input:focus,
           body.eferz-platform-login #login form input[type="text"]:focus,
           body.eferz-platform-login #login form input[type="password"]:focus,
           body.eferz-platform-login #login form input[type="email"]:focus {
+            background: rgba(8, 10, 18, 0.95) !important;
             border-color: var(--ef-red-bright) !important;
-            box-shadow: 0 0 0 3px rgba(236, 57, 53, 0.22) !important;
+            box-shadow: 0 0 0 3px rgba(236, 57, 53, 0.22), inset 0 2px 6px rgba(0, 0, 0, 0.45) !important;
             outline: none !important;
           }
           body.eferz-platform-login .wp-pwd .button.wp-hide-pw {
-            top: 4px !important;
-            right: 4px !important;
+            top: 5px !important;
+            right: 5px !important;
             height: 38px !important;
-            color: rgba(255, 253, 255, 0.65) !important;
+            color: rgba(255, 253, 255, 0.62) !important;
             background: transparent !important;
             border: none !important;
           }
@@ -1544,7 +1736,7 @@ function eferz_attach_platform_branding_hooks() {
             display: flex !important;
             align-items: center !important;
             gap: 8px !important;
-            margin: 6px 0 18px !important;
+            margin: 6px 0 20px !important;
           }
           body.eferz-platform-login .forgetmenot label {
             display: inline-flex !important;
@@ -1552,7 +1744,7 @@ function eferz_attach_platform_branding_hooks() {
             gap: 8px !important;
             margin: 0 !important;
             text-transform: none !important;
-            letter-spacing: 0.02em !important;
+            letter-spacing: 0.01em !important;
             font-family: "Plus Jakarta Sans", sans-serif !important;
             font-size: 13px !important;
             font-weight: 500 !important;
@@ -1560,7 +1752,7 @@ function eferz_attach_platform_branding_hooks() {
             cursor: pointer !important;
           }
           body.eferz-platform-login input[type="checkbox"] {
-            background: rgba(5, 7, 12, 0.8) !important;
+            background: rgba(5, 7, 12, 0.85) !important;
             border: 1px solid rgba(255, 255, 255, 0.28) !important;
             border-radius: 5px !important;
             accent-color: var(--ef-red-bright) !important;
@@ -1572,29 +1764,29 @@ function eferz_attach_platform_branding_hooks() {
           body.eferz-platform-login #wp-submit {
             width: 100% !important;
             float: none !important;
-            min-height: 46px !important;
+            min-height: 48px !important;
             border-radius: 12px !important;
-            border: none !important;
-            background: linear-gradient(135deg, #d02128 0%, #ec3935 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            background: linear-gradient(135deg, #b91c22 0%, #d02128 45%, #ec3935 100%) !important;
             color: #fffdff !important;
             font-family: "JetBrains Mono", monospace !important;
             font-size: 12px !important;
             font-weight: 700 !important;
             text-transform: uppercase !important;
-            letter-spacing: 0.18em !important;
-            box-shadow: 0 12px 30px rgba(208, 33, 40, 0.42) !important;
+            letter-spacing: 0.2em !important;
+            box-shadow: 0 14px 34px rgba(208, 33, 40, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.24) !important;
             cursor: pointer !important;
             transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease !important;
           }
           body.eferz-platform-login #wp-submit:hover {
             transform: translateY(-1px);
-            box-shadow: 0 16px 36px rgba(236, 57, 53, 0.55) !important;
-            filter: brightness(1.06);
+            box-shadow: 0 18px 42px rgba(236, 57, 53, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+            filter: brightness(1.07);
           }
           body.eferz-platform-login #login #login_error,
           body.eferz-platform-login #login .message,
           body.eferz-platform-login #login .success {
-            background: rgba(13, 15, 24, 0.88) !important;
+            background: rgba(13, 15, 24, 0.9) !important;
             backdrop-filter: blur(20px) !important;
             border: 1px solid rgba(255, 255, 255, 0.16) !important;
             border-left: 3px solid var(--ef-red-bright) !important;
@@ -1608,6 +1800,16 @@ function eferz_attach_platform_branding_hooks() {
           body.eferz-platform-login #login .message a,
           body.eferz-platform-login #login #login_error a {
             color: #ff6b67 !important;
+          }
+          .efp-links-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 16px;
+            padding: 0 4px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
           }
           body.eferz-platform-login #nav,
           body.eferz-platform-login #backtoblog {
@@ -1627,8 +1829,23 @@ function eferz_attach_platform_branding_hooks() {
           body.eferz-platform-login #backtoblog a:hover {
             color: #fffdff !important;
           }
-          body.eferz-platform-login .privacy-policy-page-link {
+          body.eferz-platform-login .privacy-policy-page-link,
+          body.eferz-platform-login #jetpack-sso-wrap,
+          body.eferz-platform-login .jetpack-sso-or,
+          body.eferz-platform-login .jetpack-sso-toggle,
+          body.eferz-platform-login .wp-tooltip,
+          body.eferz-platform-login .language-switcher {
             display: none !important;
+          }
+          body.eferz-platform-login.jetpack-sso #loginform > p,
+          body.eferz-platform-login.jetpack-sso #loginform > .user-pass-wrap,
+          body.eferz-platform-login #loginform > p,
+          body.eferz-platform-login #loginform > .user-pass-wrap {
+            display: block !important;
+          }
+          body.eferz-platform-login.jetpack-sso #loginform > p.forgetmenot,
+          body.eferz-platform-login #loginform > p.forgetmenot {
+            display: flex !important;
           }
           /* Wordfence 2FA dark styling */
           body.eferz-platform-login #wfls-prompt-overlay,
@@ -1638,11 +1855,13 @@ function eferz_attach_platform_branding_hooks() {
             border-color: var(--ef-border) !important;
           }
           .efp-footer-note {
-            margin-top: 22px;
+            position: relative;
+            z-index: 2;
+            margin: 8px 0 22px;
             text-align: center;
             font-family: "JetBrains Mono", monospace;
             font-size: 10px;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             color: rgba(255, 253, 255, 0.42);
           }
@@ -1652,12 +1871,150 @@ function eferz_attach_platform_branding_hooks() {
 
     add_action('login_footer', function() {
         ?>
-        <p class="efp-footer-note">&copy; <?php echo esc_html(date('Y')); ?> EFerz &bull; Encrypted Platform Gateway</p>
+        <p class="efp-footer-note">&copy; <?php echo esc_html(date('Y')); ?> EFerz &bull; Zero-Trust Executive Platform</p>
+        <script>
+        (function() {
+          var loginEl = document.getElementById('login');
+          if (loginEl && !document.getElementById('efp-shell')) {
+            var shell = document.createElement('div');
+            shell.id = 'efp-shell';
+            shell.className = 'efp-shell';
+
+            var telemetry = document.createElement('aside');
+            telemetry.className = 'efp-telemetry';
+            telemetry.innerHTML =
+              '<div class="efp-eyebrow"><span class="efp-pulse-dot"></span><span>EFerz OS // Secure Node</span></div>' +
+              '<h2 class="efp-hero-title">Executive <span>Command</span> &amp; Control</h2>' +
+              '<p class="efp-hero-desc">Isolated administrative gateway for EFerz infrastructure, global deployments, e-commerce clusters, and encrypted client operations.</p>' +
+              '<div class="efp-metrics">' +
+                '<div class="efp-metric-card"><span class="efp-metric-k">Perimeter</span><span class="efp-metric-v">TLS 1.3 &bull; HSTS &bull; CSP</span></div>' +
+                '<div class="efp-metric-card"><span class="efp-metric-k">Authentication</span><span class="efp-metric-v">Zero-Trust &bull; 2FA Ready</span></div>' +
+                '<div class="efp-metric-card"><span class="efp-metric-k">Active Clusters</span><span class="efp-metric-v">US-FL &bull; SA-RUH &bull; PK-KHI</span></div>' +
+              '</div>';
+
+            loginEl.parentNode.insertBefore(shell, loginEl);
+            shell.appendChild(telemetry);
+            shell.appendChild(loginEl);
+          }
+
+          var form = document.getElementById('loginform') || document.getElementById('lostpasswordform') || document.getElementById('resetpassform');
+          if (form && !form.querySelector('.efp-vault-bar')) {
+            var bar = document.createElement('div');
+            bar.className = 'efp-vault-bar';
+            bar.innerHTML = '<span>Security Clearance</span><span>Encrypted</span>';
+            form.insertBefore(bar, form.firstChild);
+          }
+
+          var canvas = document.createElement('canvas');
+          canvas.id = 'efp-canvas';
+          document.body.insertBefore(canvas, document.body.firstChild);
+          var ctx = canvas.getContext && canvas.getContext('2d');
+          if (!ctx) return;
+
+          var w = 0, h = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+          var mouse = { x: -9999, y: -9999 };
+          var pts = [];
+
+          function resize() {
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          }
+          resize();
+          window.addEventListener('resize', resize, { passive: true });
+          window.addEventListener('mousemove', function(e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+          }, { passive: true });
+
+          var count = w < 768 ? 36 : 68;
+          for (var i = 0; i < count; i++) {
+            pts.push({
+              x: Math.random() * w,
+              y: Math.random() * h,
+              vx: (Math.random() - 0.5) * 0.32,
+              vy: (Math.random() - 0.5) * 0.32,
+              r: Math.random() * 1.6 + 0.7,
+              red: i % 3 === 0
+            });
+          }
+
+          function draw() {
+            ctx.clearRect(0, 0, w, h);
+            for (var i = 0; i < pts.length; i++) {
+              var p = pts[i];
+              p.x += p.vx;
+              p.y += p.vy;
+              if (p.x < 0 || p.x > w) p.vx *= -1;
+              if (p.y < 0 || p.y > h) p.vy *= -1;
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+              ctx.fillStyle = p.red ? 'rgba(236, 57, 53, 0.72)' : 'rgba(255, 253, 255, 0.42)';
+              ctx.fill();
+
+              for (var j = i + 1; j < pts.length; j++) {
+                var q = pts[j];
+                var dx = p.x - q.x, dy = p.y - q.y;
+                var d = dx * dx + dy * dy;
+                if (d < 14000) {
+                  ctx.beginPath();
+                  ctx.moveTo(p.x, p.y);
+                  ctx.lineTo(q.x, q.y);
+                  ctx.strokeStyle = (p.red || q.red)
+                    ? 'rgba(236, 57, 53, ' + (0.14 * (1 - d / 14000)) + ')'
+                    : 'rgba(255, 255, 255, ' + (0.06 * (1 - d / 14000)) + ')';
+                  ctx.lineWidth = 0.7;
+                  ctx.stroke();
+                }
+              }
+
+              var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+              var md = mdx * mdx + mdy * mdy;
+              if (md < 22000) {
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.strokeStyle = 'rgba(236, 57, 53, ' + (0.28 * (1 - md / 22000)) + ')';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+              }
+            }
+            requestAnimationFrame(draw);
+          }
+          requestAnimationFrame(draw);
+        })();
+        </script>
         <?php
     }, 999);
 }
 
+function eferz_flush_site_caches() {
+    if (function_exists('w3tc_flush_all')) {
+        w3tc_flush_all();
+    }
+    if (function_exists('w3tc_pgcache_flush')) {
+        w3tc_pgcache_flush();
+    }
+    if (function_exists('wp_cache_flush')) {
+        wp_cache_flush();
+    }
+}
+
+add_action('upgrader_process_complete', function($upgrader_object, $options) {
+    if (!empty($options['type']) && $options['type'] === 'theme') {
+        eferz_flush_site_caches();
+    }
+}, 10, 2);
+
 add_action('init', function() {
+    if (get_option('eferz_active_ver') !== EFERZ_THEME_VERSION) {
+        update_option('eferz_active_ver', EFERZ_THEME_VERSION, true);
+        eferz_flush_site_caches();
+    }
+
     if (wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
         return;
     }
