@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.5.7
+ * @version 1.5.8
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.5.7');
+define('EFERZ_THEME_VERSION', '1.5.8');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -1578,19 +1578,6 @@ function eferz_attach_platform_branding_hooks() {
             letter-spacing: 0.06em;
             color: rgba(255, 253, 255, 0.94);
           }
-          .efp-term-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            background: rgba(5, 6, 11, 0.78);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            font-family: "JetBrains Mono", monospace;
-            font-size: 11px;
-            color: rgba(255, 253, 255, 0.76);
-          }
-          .efp-term-bar strong { color: var(--ef-red-bright); }
           body.eferz-platform-login #login {
             position: relative !important;
             width: 100% !important;
@@ -1903,8 +1890,7 @@ function eferz_attach_platform_branding_hooks() {
                 '<div class="efp-metric-card"><span class="efp-metric-k">Perimeter</span><span class="efp-metric-v">TLS 1.3 &bull; HSTS &bull; CSP</span></div>' +
                 '<div class="efp-metric-card"><span class="efp-metric-k">Authentication</span><span class="efp-metric-v">Zero-Trust &bull; 2FA Ready</span></div>' +
                 '<div class="efp-metric-card"><span class="efp-metric-k">Active Clusters</span><span class="efp-metric-v">US-FL &bull; SA-RUH &bull; PK-KHI</span></div>' +
-              '</div>' +
-              '<div class="efp-term-bar"><strong>$</strong><span>gateway-verify --strict --node=eferz.com/platform</span></div>';
+              '</div>';
 
             loginEl.parentNode.insertBefore(shell, loginEl);
             shell.appendChild(telemetry);

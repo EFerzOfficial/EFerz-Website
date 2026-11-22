@@ -4,7 +4,7 @@
  * Exact 100% React Application from AI Studio Build
  *
  * @package EFerz
- * @version 1.5.7
+ * @version 1.5.8
  */
 $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
 $eferz_og_image = get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
@@ -186,7 +186,133 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
 </head>
 <body <?php body_class('bg-[#141414] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden'); ?>>
     <?php wp_body_open(); ?>
-    <div id="root"><?php if ($eferz_route === 'agency') : ?><style>.eferz-ssr-hero{position:fixed;inset:0;width:100%;height:100vh;display:flex;align-items:flex-end;background:#141414;background-image:radial-gradient(circle at 71% 50%,rgba(208,33,40,.22) 0%,rgba(208,33,40,.06) 26%,rgba(20,20,20,0) 58%),radial-gradient(circle at 18% 82%,rgba(255,253,255,.035) 0%,transparent 48%);z-index:1;pointer-events:none;box-sizing:border-box;overflow:hidden}.eferz-ssr-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 14% 24%,rgba(255,255,255,.42),transparent),radial-gradient(1px 1px at 31% 16%,rgba(255,255,255,.28),transparent),radial-gradient(1.5px 1.5px at 48% 34%,rgba(255,255,255,.38),transparent),radial-gradient(1px 1px at 63% 19%,rgba(236,57,53,.45),transparent),radial-gradient(1.5px 1.5px at 78% 27%,rgba(255,255,255,.35),transparent),radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.32),transparent),radial-gradient(1px 1px at 56% 74%,rgba(255,255,255,.28),transparent),radial-gradient(1.5px 1.5px at 84% 78%,rgba(236,57,53,.4),transparent),radial-gradient(1px 1px at 26% 68%,rgba(255,255,255,.26),transparent),radial-gradient(1px 1px at 42% 88%,rgba(255,255,255,.3),transparent);opacity:.9}.eferz-ssr-orb{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:min(44vw,430px);height:min(44vw,430px);opacity:.92;pointer-events:none;filter:drop-shadow(0 0 28px rgba(208,33,40,.42))}.eferz-ssr-orb svg{width:100%;height:100%;animation:efSsrPulse 3.6s ease-in-out infinite}@keyframes efSsrPulse{0%,100%{opacity:.86;transform:scale(1)}50%{opacity:1;transform:scale(1.018)}}@media(max-width:767px){.eferz-ssr-orb{right:50%;top:28%;transform:translate(50%,-50%);width:240px;height:240px;opacity:.65}}.eferz-ssr-hdr{position:fixed;top:0;left:0;right:0;padding:16px;display:flex;align-items:center;justify-content:space-between;z-index:5;pointer-events:none;box-sizing:border-box}.eferz-ssr-hdr img{width:44px;height:44px;object-fit:contain;display:block}.eferz-ssr-rctrl{display:flex;align-items:center;gap:14px}.eferz-ssr-ico{width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);display:none;align-items:center;justify-content:center}.eferz-ssr-burger{width:44px;height:44px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:7px}.eferz-ssr-burger span:first-child{display:block;width:36px;height:2.5px;border-radius:999px;background:#fff}.eferz-ssr-burger span:last-child{display:block;width:24px;height:2.5px;border-radius:999px;background:#d02128;box-shadow:0 0 12px rgba(208,33,40,.75)}.eferz-ssr-dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:none;flex-direction:column;gap:10px;z-index:5}.eferz-ssr-dots span{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.25)}.eferz-ssr-dots span:first-child{height:18px;background:#ec3935;box-shadow:0 0 10px rgba(236,57,53,.8)}.eferz-ssr-pad{width:100%;max-width:1500px;margin:0 auto;padding:96px 56px 96px 16px;box-sizing:border-box;position:relative;z-index:2}.eferz-ssr-h1{margin:16px 0 16px;font-family:"Sifonn","Sifonn-Basic","Outfit","Montserrat","Syne",system-ui,sans-serif;font-weight:900;font-size:1.5rem;line-height:1.06;letter-spacing:-.025em;color:#fffdff}.eferz-ssr-cur{display:inline-block;width:16px;height:28px;background:#d02128;margin-left:10px;vertical-align:middle;box-shadow:0 0 20px rgba(208,33,40,.85)}.eferz-ssr-term{display:inline-flex;align-items:center;gap:12px;padding:8px 14px;border-radius:10px;background:rgba(7,9,15,.72);border:1px solid rgba(255,255,255,.14);font-family:"JetBrains Mono",monospace;font-size:11px;color:rgba(255,253,255,.92);margin-bottom:14px}.eferz-ssr-ftr{position:fixed;bottom:0;left:0;right:0;z-index:5;pointer-events:none}.eferz-ssr-ftr-in{width:100%;max-width:1560px;margin:0 auto;padding:8px 56px 10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;color:rgba(255,253,255,.65);box-sizing:border-box}@media(min-width:640px){.eferz-ssr-hdr{padding:24px 40px}.eferz-ssr-hdr img{width:48px;height:48px}.eferz-ssr-ico{display:flex}.eferz-ssr-dots{display:flex}.eferz-ssr-pad{padding:96px 40px 80px}.eferz-ssr-h1{margin:28px 0 28px;font-size:3rem;line-height:.98}.eferz-ssr-cur{width:28px;height:48px;margin-left:14px}.eferz-ssr-term{padding:10px 16px;font-size:14px;margin-bottom:16px}.eferz-ssr-ftr-in{padding:8px 80px 14px 48px;font-size:12px}}@media(min-width:768px){.eferz-ssr-pad{padding:96px 48px 64px}.eferz-ssr-h1{font-size:3.75rem}}@media(min-width:1024px){.eferz-ssr-hdr{padding:24px 48px}.eferz-ssr-hdr img{width:56px;height:56px}.eferz-ssr-pad{padding:96px 80px 64px}.eferz-ssr-h1{font-size:78px}.eferz-ssr-ftr-in{padding:8px 80px 14px 64px}}</style><header class="eferz-ssr-hdr"><a href="https://eferz.com/" aria-label="EFerz Home"><img src="<?php echo esc_url($theme_assets_uri . '/eferz-nav-logo.webp'); ?>" alt="EFerz" width="56" height="56" fetchpriority="high" decoding="sync" class="skip-lazy no-lazy" data-no-lazy="1" /></a><nav class="sr-only" aria-label="Primary Navigation"><a href="https://eferz.com/services/">Services</a><a href="https://eferz.com/work/">Work</a><a href="https://eferz.com/clients/">Clients</a><a href="https://eferz.com/team/">Team</a><a href="https://eferz.com/about/">About</a><a href="https://eferz.com/blog/">Blog</a><a href="https://eferz.com/contact/">Contact</a></nav><div class="eferz-ssr-rctrl" aria-hidden="true"><div class="eferz-ssr-ico"></div><div class="eferz-ssr-ico"></div><div class="eferz-ssr-burger"><span></span><span></span></div></div></header><div class="eferz-ssr-dots" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div><section class="eferz-ssr-hero" aria-label="EFerz Hero"><div class="eferz-ssr-stars" aria-hidden="true"></div><div class="eferz-ssr-orb" aria-hidden="true"><svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="efOrbGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ec3935" stop-opacity="0.34"/><stop offset="62%" stop-color="#d02128" stop-opacity="0.08"/><stop offset="100%" stop-color="#141414" stop-opacity="0"/></radialGradient></defs><circle cx="120" cy="120" r="108" fill="url(#efOrbGlow)"/><g stroke="#ec3935" stroke-opacity="0.28" stroke-width="1"><path d="M180 112C176 74 151 54 118 54C79 54 54 83 54 120C54 159 81 186 121 186C149 186 169 173 179 152"/><path d="M58 118H178"/></g><g fill="#ec3935"><circle cx="120" cy="54" r="3.2" fill="#ff5a54"/><circle cx="144" cy="58" r="2.6"/><circle cx="163" cy="70" r="3"/><circle cx="176" cy="88" r="2.8"/><circle cx="180" cy="109" r="3.4" fill="#ff5a54"/><circle cx="162" cy="116" r="2.5"/><circle cx="140" cy="117" r="2.8"/><circle cx="118" cy="117" r="3.1" fill="#ff5a54"/><circle cx="96" cy="117" r="2.6"/><circle cx="74" cy="117" r="2.8"/><circle cx="56" cy="118" r="3.3" fill="#ff5a54"/><circle cx="58" cy="96" r="2.5"/><circle cx="68" cy="76" r="3"/><circle cx="84" cy="62" r="2.7"/><circle cx="102" cy="55" r="2.9"/><circle cx="58" cy="140" r="2.7"/><circle cx="67" cy="160" r="3.1" fill="#ff5a54"/><circle cx="83" cy="175" r="2.8"/><circle cx="103" cy="184" r="2.6"/><circle cx="124" cy="186" r="3.3" fill="#ff5a54"/><circle cx="146" cy="181" r="2.7"/><circle cx="164" cy="170" r="3"/><circle cx="177" cy="153" r="2.8"/><circle cx="132" cy="64" r="1.9" fill="#ff807c"/><circle cx="154" cy="81" r="1.8"/><circle cx="88" cy="74" r="1.8" fill="#ff807c"/><circle cx="73" cy="100" r="2"/><circle cx="76" cy="136" r="1.9" fill="#ff807c"/><circle cx="94" cy="163" r="1.8"/><circle cx="136" cy="172" r="2" fill="#ff807c"/><circle cx="161" cy="158" r="1.8"/><circle cx="110" cy="106" r="1.7"/><circle cx="151" cy="106" r="1.7" fill="#ff807c"/></g></svg></div><div class="eferz-ssr-pad"><div style="max-width:56rem"><div style="display:inline-flex;align-items:center;gap:10px;padding-top:8px"><span style="width:14px;height:2px;background:#d02128;display:inline-block"></span><p style="margin:0;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,253,255,.9)"><span style="color:#d02128">EF</span><span>ERZ DIGITAL AGENCY</span></p></div><h1 class="eferz-ssr-h1"><?php if ($eferz_is_ar) : ?><span style="display:block">لا شيء </span><span style="display:block"><span style="-webkit-text-stroke:1.5px rgba(255,253,255,.45);-webkit-text-fill-color:transparent;color:transparent">مستحيل </span>في </span><span style="display:flex;align-items:center;flex-wrap:wrap"><span>عالم التقنية</span><span class="eferz-ssr-cur"></span></span><?php else : ?><span style="display:block">Nothing is </span><span style="display:block"><span style="-webkit-text-stroke:1.5px rgba(255,253,255,.45);-webkit-text-fill-color:transparent;color:transparent">impossible </span>in </span><span style="display:flex;align-items:center;flex-wrap:wrap"><span>the IT world</span><span class="eferz-ssr-cur"></span></span><?php endif; ?></h1><div class="eferz-ssr-term"><span style="color:#d02128;font-weight:700">$</span><span>compiling brand-id</span></div><p style="margin:0;font-size:13px;font-weight:700;letter-spacing:.05em;color:rgba(255,253,255,.85)"><a href="https://eferz.com/services/" style="color:#fffdff;text-decoration:none"><?php echo $eferz_is_ar ? 'مرّر للاستكشاف' : 'Scroll to explore'; ?> <span style="color:#d02128">&rarr;</span></a></p></div></div></section><footer class="eferz-ssr-ftr"><div class="eferz-ssr-ftr-in"><span>&copy; <?php echo esc_html(date('Y')); ?> EFerz. All Rights Reserved.</span><nav class="sr-only" aria-label="Footer Navigation"><a href="https://eferz.com/lets-build/">3D Studio</a><a href="https://eferz.com/privacy/">Privacy</a><a href="https://eferz.com/terms/">Terms</a><a href="https://eferz.com/refund/">Refund Policy</a><a href="https://eferz.com/shop/">Shop</a></nav></div></footer><?php else : ?>
+    <?php if ($eferz_route === 'agency') : ?>
+    <div id="eferz-cinematic-loader" aria-hidden="true">
+      <style>
+        #eferz-cinematic-loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#08090d;background-image:radial-gradient(circle at 50% 46%,rgba(208,33,40,.18) 0%,rgba(208,33,40,.04) 34%,rgba(8,9,13,1) 70%);color:#fffdff;overflow:hidden;opacity:1;transform:scale(1);transition:opacity .48s cubic-bezier(.16,1,.3,1),transform .54s cubic-bezier(.16,1,.3,1);pointer-events:auto}
+        #eferz-cinematic-loader.is-ready{opacity:0;transform:scale(1.035);pointer-events:none}
+        #ef-ldr-cvs{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+        .ef-ldr-core{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px}
+        .ef-ldr-orbit{position:relative;width:128px;height:128px;display:flex;align-items:center;justify-content:center;margin-bottom:26px}
+        .ef-ldr-ring-outer,.ef-ldr-ring-inner{position:absolute;inset:0;border-radius:50%;pointer-events:none}
+        .ef-ldr-ring-outer{border:1px solid rgba(255,255,255,.1);border-top-color:rgba(255,253,255,.72);border-right-color:rgba(236,57,53,.45);animation:efSpinCW 2.4s linear infinite}
+        .ef-ldr-ring-inner{inset:12px;border:1.5px solid rgba(208,33,40,.15);border-bottom-color:#ec3935;border-left-color:rgba(236,57,53,.75);box-shadow:0 0 28px rgba(208,33,40,.25);animation:efSpinCCW 1.65s linear infinite}
+        .ef-ldr-logo-box{position:relative;width:68px;height:68px;border-radius:20px;background:rgba(14,16,24,.9);border:1px solid rgba(255,255,255,.18);box-shadow:0 16px 42px rgba(0,0,0,.8),0 0 36px rgba(208,33,40,.34),inset 0 1px 1px rgba(255,255,255,.24);display:flex;align-items:center;justify-content:center;animation:efPulseLogo 2.2s ease-in-out infinite}
+        .ef-ldr-logo-box img{width:40px;height:40px;object-fit:contain;display:block}
+        .ef-ldr-word{font-family:"Outfit","Montserrat",system-ui,sans-serif;font-weight:900;font-size:24px;letter-spacing:.38em;text-indent:.38em;color:#fffdff;margin:0 0 6px;line-height:1.1}
+        .ef-ldr-word b{color:#ec3935;font-weight:900}
+        .ef-ldr-tag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,253,255,.58);margin:0 0 22px}
+        .ef-ldr-bar-wrap{width:220px;display:flex;flex-direction:column;gap:8px;align-items:center}
+        .ef-ldr-rail{width:100%;height:2px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
+        .ef-ldr-fill{height:100%;width:8%;border-radius:999px;background:linear-gradient(90deg,#d02128,#ec3935,#fffdff);box-shadow:0 0 14px rgba(236,57,53,.9);transition:width .18s ease-out}
+        .ef-ldr-pct{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:rgba(255,253,255,.68)}
+        @keyframes efSpinCW{to{transform:rotate(360deg)}}
+        @keyframes efSpinCCW{to{transform:rotate(-360deg)}}
+        @keyframes efPulseLogo{0%,100%{transform:scale(1);box-shadow:0 16px 42px rgba(0,0,0,.8),0 0 32px rgba(208,33,40,.3),inset 0 1px 1px rgba(255,255,255,.24)}50%{transform:scale(1.04);box-shadow:0 18px 48px rgba(0,0,0,.85),0 0 44px rgba(236,57,53,.48),inset 0 1px 1px rgba(255,255,255,.32)}}
+      </style>
+      <canvas id="ef-ldr-cvs"></canvas>
+      <div class="ef-ldr-core">
+        <div class="ef-ldr-orbit">
+          <div class="ef-ldr-ring-outer"></div>
+          <div class="ef-ldr-ring-inner"></div>
+          <div class="ef-ldr-logo-box">
+            <img src="<?php echo esc_url($theme_assets_uri . '/eferz-nav-logo.webp'); ?>" alt="EFerz" width="40" height="40" fetchpriority="high" decoding="sync" class="skip-lazy no-lazy" data-no-lazy="1" />
+          </div>
+        </div>
+        <p class="ef-ldr-word"><b>EF</b>ERZ</p>
+        <p class="ef-ldr-tag"><?php echo $eferz_is_ar ? 'لا شيء مستحيل في عالم التقنية' : 'NOTHING IS IMPOSSIBLE'; ?></p>
+        <div class="ef-ldr-bar-wrap">
+          <div class="ef-ldr-rail"><div class="ef-ldr-fill" id="ef-ldr-fill"></div></div>
+          <div class="ef-ldr-pct" id="ef-ldr-pct">08%</div>
+        </div>
+      </div>
+      <script>
+        (function(){
+          var ldr = document.getElementById('eferz-cinematic-loader');
+          var fill = document.getElementById('ef-ldr-fill');
+          var pct = document.getElementById('ef-ldr-pct');
+          var cvs = document.getElementById('ef-ldr-cvs');
+          if (!ldr) return;
+
+          var tStart = performance.now();
+          var progress = 8;
+          var done = false;
+          var rafId = 0;
+
+          var ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
+          var w = window.innerWidth, h = window.innerHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
+          var stars = [];
+          if (ctx) {
+            var resize = function() {
+              w = window.innerWidth; h = window.innerHeight;
+              cvs.width = w * dpr; cvs.height = h * dpr;
+              ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            };
+            resize();
+            window.addEventListener('resize', resize, { passive: true });
+            var n = w < 768 ? 42 : 78;
+            for (var i = 0; i < n; i++) {
+              var ang = Math.random() * Math.PI * 2;
+              var dist = 40 + Math.random() * Math.max(w, h) * 0.55;
+              stars.push({ ang: ang, dist: dist, spd: 0.45 + Math.random() * 1.15, sz: 0.8 + Math.random() * 1.7, red: i % 3 === 0 });
+            }
+          }
+
+          function tick() {
+            if (!done) {
+              progress += (92 - progress) * 0.045;
+              var p = Math.min(92, Math.round(progress));
+              if (fill) fill.style.width = p + '%';
+              if (pct) pct.textContent = (p < 10 ? '0' : '') + p + '%';
+            }
+            if (ctx) {
+              ctx.clearRect(0, 0, w, h);
+              var cx = w * 0.5, cy = h * 0.48;
+              for (var i = 0; i < stars.length; i++) {
+                var s = stars[i];
+                s.dist -= s.spd * (done ? 4.5 : 1.4);
+                s.ang += 0.0022;
+                if (s.dist < 18) { s.dist = Math.max(w, h) * 0.52; }
+                var x = cx + Math.cos(s.ang) * s.dist;
+                var y = cy + Math.sin(s.ang) * s.dist;
+                ctx.beginPath();
+                ctx.arc(x, y, s.sz, 0, Math.PI * 2);
+                ctx.fillStyle = s.red ? 'rgba(236,57,53,.72)' : 'rgba(255,253,255,.45)';
+                ctx.fill();
+              }
+            }
+            if (ldr && ldr.parentNode) {
+              rafId = requestAnimationFrame(tick);
+            }
+          }
+          rafId = requestAnimationFrame(tick);
+
+          function dismiss() {
+            if (done) return;
+            done = true;
+            if (fill) fill.style.width = '100%';
+            if (pct) pct.textContent = '100%';
+            setTimeout(function() {
+              if (!ldr) return;
+              ldr.classList.add('is-ready');
+              setTimeout(function() {
+                if (rafId) cancelAnimationFrame(rafId);
+                if (ldr && ldr.parentNode) ldr.parentNode.removeChild(ldr);
+              }, 520);
+            }, 140);
+          }
+
+          window.__eferzHideLoader = function() {
+            var elapsed = performance.now() - tStart;
+            var wait = Math.max(0, 520 - elapsed);
+            setTimeout(dismiss, wait);
+          };
+          setTimeout(dismiss, 2600);
+        })();
+      </script>
+    </div>
+    <?php endif; ?>
+    <div id="root"><?php if ($eferz_route === 'agency') : ?><style>.eferz-ssr-hero{position:fixed;inset:0;width:100%;height:100vh;display:flex;align-items:flex-end;background:#141414;background-image:radial-gradient(circle at 71% 50%,rgba(208,33,40,.18) 0%,rgba(208,33,40,.05) 28%,rgba(20,20,20,0) 60%);z-index:1;pointer-events:none;box-sizing:border-box;overflow:hidden}.eferz-ssr-hdr{position:fixed;top:0;left:0;right:0;padding:16px;display:flex;align-items:center;justify-content:space-between;z-index:5;pointer-events:none;box-sizing:border-box}.eferz-ssr-hdr img{width:44px;height:44px;object-fit:contain;display:block}.eferz-ssr-burger{width:44px;height:44px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:7px}.eferz-ssr-burger span:first-child{display:block;width:36px;height:2.5px;border-radius:999px;background:#fff}.eferz-ssr-burger span:last-child{display:block;width:24px;height:2.5px;border-radius:999px;background:#d02128;box-shadow:0 0 12px rgba(208,33,40,.75)}.eferz-ssr-pad{width:100%;max-width:1500px;margin:0 auto;padding:96px 56px 96px 16px;box-sizing:border-box}.eferz-ssr-h1{margin:16px 0 16px;font-family:"Sifonn","Sifonn-Basic","Outfit","Montserrat","Syne",system-ui,sans-serif;font-weight:900;font-size:1.5rem;line-height:1.06;letter-spacing:-.025em;color:#fffdff}.eferz-ssr-cur{display:inline-block;width:16px;height:28px;background:#d02128;margin-left:10px;vertical-align:middle;box-shadow:0 0 20px rgba(208,33,40,.85)}.eferz-ssr-term{display:inline-flex;align-items:center;gap:12px;padding:8px 14px;border-radius:10px;background:rgba(7,9,15,.72);border:1px solid rgba(255,255,255,.14);font-family:"JetBrains Mono",monospace;font-size:11px;color:rgba(255,253,255,.92);margin-bottom:14px}.eferz-ssr-ftr{position:fixed;bottom:0;left:0;right:0;z-index:5;pointer-events:none}.eferz-ssr-ftr-in{width:100%;max-width:1560px;margin:0 auto;padding:8px 56px 10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;color:rgba(255,253,255,.65);box-sizing:border-box}@media(min-width:640px){.eferz-ssr-hdr{padding:24px 40px}.eferz-ssr-hdr img{width:48px;height:48px}.eferz-ssr-pad{padding:96px 40px 80px}.eferz-ssr-h1{margin:28px 0 28px;font-size:3rem;line-height:.98}.eferz-ssr-cur{width:28px;height:48px;margin-left:14px}.eferz-ssr-term{padding:10px 16px;font-size:14px;margin-bottom:16px}.eferz-ssr-ftr-in{padding:8px 80px 14px 48px;font-size:12px}}@media(min-width:768px){.eferz-ssr-pad{padding:96px 48px 64px}.eferz-ssr-h1{font-size:3.75rem}}@media(min-width:1024px){.eferz-ssr-hdr{padding:24px 48px}.eferz-ssr-hdr img{width:56px;height:56px}.eferz-ssr-pad{padding:96px 80px 64px}.eferz-ssr-h1{font-size:78px}.eferz-ssr-ftr-in{padding:8px 80px 14px 64px}}</style><header class="eferz-ssr-hdr"><a href="https://eferz.com/" aria-label="EFerz Home"><img src="<?php echo esc_url($theme_assets_uri . '/eferz-nav-logo.webp'); ?>" alt="EFerz" width="56" height="56" fetchpriority="high" decoding="sync" class="skip-lazy no-lazy" data-no-lazy="1" /></a><nav class="sr-only" aria-label="Primary Navigation"><a href="https://eferz.com/services/">Services</a><a href="https://eferz.com/work/">Work</a><a href="https://eferz.com/clients/">Clients</a><a href="https://eferz.com/team/">Team</a><a href="https://eferz.com/about/">About</a><a href="https://eferz.com/blog/">Blog</a><a href="https://eferz.com/contact/">Contact</a></nav><div class="eferz-ssr-burger" aria-hidden="true"><span></span><span></span></div></header><section class="eferz-ssr-hero" aria-label="EFerz Hero"><div class="eferz-ssr-pad"><div style="max-width:56rem"><div style="display:inline-flex;align-items:center;gap:10px;padding-top:8px"><span style="width:14px;height:2px;background:#d02128;display:inline-block"></span><p style="margin:0;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,253,255,.9)"><span style="color:#d02128">EF</span><span>ERZ DIGITAL AGENCY</span></p></div><h1 class="eferz-ssr-h1"><?php if ($eferz_is_ar) : ?><span style="display:block">لا شيء </span><span style="display:block"><span style="-webkit-text-stroke:1.5px rgba(255,253,255,.45);-webkit-text-fill-color:transparent;color:transparent">مستحيل </span>في </span><span style="display:flex;align-items:center;flex-wrap:wrap"><span>عالم التقنية</span><span class="eferz-ssr-cur"></span></span><?php else : ?><span style="display:block">Nothing is </span><span style="display:block"><span style="-webkit-text-stroke:1.5px rgba(255,253,255,.45);-webkit-text-fill-color:transparent;color:transparent">impossible </span>in </span><span style="display:flex;align-items:center;flex-wrap:wrap"><span>the IT world</span><span class="eferz-ssr-cur"></span></span><?php endif; ?></h1><div class="eferz-ssr-term"><span style="color:#d02128;font-weight:700">$</span><span>compiling brand-id</span></div><p style="margin:0;font-size:13px;font-weight:700;letter-spacing:.05em;color:rgba(255,253,255,.85)"><a href="https://eferz.com/services/" style="color:#fffdff;text-decoration:none"><?php echo $eferz_is_ar ? 'مرّر للاستكشاف' : 'Scroll to explore'; ?> <span style="color:#d02128">&rarr;</span></a></p></div></div></section><footer class="eferz-ssr-ftr"><div class="eferz-ssr-ftr-in"><span>&copy; <?php echo esc_html(date('Y')); ?> EFerz. All Rights Reserved.</span><nav class="sr-only" aria-label="Footer Navigation"><a href="https://eferz.com/lets-build/">3D Studio</a><a href="https://eferz.com/privacy/">Privacy</a><a href="https://eferz.com/terms/">Terms</a><a href="https://eferz.com/refund/">Refund Policy</a><a href="https://eferz.com/shop/">Shop</a></nav></div></footer><?php else : ?>
       <div class="eferz-ssr-page">
         <header style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.12);">
           <a href="https://eferz.com/" style="display:inline-flex;align-items:center;gap:12px;font-weight:900;font-size:18px;">
