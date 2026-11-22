@@ -71,6 +71,191 @@
     <link rel="icon" type="image/png" href="/eferz-logo.png" />
   </head>
   <body class="bg-[#121212] text-[#fffdff] selection:bg-[#ec3935] selection:text-white antialiased overflow-x-hidden">
+    <div id="eferz-cinematic-loader" aria-hidden="true">
+      <style>
+        #eferz-cinematic-loader{position:fixed;inset:0;z-index:9999;overflow:hidden;color:#fffdff;pointer-events:auto;user-select:none;background-color:#141414;background-image:radial-gradient(circle at 25% 25%,rgba(236,57,53,.11) 0%,transparent 48%),radial-gradient(circle at 75% 35%,rgba(86,134,160,.12) 0%,transparent 52%),radial-gradient(circle at 50% 75%,rgba(140,25,55,.10) 0%,transparent 50%),radial-gradient(circle at 85% 70%,rgba(219,176,87,.08) 0%,transparent 46%)}
+        #eferz-cinematic-loader.is-opening{pointer-events:none;background:transparent}
+        .ef-ldr-curtain-top,.ef-ldr-curtain-bot{position:fixed;left:0;right:0;height:50.2%;background:#141414;will-change:transform;transition:transform .52s cubic-bezier(.77,0,.175,1)}
+        .ef-ldr-curtain-top{top:0;border-bottom:1px solid rgba(255,255,255,.06);transform:translate3d(0,0,0)}
+        .ef-ldr-curtain-bot{bottom:0;border-top:1px solid rgba(255,255,255,.06);transform:translate3d(0,0,0)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-curtain-top{transform:translate3d(0,-104%,0);border-bottom-color:rgba(236,57,53,.72);box-shadow:0 12px 45px rgba(236,57,53,.24)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-curtain-bot{transform:translate3d(0,104%,0);border-top-color:rgba(236,57,53,.72);box-shadow:0 -12px 45px rgba(236,57,53,.24)}
+        .ef-ldr-seam{position:fixed;left:50%;top:50%;width:0;height:2px;transform:translate(-50%,-50%);background:linear-gradient(90deg,transparent,#ec3935,#fffdff,#ec3935,transparent);box-shadow:0 0 24px rgba(236,57,53,.95);opacity:0;z-index:4;pointer-events:none;transition:width .38s cubic-bezier(.16,1,.3,1),opacity .45s ease}
+        #eferz-cinematic-loader.is-seam .ef-ldr-seam{width:92vw;opacity:1}
+        #eferz-cinematic-loader.is-opening .ef-ldr-seam{width:100vw;opacity:0}
+        #ef-ldr-cvs{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:2;pointer-events:none;transition:opacity .48s cubic-bezier(.16,1,.3,1),transform .68s cubic-bezier(.16,1,.3,1)}
+        #eferz-cinematic-loader.is-opening #ef-ldr-cvs{opacity:0;transform:scale(1.06)}
+        .ef-ldr-center{position:fixed;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;pointer-events:none;transition:opacity .42s cubic-bezier(.16,1,.3,1),transform .64s cubic-bezier(.16,1,.3,1)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-center{opacity:0;transform:scale(1.1)}
+        .ef-ldr-rings{position:relative;width:168px;height:168px;display:flex;align-items:center;justify-content:center}
+        .ef-ldr-ring-a,.ef-ldr-ring-b{position:absolute;inset:0;border-radius:50%;pointer-events:none}
+        .ef-ldr-ring-a{border:1px solid rgba(255,255,255,.1);border-top-color:rgba(255,253,255,.68);border-right-color:rgba(236,57,53,.48);animation:efSpinCW 5.2s linear infinite}
+        .ef-ldr-ring-b{inset:15px;border:1px dashed rgba(236,57,53,.32);border-bottom-color:#ec3935;animation:efSpinCCW 3.6s linear infinite}
+        .ef-ldr-emblem{position:relative;width:82px;height:82px;display:flex;align-items:center;justify-content:center;animation:efPulseIcon 2.4s ease-in-out infinite}
+        .ef-ldr-emblem img{width:82px;height:82px;object-fit:contain;display:block;filter:drop-shadow(0 0 22px rgba(236,57,53,.42)) drop-shadow(0 6px 18px rgba(0,0,0,.75))}
+        .ef-ldr-brand{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:8px;max-width:480px}
+        .ef-ldr-word{font-family:"Outfit","Montserrat",system-ui,sans-serif;font-weight:900;font-size:22px;letter-spacing:.44em;text-indent:.44em;color:#fffdff;margin:0;line-height:1}
+        .ef-ldr-word b{color:#ec3935;font-weight:900}
+        .ef-ldr-tag{font-family:"JetBrains Mono","Plus Jakarta Sans",monospace;font-size:11px;font-weight:600;letter-spacing:.2em;color:rgba(255,253,255,.72);margin:0;line-height:1.45}
+        .ef-ldr-corner{position:fixed;right:clamp(22px,4.8vw,56px);bottom:clamp(22px,4.5vw,46px);z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none;transition:opacity .38s ease,transform .58s cubic-bezier(.16,1,.3,1)}
+        #eferz-cinematic-loader.is-opening .ef-ldr-corner{opacity:0;transform:translate3d(0,22px,0)}
+        .ef-ldr-num-row{display:flex;align-items:baseline;gap:4px;line-height:.86}
+        .ef-ldr-pct{font-family:"Outfit","Montserrat",system-ui,sans-serif;font-weight:900;font-size:clamp(54px,8.8vw,118px);letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#fffdff;text-shadow:0 0 36px rgba(236,57,53,.24)}
+        .ef-ldr-sym{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:clamp(18px,2.4vw,30px);color:#ec3935;letter-spacing:.04em}
+        .ef-ldr-rail{width:clamp(132px,20vw,220px);height:2px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
+        .ef-ldr-fill{height:100%;width:6%;border-radius:999px;background:linear-gradient(90deg,#d02128,#ec3935,#fffdff);box-shadow:0 0 14px rgba(236,57,53,.95);transition:width .16s ease-out}
+        .ef-ldr-sub{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,253,255,.48)}
+        @media(max-width:640px){.ef-ldr-rings{width:138px;height:138px}.ef-ldr-ring-b{inset:12px}.ef-ldr-emblem,.ef-ldr-emblem img{width:66px;height:66px}.ef-ldr-word{font-size:18px;letter-spacing:.38em}.ef-ldr-tag{font-size:10px;letter-spacing:.14em}}
+        @keyframes efSpinCW{to{transform:rotate(360deg)}}
+        @keyframes efSpinCCW{to{transform:rotate(-360deg)}}
+        @keyframes efPulseIcon{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+      </style>
+      <div class="ef-ldr-curtain-top"></div>
+      <div class="ef-ldr-curtain-bot"></div>
+      <div class="ef-ldr-seam"></div>
+      <canvas id="ef-ldr-cvs"></canvas>
+      <div class="ef-ldr-center">
+        <div class="ef-ldr-rings">
+          <div class="ef-ldr-ring-a"></div>
+          <div class="ef-ldr-ring-b"></div>
+          <div class="ef-ldr-emblem">
+            <img src="/assets/eferz-nav-logo.webp" alt="EFerz" width="82" height="82" fetchpriority="high" decoding="sync" />
+          </div>
+        </div>
+        <div class="ef-ldr-brand">
+          <p class="ef-ldr-word"><b>EF</b>ERZ</p>
+          <p class="ef-ldr-tag">Nothing is impossible in the IT world.</p>
+        </div>
+      </div>
+      <div class="ef-ldr-corner" dir="ltr">
+        <div class="ef-ldr-sub">INITIALIZING</div>
+        <div class="ef-ldr-num-row">
+          <span class="ef-ldr-pct" id="ef-ldr-pct">06</span><span class="ef-ldr-sym">%</span>
+        </div>
+        <div class="ef-ldr-rail"><div class="ef-ldr-fill" id="ef-ldr-fill"></div></div>
+      </div>
+      <script>
+        (function(){
+          var ldr = document.getElementById('eferz-cinematic-loader');
+          if (!ldr) return;
+          if ((window.location.pathname !== '/' && window.location.pathname !== '') || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+            if (ldr.parentNode) ldr.parentNode.removeChild(ldr);
+            return;
+          }
+          var fill = document.getElementById('ef-ldr-fill');
+          var pct = document.getElementById('ef-ldr-pct');
+          var cvs = document.getElementById('ef-ldr-cvs');
+          var ringsEl = ldr.querySelector('.ef-ldr-rings');
+          var tStart = performance.now();
+          var progress = 6, readyToOpen = false, opening = false, rafId = 0;
+          var ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
+          var w = window.innerWidth, h = window.innerHeight, dpr = w < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+          var cx = w * 0.5, cy = h * 0.5 - (w < 640 ? 28 : 30);
+          var palette = ['rgba(255, 255, 255,','rgba(219, 176, 87,','rgba(138, 203, 193,','rgba(236, 57, 53,','rgba(205, 235, 255,'];
+          var bgStars = [], orbitStars = [];
+
+          function syncCenter() {
+            if (ringsEl) {
+              var rc = ringsEl.getBoundingClientRect();
+              if (rc.width > 0) { cx = rc.left + rc.width * 0.5; cy = rc.top + rc.height * 0.5; return; }
+            }
+            cx = w * 0.5; cy = h * 0.5 - (w < 640 ? 28 : 30);
+          }
+
+          function buildScene() {
+            bgStars = []; orbitStars = [];
+            var mob = w < 768, bgCount = mob ? 85 : 180;
+            for (var i = 0; i < bgCount; i++) {
+              var hi = (i % 7 === 0);
+              bgStars.push({
+                x: (Math.random() - 0.5) * 3200, y: (Math.random() - 0.5) * 2400, z: Math.random() * 1800 + 40,
+                size: hi ? (Math.random() * 2.1 + 1.65) : (Math.random() * 1.35 + 0.8),
+                baseAlpha: hi ? (Math.random() * 0.28 + 0.62) : (Math.random() * 0.38 + 0.32),
+                twinkleSpeed: Math.random() * 0.03 + 0.012, twinklePhase: Math.random() * Math.PI * 2,
+                color: palette[Math.floor(Math.random() * palette.length)]
+              });
+            }
+            var orbCount = mob ? 34 : 62, minR = mob ? 76 : 96, maxR = Math.max(w, h) * 0.44;
+            for (var j = 0; j < orbCount; j++) {
+              var tier = j / orbCount, radius = minR + Math.pow(tier, 0.86) * (maxR - minR);
+              var dir = (j % 4 === 0) ? -1 : 1, hiO = (j % 5 === 0);
+              orbitStars.push({
+                ang: Math.random() * Math.PI * 2, r: radius,
+                spd: dir * (0.0045 + Math.random() * 0.0055) / (0.68 + tier * 1.25),
+                size: hiO ? (1.85 + Math.random() * 1.4) : (0.9 + Math.random() * 1.15),
+                baseAlpha: hiO ? 0.88 : (0.45 + Math.random() * 0.32),
+                twinkleSpeed: Math.random() * 0.032 + 0.015, twinklePhase: Math.random() * Math.PI * 2,
+                color: (j < 20 && j % 2 === 0) ? palette[3] : palette[Math.floor(Math.random() * palette.length)]
+              });
+            }
+          }
+
+          if (ctx) {
+            var resize = function() {
+              w = window.innerWidth; h = window.innerHeight;
+              dpr = w < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+              cvs.width = w * dpr; cvs.height = h * dpr;
+              ctx.setTransform(dpr, 0, 0, dpr, 0, 0); syncCenter();
+            };
+            resize(); buildScene();
+            window.addEventListener('resize', function() { resize(); buildScene(); }, { passive: true });
+          }
+
+          function tick() {
+            if (!readyToOpen) {
+              progress += (94 - progress) * 0.065;
+              var p = Math.min(94, Math.round(progress));
+              if (fill) fill.style.width = p + '%';
+              if (pct) pct.textContent = (p < 10 ? '0' : '') + p;
+            }
+            if (ctx) {
+              ctx.clearRect(0, 0, w, h);
+              var focal = 520, halfW = w * 0.5, halfH = h * 0.5, zStep = opening ? 1.4 : 0.35;
+              for (var i = 0; i < bgStars.length; i++) {
+                var s = bgStars[i]; s.twinklePhase += s.twinkleSpeed; s.z -= zStep; if (s.z < 20) s.z += 1800;
+                var persp = focal / (focal + s.z + 200), sx = halfW + s.x * persp, sy = halfH + s.y * persp;
+                if (sx >= -20 && sx <= w + 20 && sy >= -20 && sy <= h + 20) {
+                  var tw = s.baseAlpha * (0.68 + 0.32 * Math.sin(s.twinklePhase));
+                  var al = Math.max(0.16, Math.min(0.95, tw * (persp * 1.18))), rad = Math.max(0.85, s.size * persp * 1.38);
+                  ctx.fillStyle = s.color + al.toFixed(3) + ')'; ctx.beginPath(); ctx.arc(sx, sy, rad, 0, Math.PI * 2); ctx.fill();
+                }
+              }
+              var boost = opening ? 2.8 : 1;
+              for (var j = 0; j < orbitStars.length; j++) {
+                var o = orbitStars[j]; o.ang += o.spd * boost; o.twinklePhase += o.twinkleSpeed;
+                var rr = opening ? o.r * 1.07 : o.r, ox = cx + Math.cos(o.ang) * rr, oy = cy + Math.sin(o.ang) * rr;
+                var alO = Math.max(0.22, Math.min(0.96, o.baseAlpha * (0.68 + 0.32 * Math.sin(o.twinklePhase))));
+                ctx.fillStyle = o.color + alO.toFixed(3) + ')'; ctx.beginPath(); ctx.arc(ox, oy, o.size, 0, Math.PI * 2); ctx.fill();
+              }
+            }
+            if (ldr && ldr.parentNode) rafId = requestAnimationFrame(tick);
+          }
+          rafId = requestAnimationFrame(tick);
+
+          function dismiss() {
+            if (readyToOpen) return;
+            readyToOpen = true;
+            if (fill) fill.style.width = '100%';
+            if (pct) pct.textContent = '100';
+            ldr.classList.add('is-seam');
+            setTimeout(function() {
+              if (!ldr) return;
+              opening = true; ldr.classList.add('is-opening');
+              setTimeout(function() {
+                if (rafId) cancelAnimationFrame(rafId);
+                if (ldr && ldr.parentNode) ldr.parentNode.removeChild(ldr);
+              }, 540);
+            }, 110);
+          }
+
+          window.__eferzHideLoader = function() {
+            var elapsed = performance.now() - tStart;
+            setTimeout(dismiss, Math.max(0, 420 - elapsed));
+          };
+          setTimeout(dismiss, 2200);
+        })();
+      </script>
+    </div>
     <div id="root"></div>
     <noscript>
       <main>

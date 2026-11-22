@@ -4,13 +4,14 @@
  * Exact 100% React Application from AI Studio Build
  *
  * @package EFerz
- * @version 1.6.0
+ * @version 1.6.1
  */
-$eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
+$eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'base_url' => 'https://eferz.com/', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
 $eferz_og_image = get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
 $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
 $eferz_route    = $eferz_seo['route'] ?? 'agency';
 $eferz_is_ar    = !empty($eferz_seo['is_ar']);
+$eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
 ?>
 <!doctype html>
 <html lang="<?php echo $eferz_is_ar ? 'ar' : 'en'; ?>" dir="<?php echo $eferz_is_ar ? 'rtl' : 'ltr'; ?>" class="dark scroll-smooth theme-galaxy">
@@ -26,9 +27,9 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
     <link rel="canonical" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
     <link rel="icon" type="image/png" href="<?php echo esc_url($eferz_favicon); ?>" />
     <link rel="apple-touch-icon" href="<?php echo esc_url($eferz_favicon); ?>" />
-    <link rel="alternate" hreflang="en" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
-    <link rel="alternate" hreflang="ar" href="<?php echo esc_url($eferz_seo['canonical'] . '?lang=ar'); ?>" />
-    <link rel="alternate" hreflang="x-default" href="<?php echo esc_url($eferz_seo['canonical']); ?>" />
+    <link rel="alternate" hreflang="en" href="<?php echo esc_url($eferz_base_url); ?>" />
+    <link rel="alternate" hreflang="ar" href="<?php echo esc_url($eferz_base_url . '?lang=ar'); ?>" />
+    <link rel="alternate" hreflang="x-default" href="<?php echo esc_url($eferz_base_url); ?>" />
     <meta property="og:title" content="<?php echo esc_attr($eferz_seo['title']); ?>" />
     <meta property="og:description" content="<?php echo esc_attr($eferz_seo['desc']); ?>" />
     <meta property="og:type" content="website" />
@@ -189,9 +190,9 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
     <?php if ($eferz_route === 'agency') : ?>
     <div id="eferz-cinematic-loader" aria-hidden="true">
       <style>
-        #eferz-cinematic-loader{position:fixed;inset:0;z-index:9999;overflow:hidden;color:#fffdff;pointer-events:auto;user-select:none}
-        #eferz-cinematic-loader.is-opening{pointer-events:none}
-        .ef-ldr-curtain-top,.ef-ldr-curtain-bot{position:fixed;left:0;right:0;height:50.2%;background:#141414;will-change:transform;transition:transform .74s cubic-bezier(.77,0,.175,1)}
+        #eferz-cinematic-loader{position:fixed;inset:0;z-index:9999;overflow:hidden;color:#fffdff;pointer-events:auto;user-select:none;background-color:#141414;background-image:radial-gradient(circle at 25% 25%,rgba(236,57,53,.11) 0%,transparent 48%),radial-gradient(circle at 75% 35%,rgba(86,134,160,.12) 0%,transparent 52%),radial-gradient(circle at 50% 75%,rgba(140,25,55,.10) 0%,transparent 50%),radial-gradient(circle at 85% 70%,rgba(219,176,87,.08) 0%,transparent 46%)}
+        #eferz-cinematic-loader.is-opening{pointer-events:none;background:transparent}
+        .ef-ldr-curtain-top,.ef-ldr-curtain-bot{position:fixed;left:0;right:0;height:50.2%;background:#141414;will-change:transform;transition:transform .52s cubic-bezier(.77,0,.175,1)}
         .ef-ldr-curtain-top{top:0;border-bottom:1px solid rgba(255,255,255,.06);transform:translate3d(0,0,0)}
         .ef-ldr-curtain-bot{bottom:0;border-top:1px solid rgba(255,255,255,.06);transform:translate3d(0,0,0)}
         #eferz-cinematic-loader.is-opening .ef-ldr-curtain-top{transform:translate3d(0,-104%,0);border-bottom-color:rgba(236,57,53,.72);box-shadow:0 12px 45px rgba(236,57,53,.24)}
@@ -257,6 +258,10 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           var pct = document.getElementById('ef-ldr-pct');
           var cvs = document.getElementById('ef-ldr-cvs');
           if (!ldr) return;
+          if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (ldr.parentNode) ldr.parentNode.removeChild(ldr);
+            return;
+          }
 
           var tStart = performance.now();
           var progress = 6;
@@ -265,23 +270,17 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           var rafId = 0;
 
           var ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
-          var w = window.innerWidth, h = window.innerHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
+          var w = window.innerWidth, h = window.innerHeight, dpr = w < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
           var ringsEl = ldr.querySelector('.ef-ldr-rings');
           var cx = w * 0.5, cy = h * 0.5 - (w < 640 ? 28 : 30);
 
-          // Exact live EFerz website galaxy palette & 4 nebula glows
+          // Exact live EFerz website galaxy palette
           var palette = [
             'rgba(255, 255, 255,',
             'rgba(219, 176, 87,',
             'rgba(138, 203, 193,',
             'rgba(236, 57, 53,',
             'rgba(205, 235, 255,'
-          ];
-          var nebulae = [
-            { x: 0.25, y: 0.25, radius: 580, rgb: '236, 57, 53', a: 0.105, phase: 0 },
-            { x: 0.75, y: 0.35, radius: 640, rgb: '86, 134, 160', a: 0.115, phase: 1.5 },
-            { x: 0.50, y: 0.75, radius: 600, rgb: '140, 25, 55',  a: 0.095, phase: 3.0 },
-            { x: 0.85, y: 0.70, radius: 550, rgb: '219, 176, 87', a: 0.075, phase: 4.5 }
           ];
           var bgStars = [];
           var orbitStars = [];
@@ -304,8 +303,7 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
             orbitStars = [];
             var mob = w < 768;
 
-            // Background 3D depth stars identical to EFerz live galaxy background
-            var bgCount = mob ? 180 : 320;
+            var bgCount = mob ? 85 : 180;
             for (var i = 0; i < bgCount; i++) {
               var hi = (i % 7 === 0);
               bgStars.push({
@@ -320,8 +318,7 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
               });
             }
 
-            // Concentric circular orbiting galaxy stars around the "e" icon
-            var orbCount = mob ? 56 : 86;
+            var orbCount = mob ? 34 : 62;
             var minR = mob ? 76 : 96;
             var maxR = Math.max(w, h) * 0.44;
             for (var j = 0; j < orbCount; j++) {
@@ -337,7 +334,7 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
                 baseAlpha: hiO ? 0.88 : (0.45 + Math.random() * 0.32),
                 twinkleSpeed: Math.random() * 0.032 + 0.015,
                 twinklePhase: Math.random() * Math.PI * 2,
-                color: (j < 24 && j % 2 === 0) ? palette[3] : palette[Math.floor(Math.random() * palette.length)]
+                color: (j < 20 && j % 2 === 0) ? palette[3] : palette[Math.floor(Math.random() * palette.length)]
               });
             }
           }
@@ -345,6 +342,7 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           if (ctx) {
             var resize = function() {
               w = window.innerWidth; h = window.innerHeight;
+              dpr = w < 768 ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
               cvs.width = w * dpr; cvs.height = h * dpr;
               ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
               syncCenter();
@@ -356,7 +354,7 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
 
           function tick() {
             if (!readyToOpen) {
-              progress += (94 - progress) * 0.048;
+              progress += (94 - progress) * 0.065;
               var p = Math.min(94, Math.round(progress));
               if (fill) fill.style.width = p + '%';
               if (pct) pct.textContent = (p < 10 ? '0' : '') + p;
@@ -364,25 +362,6 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
             if (ctx) {
               ctx.clearRect(0, 0, w, h);
 
-              // 1. Live EFerz nebula clouds
-              for (var n = 0; n < nebulae.length; n++) {
-                var nb = nebulae[n];
-                nb.phase += 0.003;
-                var nx = (nb.x + Math.sin(nb.phase) * 0.04) * w;
-                var ny = (nb.y + Math.cos(nb.phase * 0.8) * 0.03) * h;
-                var nr = nb.radius * (1 + Math.sin(nb.phase) * 0.08);
-                var grd = ctx.createRadialGradient(nx, ny, nr * 0.04, nx, ny, nr);
-                grd.addColorStop(0, 'rgba(' + nb.rgb + ',' + nb.a.toFixed(4) + ')');
-                grd.addColorStop(0.3, 'rgba(' + nb.rgb + ',' + (nb.a * 0.5).toFixed(4) + ')');
-                grd.addColorStop(0.65, 'rgba(' + nb.rgb + ',' + (nb.a * 0.14).toFixed(4) + ')');
-                grd.addColorStop(1, 'rgba(' + nb.rgb + ',0)');
-                ctx.fillStyle = grd;
-                ctx.beginPath();
-                ctx.arc(nx, ny, nr, 0, Math.PI * 2);
-                ctx.fill();
-              }
-
-              // 2. Live EFerz depth starfield (3D projection toward camera)
               var focal = 520, halfW = w * 0.5, halfH = h * 0.5;
               var zStep = opening ? 1.4 : 0.35;
               for (var i = 0; i < bgStars.length; i++) {
@@ -404,7 +383,6 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
                 }
               }
 
-              // 3. Circular orbiting galaxy stars revolving around the center EFerz "e" icon
               var boost = opening ? 2.8 : 1;
               for (var j = 0; j < orbitStars.length; j++) {
                 var o = orbitStars[j];
@@ -439,16 +417,16 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
               setTimeout(function() {
                 if (rafId) cancelAnimationFrame(rafId);
                 if (ldr && ldr.parentNode) ldr.parentNode.removeChild(ldr);
-              }, 780);
-            }, 170);
+              }, 540);
+            }, 110);
           }
 
           window.__eferzHideLoader = function() {
             var elapsed = performance.now() - tStart;
-            var wait = Math.max(0, 760 - elapsed);
+            var wait = Math.max(0, 420 - elapsed);
             setTimeout(dismiss, wait);
           };
-          setTimeout(dismiss, 2800);
+          setTimeout(dismiss, 2200);
         })();
       </script>
     </div>
@@ -496,7 +474,7 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           <?php elseif ($eferz_route === 'work') : ?>
             <section class="eferz-ssr-card">
               <h2><?php echo $eferz_is_ar ? 'معرض المشاريع ودراسات الحالة' : 'Selected Case Studies & Production Launches'; ?></h2>
-              <p>Featured launches engineered by EFerz include FitwearStores, HiDoose, Khuzair, Storeara, Sustagro, Airtilize, Al Shiekh Curtain Interiors, CharmThings, InstaShop, Minimog, ReflectiveThings, TrendifyToday, and Your Kitchen Is Cooking across web platforms, Shopify stores, branding, and growth systems.</p>
+              <p>Featured production launches across our 13+ documented case studies include FitwearStores, HiDoose, Khuzair, Storeara, Sustagro, Airtilize, Al-Sheikh Curtain &amp; Interiors, CharmThings, InstaShop, Minimog, ReflectiveThings, TrendifyToday, and Your Kitchen Is Cooking across web platforms, Shopify stores, branding, and growth systems.</p>
               <p><a href="https://eferz.com/lets-build/">Explore Interactive 3D Studio &rarr;</a></p>
             </section>
           <?php elseif ($eferz_route === 'clients') : ?>
@@ -509,11 +487,11 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
             <section class="eferz-ssr-card">
               <h2><?php echo $eferz_is_ar ? 'القيادة والمهندسون' : 'Leadership & Principal Architects'; ?></h2>
               <ul>
-                <li><strong>Khubaib Khan</strong> — Founder & President</li>
-                <li><strong>Salman Shahid</strong> — Co-Founder & Director of Finance & Legal Affairs</li>
+                <li><strong>Khubaib Khan</strong> — Founder &amp; President</li>
+                <li><strong>Salman Shahid</strong> — Co-Founder &amp; Director of Finance &amp; Legal Affairs</li>
                 <li><strong>Irfan Mirza</strong> — Director of Business Development</li>
                 <li><strong>Syed Ahmed</strong> — Business Development Manager</li>
-                <li><strong>Asad Malik</strong> — Website Designer & Developer</li>
+                <li><strong>Asad Malik</strong> — Website Designer &amp; Developer</li>
                 <li><strong>Syed Owais</strong> — Operations Coordinator</li>
               </ul>
             </section>
@@ -526,7 +504,13 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           <?php elseif ($eferz_route === 'blog') : ?>
             <section class="eferz-ssr-card">
               <h2><?php echo $eferz_is_ar ? 'أدلة الهندسة والسيو والذكاء الاصطناعي' : 'Engineering, AI, SEO & WebGL Playbooks'; ?></h2>
-              <p>Practical guides authored by EFerz engineers covering Interaction to Next Paint (INP), Core Web Vitals optimization, LLM agent workflows, Three.js scene performance, Shopify Plus conversion architecture, and cloud cybersecurity hardening.</p>
+              <p>Authored by <strong>Khubaib Khan</strong> and EFerz principal engineering architects — practical guides covering Core Web Vitals, custom LLM &amp; RAG agents, 3D WebGL performance, Amazon FBA, and Zero-Trust security.</p>
+              <ul>
+                <li><a href="https://eferz.com/blog/#web-design-seo-architecture">3D WebGL &amp; Technical SEO Architecture for Enterprise Growth</a> — Khubaib Khan</li>
+                <li><a href="https://eferz.com/blog/#custom-ai-support-agents">Training Custom AI Support Agents on Your Enterprise Knowledge Base</a> — Khubaib Khan</li>
+                <li><a href="https://eferz.com/blog/#amazon-fba-ipi-mastery">Mastering Amazon FBA IPI Scores &amp; Buy Box Dominance</a> — Khubaib Khan</li>
+                <li><a href="https://eferz.com/blog/#zero-trust-cybersecurity-ecommerce">Zero-Trust Cloud &amp; E-Commerce Cybersecurity Hardening</a> — Khubaib Khan</li>
+              </ul>
             </section>
           <?php elseif ($eferz_route === 'contact') : ?>
             <section class="eferz-ssr-card">
@@ -542,29 +526,35 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
           <?php elseif ($eferz_route === 'lets-build') : ?>
             <section class="eferz-ssr-card">
               <h2><?php echo $eferz_is_ar ? 'استوديو التصميم ثلاثي الأبعاد' : 'Interactive 3D Brand & Packaging Configurator'; ?></h2>
-              <p>Customize a real-time WebGL 3D experience with your brand logo, metallic colors, finishes, and typography inside the EFerz Interactive 3D Studio.</p>
+              <p>Customize 4 live interactive 3D WebGL brand demos across 14 industry packs with your brand logo, metallic colors, finishes, and typography inside the EFerz Interactive 3D Studio.</p>
               <p><a href="https://eferz.com/contact/">Book a Custom 3D Build &rarr;</a></p>
             </section>
           <?php elseif ($eferz_route === 'privacy') : ?>
             <section class="eferz-ssr-card">
               <p><strong>Last updated:</strong> July 10, 2025</p>
-              <h2>01. Personal & Project Information We Collect</h2>
+              <h2>01. Personal &amp; Project Information We Collect</h2>
               <p>We collect contact and project inquiry details voluntarily submitted by prospective clients (name, email, phone number, company name, service scope, and technical requirements) strictly to deliver consultations, proposals, and contracted services.</p>
-              <h2>02. Security, Confidentiality & GDPR / CCPA Rights</h2>
-              <p>EFerz safeguards client data with TLS encryption, strict access controls, and zero third-party sale of personal data. For privacy requests, contact <a href="mailto:info@eferz.com">info@eferz.com</a> or +1 (786) 224-4112 (USA) / +966 (539) 046410 (KSA) / +92 345 3397459 (PAK).</p>
+              <h2>02. SMS &amp; WhatsApp Messaging Privacy (TCPA &amp; A2P 10DLC)</h2>
+              <p><strong>No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.</strong> All other categories exclude text messaging originator opt-in data and consent; mobile numbers and SMS/WhatsApp consent records will never be sold, rented, or disclosed to third parties. Consenting to SMS or WhatsApp updates is strictly optional and is never required to submit a contact form or request services. Reply STOP at any time to opt out.</p>
+              <h2>03. GDPR Privacy Rights (EEA &amp; UK Residents)</h2>
+              <p>Under the General Data Protection Regulation (GDPR), individuals in the European Economic Area and United Kingdom have the right to access personal data we hold, request rectification or erasure ("right to be forgotten"), restrict or object to processing, and request data portability. Legal bases include contract performance, legitimate business interest, and explicit consent.</p>
+              <h2>04. CCPA / CPRA Privacy Rights (California Residents)</h2>
+              <p>Under the California Consumer Privacy Act (CCPA/CPRA), California residents have the right to know what personal information is collected, request deletion or correction of personal data, and opt out of the sale or sharing of personal information. <strong>EFerz does not sell personal information.</strong> We do not discriminate against users exercising privacy rights.</p>
+              <h2>05. Security, Retention &amp; Official Privacy Contact</h2>
+              <p>EFerz safeguards client data with TLS 1.3 encryption and Zero-Trust access controls. To exercise GDPR, CCPA, or SMS privacy rights, contact <a href="mailto:info@eferz.com">info@eferz.com</a> or call +1 (786) 224-4112 (USA) / +966 (539) 046410 (KSA) / +92 345 3397459 (PAK).</p>
             </section>
           <?php elseif ($eferz_route === 'terms') : ?>
             <section class="eferz-ssr-card">
               <p><strong>Last updated:</strong> July 10, 2025</p>
-              <h2>01. Enterprise SLA, Scope & Client IP Ownership</h2>
+              <h2>01. Enterprise SLA, Scope &amp; Client IP Ownership</h2>
               <p>Upon completed milestone payments, clients retain 100% ownership of custom deliverables, source codebases, brand assets, and intellectual property produced for their engagement.</p>
-              <h2>02. Legal Jurisdiction & Contact</h2>
-              <p>Questions regarding Terms of Service or milestone agreements may be directed to <a href="mailto:info@eferz.com">info@eferz.com</a>, +1 (786) 224-4112 (USA), or +966 (539) 046410 (Saudi Arabia).</p>
+              <h2>02. Governing Law, Jurisdiction &amp; Legal Contact</h2>
+              <p>These Terms of Service and any disputes arising out of EFerz engagements shall be governed by and construed in accordance with the laws of the <strong>State of Florida, United States</strong>, without regard to conflict-of-law principles, with exclusive venue in the state or federal courts located in Broward County (Fort Lauderdale), Florida. Legal notices may be directed to <a href="mailto:info@eferz.com">info@eferz.com</a>, +1 (786) 224-4112 (USA), or +966 (539) 046410 (Saudi Arabia).</p>
             </section>
           <?php elseif ($eferz_route === 'refund') : ?>
             <section class="eferz-ssr-card">
               <p><strong>Last updated:</strong> July 10, 2025</p>
-              <h2>01. 30-Day Money-Back Guarantee & Processing</h2>
+              <h2>01. 30-Day Money-Back Guarantee &amp; Processing</h2>
               <p>New eligible service purchases are covered by the EFerz 30-Day Money-Back Guarantee subject to official scope verification procedures. Approved refunds are processed back to the original payment method within 10 to 30 business days.</p>
               <h2>02. 72-Hour Rectification Commitment</h2>
               <p>If deliverables deviate from agreed specifications, EFerz engineers prioritize rectification within 72 hours. Contact <a href="mailto:info@eferz.com">info@eferz.com</a> for billing or guarantee inquiries.</p>
@@ -585,7 +575,7 @@ $eferz_is_ar    = !empty($eferz_seo['is_ar']);
     <?php endif; ?></div>
     <noscript>
       <main style="max-width:960px;margin:40px auto;padding:24px;color:#fffdff;font-family:system-ui,sans-serif;line-height:1.6;">
-        <h1><?php echo esc_html($eferz_seo['title']); ?></h1>
+        <p style="font-size:1.5rem;font-weight:900;margin:0 0 12px;"><?php echo esc_html($eferz_seo['title']); ?></p>
         <p><?php echo esc_html($eferz_seo['desc']); ?></p>
         <p>Founded on October 10, 2020 — EFerz (eferz.com) engineers custom AI agents, LLM automation, 3D WebGL websites, Shopify Plus stores, Amazon FBA management, technical SEO, UI/UX design, and Zero Trust cloud cybersecurity across Fort Lauderdale (USA), Riyadh (Saudi Arabia), and Karachi (Pakistan). Email: info@eferz.com | USA: +1 (786) 224-4112 | KSA: +966 (539) 046410 | PAK: +92 345 3397459.</p>
         <nav aria-label="Primary Navigation">

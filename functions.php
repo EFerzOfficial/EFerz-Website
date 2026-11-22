@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.0
+ * @version 1.6.1
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.0');
+define('EFERZ_THEME_VERSION', '1.6.1');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -170,13 +170,13 @@ function eferz_get_route_seo() {
         'work' => array(
             'title' => 'Case Studies: 3D Web, AI & E-Commerce Portfolio | EFerz',
             'titleAr' => 'معرض الأعمال: مواقع 3D ومتاجر وذكاء اصطناعي | إيفرز',
-            'desc' => 'Explore 17+ EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
-            'descAr' => 'تصفح أكثر من 17 مشروعاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
+            'desc' => 'Explore 13+ EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
+            'descAr' => 'تصفح أكثر من 13 مشروعاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
             'keywords' => '',
             'slug' => 'work',
         ),
         'clients' => array(
-            'title' => 'Client Reviews & Global Case Studies | EFerz',
+            'title' => 'Global Clients & Verified Testimonials | EFerz',
             'titleAr' => 'آراء العملاء العالميين وقصص النجاح | وكالة إيفرز',
             'desc' => 'Headquartered in Fort Lauderdale USA with offices in Riyadh & Karachi, EFerz serves enterprise clients across AI, web & growth. Read client testimonials.',
             'descAr' => 'مقرنا الرئيسي في أمريكا مع مكاتب في الرياض وكراتشي لخدمة العملاء في الذكاء الاصطناعي والويب والتسويق الرقمي. اقرأ شهادات العملاء.',
@@ -251,13 +251,15 @@ function eferz_get_route_seo() {
 
     $cfg = $routes[$route] ?? $routes['agency'];
     $base_url = 'https://eferz.com/' . ($cfg['slug'] ? $cfg['slug'] . '/' : '');
+    $canonical = $is_ar ? ($base_url . '?lang=ar') : $base_url;
     return array(
         'route'     => isset($routes[$route]) ? $route : 'agency',
         'is_ar'     => $is_ar,
         'title'     => $is_ar ? $cfg['titleAr'] : $cfg['title'],
         'desc'      => $is_ar ? $cfg['descAr'] : $cfg['desc'],
         'keywords'  => $cfg['keywords'],
-        'canonical' => $base_url,
+        'base_url'  => $base_url,
+        'canonical' => $canonical,
     );
 }
 
@@ -887,6 +889,47 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
 }
 
 /**
+ * Align PHPMailer envelope Return-Path Sender with @eferz.com so SPF/DMARC stay strictly aligned on outbound mail.
+ */
+add_action('phpmailer_init', function($phpmailer) {
+    if (is_object($phpmailer) && !empty($phpmailer->From) && stripos($phpmailer->From, '@eferz.com') !== false) {
+        $phpmailer->Sender = $phpmailer->From;
+    } elseif (is_object($phpmailer) && empty($phpmailer->Sender)) {
+        $phpmailer->Sender = 'info@eferz.com';
+    }
+});
+
+/**
+ * Ensure WooCommerce sale badges always show the real calculated discount percentage (never a stale hardcoded 7% badge).
+ */
+add_filter('woocommerce_sale_flash', function($html, $post, $product) {
+    if (!is_object($product) || !method_exists($product, 'is_on_sale') || !$product->is_on_sale()) {
+        return '';
+    }
+    $pct = 0;
+    if ($product->is_type('variable') && method_exists($product, 'get_variation_prices')) {
+        $prices = $product->get_variation_prices(true);
+        foreach ((array) ($prices['regular_price'] ?? array()) as $k => $reg) {
+            $sale = isset($prices['sale_price'][$k]) ? (float) $prices['sale_price'][$k] : 0;
+            $reg  = (float) $reg;
+            if ($reg > 0 && $sale > 0 && $sale < $reg) {
+                $pct = max($pct, (int) round((($reg - $sale) / $reg) * 100));
+            }
+        }
+    } else {
+        $reg  = (float) $product->get_regular_price();
+        $sale = (float) $product->get_sale_price();
+        if ($reg > 0 && $sale > 0 && $sale < $reg) {
+            $pct = (int) round((($reg - $sale) / $reg) * 100);
+        }
+    }
+    if ($pct > 0) {
+        return '<span class="onsale">-' . esc_html($pct) . '%</span>';
+    }
+    return '<span class="onsale">' . esc_html__('Sale', 'woocommerce') . '</span>';
+}, 999, 3);
+
+/**
  * 4. Add "EFerz Leads" Page in WordPress Admin Dashboard so the owner can view all form submissions directly in wp-admin!
  */
 add_action('admin_menu', function() {
@@ -1068,7 +1111,7 @@ add_action('template_redirect', function() {
         echo "- [Interactive 3D Studio](https://eferz.com/lets-build/): Real-time WebGL product and brand configurator.\n";
         echo "- [Client Packages & Shop](https://eferz.com/shop/): Ready-to-launch web, Shopify, and digital startup packages.\n\n";
         echo "## Company & Portfolio\n\n";
-        echo "- [Selected Work & Case Studies](https://eferz.com/work/): 17+ verified web, 3D interactive, e-commerce, and AI case studies.\n";
+        echo "- [Selected Work & Case Studies](https://eferz.com/work/): 13+ verified web, 3D interactive, e-commerce, and AI case studies.\n";
         echo "- [Verified Client Reviews](https://eferz.com/clients/): Client testimonials and global enterprise retention stories.\n";
         echo "- [About EFerz](https://eferz.com/about/): Company story since October 10, 2020, global footprint, and engineering standards.\n";
         echo "- [Leadership & Architects](https://eferz.com/team/): Executive leadership and principal software architects.\n";
@@ -1189,13 +1232,23 @@ add_filter('wpseo_sitemap_exclude_post_type', function($excluded, $post_type) {
 }, 10, 2);
 
 /**
- * Exclude noindex WooCommerce utility pages from Yoast page-sitemap.xml
+ * Exclude noindex WooCommerce utility pages AND flagship SPA routes (already in /eferz-pages-sitemap.xml)
+ * from Yoast page-sitemap.xml to prevent duplicate sitemap entries.
  */
 add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_ids) {
     if (!is_array($excluded_ids)) {
         $excluded_ids = array();
     }
-    foreach (array('cart', 'checkout', 'my-account', 'order-track') as $slug) {
+    $front_id = (int) get_option('page_on_front');
+    if ($front_id > 0) {
+        $excluded_ids[] = $front_id;
+    }
+    $spa_and_utility_slugs = array(
+        'home', 'front-page', 'services', 'work', 'portfolio', 'clients', 'team', 'about', 'about-us',
+        'blog', 'contact', 'lets-build', 'privacy', 'privacy-policy', 'terms', 'terms-and-conditions',
+        'refund', 'refund-policy', 'platform', 'cart', 'checkout', 'my-account', 'order-track'
+    );
+    foreach ($spa_and_utility_slugs as $slug) {
         $page = get_page_by_path($slug);
         if ($page && isset($page->ID)) {
             $excluded_ids[] = (int) $page->ID;
@@ -1211,6 +1264,35 @@ add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_ids) {
     }
     return array_values(array_unique(array_filter(array_map('intval', $excluded_ids))));
 }, 20);
+
+/**
+ * Consolidate duplicate User-agent: * blocks in /robots.txt into one clean standards-compliant block.
+ */
+add_filter('robots_txt', function($output, $public) {
+    if ((string) $public === '0') {
+        return "User-agent: *\nDisallow: /\n";
+    }
+    $disallows = array(
+        '/wp-admin/',
+        '/platform/',
+        '/cart/',
+        '/checkout/',
+        '/my-account/',
+        '/order-pay/',
+        '/order-received/',
+    );
+    $lines = array(
+        '# EFerz Robots Policy',
+        'User-agent: *',
+        'Allow: /wp-admin/admin-ajax.php',
+    );
+    foreach ($disallows as $path) {
+        $lines[] = 'Disallow: ' . $path;
+    }
+    $lines[] = '';
+    $lines[] = 'Sitemap: https://eferz.com/sitemap_index.xml';
+    return implode("\n", $lines) . "\n";
+}, 999999, 2);
 
 /**
  * Output XML for Flagship SPA Sitemap (/eferz-pages-sitemap.xml) so Google indexes all 12 React routes + hreflang
