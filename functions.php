@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.2');
+define('EFERZ_THEME_VERSION', '1.6.3');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -2185,3 +2185,66 @@ add_action('login_init', function() {
         exit;
     }
 }, 1);
+
+/**
+ * 4. Automated SEO Bridge (syncs seamlessly with EFerz-SEO without requiring manual cPanel edits):
+ *    - Ensures _yoast_wpseo_* including _yoast_wpseo_focuskw are REST-writable for weekly blog automation.
+ *    - Automatically strips any legacy mu-plugin eferz-schema-markup.php callback on wp_head to prevent duplicate Organization JSON-LD on blog posts.
+ */
+add_action('init', function() {
+    if (!function_exists('register_post_meta')) {
+        return;
+    }
+    $post_types = array('page', 'post', 'project');
+    $yoast_keys = array(
+        '_yoast_wpseo_title',
+        '_yoast_wpseo_metadesc',
+        '_yoast_wpseo_metakeywords',
+        '_yoast_wpseo_focuskw',
+    );
+    foreach ($post_types as $pt) {
+        if (!post_type_exists($pt)) {
+            continue;
+        }
+        foreach ($yoast_keys as $meta_key) {
+            register_post_meta($pt, $meta_key, array(
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'string',
+                'auth_callback' => function() {
+                    return current_user_can('edit_posts');
+                },
+            ));
+        }
+    }
+}, 25);
+
+add_action('wp_head', function() {
+    global $wp_filter;
+    if (empty($wp_filter['wp_head']) || empty($wp_filter['wp_head']->callbacks)) {
+        return;
+    }
+    foreach ($wp_filter['wp_head']->callbacks as $priority => $callbacks) {
+        foreach ($callbacks as $cb) {
+            $fn = $cb['function'] ?? null;
+            if (!$fn) {
+                continue;
+            }
+            $file = '';
+            try {
+                if ($fn instanceof Closure || (is_string($fn) && function_exists($fn))) {
+                    $ref  = new ReflectionFunction($fn);
+                    $file = (string) $ref->getFileName();
+                } elseif (is_array($fn) && count($fn) === 2 && (is_object($fn[0]) || is_string($fn[0])) && is_string($fn[1])) {
+                    $ref  = new ReflectionMethod($fn[0], $fn[1]);
+                    $file = (string) $ref->getFileName();
+                }
+            } catch (Throwable $e) {
+                $file = '';
+            }
+            if ($file !== '' && stripos($file, 'eferz-schema-markup') !== false) {
+                remove_action('wp_head', $fn, $priority);
+            }
+        }
+    }
+}, -9999);
