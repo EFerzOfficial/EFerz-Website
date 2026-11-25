@@ -4,7 +4,7 @@
  * Exact 100% React Application from AI Studio Build
  *
  * @package EFerz
- * @version 1.6.6
+ * @version 1.6.7
  */
 $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'base_url' => 'https://eferz.com/', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
 $eferz_og_image = get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
@@ -480,21 +480,25 @@ $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
             </section>
           <?php elseif ($eferz_route === 'clients') : ?>
             <section class="eferz-ssr-card">
-              <h2><?php echo $eferz_is_ar ? 'شراكات العملاء حول العالم' : 'Global Client Partnerships Across USA, KSA & International Markets'; ?></h2>
-              <p>EFerz partners with e-commerce brands, fintech startups, digital publishers, and regional enterprises to design, engineer, secure, and scale production platforms.</p>
-              <p><a href="https://eferz.com/work/">View Case Studies &rarr;</a></p>
+              <h2><?php echo $eferz_is_ar ? '17 شراكة موثقة وشهادات العملاء حول العالم' : '17 Verified Client Ecosystems Across USA, KSA &amp; Global Markets'; ?></h2>
+              <p>EFerz partners with high-growth e-commerce brands, fintech platforms, hospitality groups, industrial suppliers, and regional enterprises to architect, secure, and scale mission-critical digital infrastructure.</p>
+              <p>Verified long-term partners include AllThingsDesire (55% returning customers), AapnaOnlineStore (55% returning customers), MiniMog (89% returning customers), HiDoose (58% returning customers), Your Kitchen is Cooking (65% returning customers), Sustagro, InstaShop, Al-Sheikh Curtain &amp; Interiors, Airtilize, TrendifyToday, ClickVolo, Khuzair, AffordableThings, Storeara, ReflectiveThings, FitwearStores, and CharmThings.</p>
+              <p>Across 11 integrated engineering and growth departments — from custom full-stack software and Shopify Plus architecture to AI agents, technical SEO, and Zero-Trust cloud security — our teams maintain strict SLA benchmarks and measurable conversion retention.</p>
+              <p><a href="https://eferz.com/work/">Explore 17 Live Case Studies &rarr;</a> | <a href="https://eferz.com/contact/">Request Client References &rarr;</a></p>
             </section>
           <?php elseif ($eferz_route === 'team') : ?>
             <section class="eferz-ssr-card">
-              <h2><?php echo $eferz_is_ar ? 'القيادة والمهندسون' : 'Leadership & Principal Architects'; ?></h2>
+              <h2><?php echo $eferz_is_ar ? 'القيادة والمهندسون' : 'Leadership &amp; Principal Architects'; ?></h2>
+              <p>Headquartered in Fort Lauderdale (Florida, USA) with regional operations in Riyadh (Saudi Arabia) and Karachi (Pakistan), EFerz combines executive strategy, enterprise software architecture, AI automation, 3D WebGL engineering, and cloud cybersecurity.</p>
               <ul>
-                <li><strong>Khubaib Khan</strong> — Founder &amp; President</li>
-                <li><strong>Salman Shahid</strong> — Co-Founder &amp; Director of Finance &amp; Legal Affairs</li>
-                <li><strong>Irfan Mirza</strong> — Director of Business Development</li>
-                <li><strong>Syed Ahmed</strong> — Business Development Manager</li>
-                <li><strong>Asad Malik</strong> — Website Designer &amp; Developer</li>
-                <li><strong>Syed Owais</strong> — Operations Coordinator</li>
+                <li><strong>Khubaib Khan</strong> — Founder &amp; President (Product Vision, Full-Stack Architecture &amp; AI Strategy)</li>
+                <li><strong>Salman Shahid</strong> — Co-Founder &amp; Director of Finance &amp; Legal Affairs (Global Operations, Contracts &amp; Governance)</li>
+                <li><strong>Irfan Mirza</strong> — Director of Business Development (Enterprise Growth &amp; Strategic Partnerships)</li>
+                <li><strong>Syed Ahmed</strong> — Business Development Manager (Client Acquisition &amp; Solution Scoping)</li>
+                <li><strong>Asad Malik</strong> — Website Designer &amp; Developer (Frontend Craft, WordPress &amp; Responsive UI/UX)</li>
+                <li><strong>Syed Owais</strong> — Operations Coordinator (Delivery Scheduling, QA &amp; Client Coordination)</li>
               </ul>
+              <p><a href="https://eferz.com/about/">Read the EFerz Story &rarr;</a> | <a href="https://eferz.com/contact/">Connect With Leadership &rarr;</a></p>
             </section>
           <?php elseif ($eferz_route === 'about') : ?>
             <section class="eferz-ssr-card">
@@ -529,9 +533,10 @@ $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
             </section>
           <?php elseif ($eferz_route === 'lets-build') : ?>
             <section class="eferz-ssr-card">
-              <h2><?php echo $eferz_is_ar ? 'استوديو التصميم ثلاثي الأبعاد' : 'Interactive 3D Brand & Packaging Configurator'; ?></h2>
-              <p>Customize 4 live interactive 3D WebGL brand demos across 14 industry packs with your brand logo, metallic colors, finishes, and typography inside the EFerz Interactive 3D Studio.</p>
-              <p><a href="https://eferz.com/contact/">Book a Custom 3D Build &rarr;</a></p>
+              <h2><?php echo $eferz_is_ar ? 'استوديو التصميم ثلاثي الأبعاد' : 'Interactive 3D Brand &amp; Packaging Configurator'; ?></h2>
+              <p>Customize 4 live interactive 3D WebGL brand demos (Lumina, Zaika, Melto, and Aether) across 14 industry packs — including Coffee &amp; Cafe, Restaurant, Luxury Fashion, Skincare, Tech SaaS, Real Estate, and Jewelry — directly inside the EFerz Interactive 3D Studio.</p>
+              <p>Preview custom logos, metallic material finishes, ambient studio lighting, bilingual Arabic/English typography, and real-time Three.js camera scenes before launching full production web and e-commerce builds.</p>
+              <p><a href="https://eferz.com/work/">View 17 Production Deployments &rarr;</a> | <a href="https://eferz.com/contact/">Book a Custom 3D Build &rarr;</a></p>
             </section>
           <?php elseif ($eferz_route === 'privacy') : ?>
             <section class="eferz-ssr-card">
@@ -560,10 +565,12 @@ $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
           <?php elseif ($eferz_route === 'refund') : ?>
             <section class="eferz-ssr-card">
               <p><strong>Last updated:</strong> July 10, 2025</p>
-              <h2>01. 30-Day Money-Back Guarantee &amp; Processing</h2>
-              <p>New eligible service purchases are covered by the EFerz 30-Day Money-Back Guarantee subject to official scope verification procedures. Approved refunds are processed back to the original payment method within 10 to 30 business days.</p>
-              <h2>02. 72-Hour Rectification Commitment</h2>
-              <p>If deliverables deviate from agreed specifications, EFerz engineers prioritize rectification within 72 hours. Contact <a href="mailto:info@eferz.com">info@eferz.com</a> for billing or guarantee inquiries.</p>
+              <h2>01. 30-Day Money-Back Guarantee &amp; Eligibility</h2>
+              <p>New eligible service packages purchased directly through EFerz are covered by our 30-Day Money-Back Guarantee subject to documented project scope milestones, verified change-request logs, and official review procedures.</p>
+              <h2>02. 72-Hour Rectification Commitment &amp; Processing Timeline</h2>
+              <p>If deliverables deviate from agreed specifications, EFerz engineering and creative teams prioritize technical rectification within 72 business hours. Approved refunds are processed back to the original payment method within 10 to 30 business days depending on card issuer and banking settlement timelines.</p>
+              <h2>03. Billing &amp; Support Contact</h2>
+              <p>For billing verification, scope reviews, or guarantee inquiries, contact <a href="mailto:info@eferz.com">info@eferz.com</a> or call +1 (786) 224-4112 (USA) / +966 (539) 046410 (KSA) / +92 345 3397459 (PAK).</p>
             </section>
           <?php endif; ?>
         </main>
@@ -613,6 +620,13 @@ $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
           fired = true;
           window.dataLayer = window.dataLayer || [];
           window.gtag = function(){ dataLayer.push(arguments); };
+          gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'granted',
+            wait_for_update: 500
+          });
           gtag('js', new Date());
           gtag('config', 'GT-M38TKDT9');
           var s = document.createElement('script');

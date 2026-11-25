@@ -25,7 +25,7 @@ export function ContactModal({ isOpen, onClose, prefilledContext, lang }: Contac
   const [message, setMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [notRobotChecked, setNotRobotChecked] = useState(false);
-  const [newsletterOptin, setNewsletterOptin] = useState(true);
+  const [newsletterOptin, setNewsletterOptin] = useState(false);
   const [quiz, setQuiz] = useState(() => createModalQuiz());
   const [quizInput, setQuizInput] = useState('');
   const [quizError, setQuizError] = useState<string | null>(null);

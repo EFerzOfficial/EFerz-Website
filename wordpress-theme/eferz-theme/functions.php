@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.6
+ * @version 1.6.7
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.6');
+define('EFERZ_THEME_VERSION', '1.6.7');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -51,7 +51,7 @@ function eferz_is_cacheable_public_request() {
         return false;
     }
     foreach ((array) $_COOKIE as $cname => $cval) {
-        if (stripos((string) $cname, 'wordpress_logged_in_') === 0 || stripos((string) $cname, 'wp_woocommerce_session_') === 0) {
+        if (stripos((string) $cname, 'wordpress_logged_in_') === 0) {
             return false;
         }
     }
@@ -1402,6 +1402,10 @@ add_action('template_redirect', function() {
         'consulting-services',
         'cyber-security',
     );
+    if ($req_path === 'portfolio') {
+        wp_redirect('https://eferz.com/work/', 301);
+        exit;
+    }
     if (in_array($req_path, $legacy_service_slugs, true)) {
         wp_redirect('https://eferz.com/services/', 301);
         exit;
@@ -1476,7 +1480,6 @@ add_filter('robots_txt', function($output, $public) {
     }
     $disallows = array(
         '/wp-admin/',
-        '/platform/',
         '/cart/',
         '/checkout/',
         '/my-account/',
@@ -1543,6 +1546,17 @@ function eferz_render_flagship_sitemap_xml() {
     }
     echo "</urlset>\n";
 }
+
+add_filter('wpseo_sitemap_entry', function($url, $type, $object) {
+    if ($type === 'post' && is_array($url) && !empty($url['loc'])) {
+        $loc = untrailingslashit((string) $url['loc']);
+        $home = untrailingslashit((string) home_url('/'));
+        if ($loc === $home) {
+            return false;
+        }
+    }
+    return $url;
+}, 20, 3);
 
 add_filter('wpseo_sitemap_index', function($sitemap_index) {
     $lastmod = gmdate('Y-m-d\TH:i:s+00:00');
@@ -2171,9 +2185,9 @@ function eferz_attach_platform_branding_hooks() {
               '<h2 class="efp-hero-title">Executive <span>Command</span> &amp; Control</h2>' +
               '<p class="efp-hero-desc">Isolated administrative gateway for EFerz infrastructure, global deployments, e-commerce clusters, and encrypted client operations.</p>' +
               '<div class="efp-metrics">' +
-                '<div class="efp-metric-card"><span class="efp-metric-k">Perimeter</span><span class="efp-metric-v">TLS 1.3 &bull; HSTS &bull; CSP</span></div>' +
-                '<div class="efp-metric-card"><span class="efp-metric-k">Authentication</span><span class="efp-metric-v">Zero-Trust &bull; 2FA Ready</span></div>' +
-                '<div class="efp-metric-card"><span class="efp-metric-k">Active Clusters</span><span class="efp-metric-v">US-FL &bull; SA-RUH &bull; PK-KHI</span></div>' +
+                '<div class="efp-metric-card"><span class="efp-metric-k">Perimeter</span><span class="efp-metric-v">Encrypted Edge Session</span></div>' +
+                '<div class="efp-metric-card"><span class="efp-metric-k">Access Control</span><span class="efp-metric-v">Zero-Trust Verification</span></div>' +
+                '<div class="efp-metric-card"><span class="efp-metric-k">Environment</span><span class="efp-metric-v">Executive Production Portal</span></div>' +
               '</div>';
 
             loginEl.parentNode.insertBefore(shell, loginEl);
@@ -2546,4 +2560,16 @@ add_filter('wpseo_schema_article', function($data) {
     }
     return $data;
 }, 20);
+
+add_action('wp_enqueue_scripts', function() {
+    if (is_admin() || is_user_logged_in()) {
+        return;
+    }
+    if (is_singular('post')) {
+        foreach (array('wc-order-attribution', 'sourcebuster-js', 'wc-jquery-blockui', 'woocommerce', 'wc-add-to-cart') as $handle) {
+            wp_dequeue_script($handle);
+        }
+    }
+}, 9999);
+
 
