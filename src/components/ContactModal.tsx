@@ -25,6 +25,7 @@ export function ContactModal({ isOpen, onClose, prefilledContext, lang }: Contac
   const [message, setMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [notRobotChecked, setNotRobotChecked] = useState(false);
+  const [newsletterOptin, setNewsletterOptin] = useState(true);
   const [quiz, setQuiz] = useState(() => createModalQuiz());
   const [quizInput, setQuizInput] = useState('');
   const [quizError, setQuizError] = useState<string | null>(null);
@@ -79,6 +80,7 @@ export function ContactModal({ isOpen, onClose, prefilledContext, lang }: Contac
           quiz_b: quiz.numB,
           quiz_answer: parseInt(quizInput.trim(), 10),
           not_robot: notRobotChecked,
+          newsletter_optin: newsletterOptin,
           honeypot,
           source: 'EFerz Direct Strategy Modal',
         }),
@@ -269,6 +271,20 @@ export function ContactModal({ isOpen, onClose, prefilledContext, lang }: Contac
                 {quizError}
               </div>
             )}
+
+            <label className="flex items-center gap-2.5 text-xs text-white/75 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={newsletterOptin}
+                onChange={(e) => setNewsletterOptin(e.target.checked)}
+                className="w-3.5 h-3.5 rounded accent-[#ec3935] cursor-pointer"
+              />
+              <span>
+                {isAr
+                  ? 'أرسل لي عروض ونشرات إيفرز الترويجية والتحديثات التقنية'
+                  : 'Subscribe to EFerz promotional offers, insights & product updates'}
+              </span>
+            </label>
 
             <button
               type="submit"

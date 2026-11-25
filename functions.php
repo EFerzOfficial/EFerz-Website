@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.4
+ * @version 1.6.5
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.4');
+define('EFERZ_THEME_VERSION', '1.6.5');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -797,7 +797,139 @@ add_action('rest_api_init', function() {
         'permission_callback' => '__return_true',
         'callback'            => 'eferz_handle_contact_submission',
     ));
+    register_rest_route('eferz/v1', '/newsletter', array(
+        'methods'             => 'POST',
+        'permission_callback' => '__return_true',
+        'callback'            => 'eferz_handle_newsletter_subscription',
+    ));
 });
+
+/**
+ * Sync verified subscriber / contact opt-in into FluentCRM (unlimited subscribers).
+ */
+function eferz_sync_contact_to_fluentcrm($email, $name = '', $phone = '', $company = '', $service = '', $source = 'Website', $is_newsletter = false) {
+    $email = sanitize_email($email);
+    if (empty($email) || !is_email($email)) {
+        return false;
+    }
+
+    if (!function_exists('FluentCrmApi')) {
+        return false;
+    }
+
+    try {
+        $parts = preg_split('/\s+/', trim((string) $name), 2);
+        $first_name = !empty($parts[0]) ? sanitize_text_field($parts[0]) : '';
+        $last_name  = !empty($parts[1]) ? sanitize_text_field($parts[1]) : '';
+
+        $list_ids = array();
+        if (class_exists('\FluentCrm\App\Models\Lists')) {
+            $preferred = \FluentCrm\App\Models\Lists::where('slug', 'newsletter-mailing-list')
+                ->orWhere('slug', 'newsletter')
+                ->orWhere('title', 'Newsletter mailing list')
+                ->orWhere('title', 'Newsletter')
+                ->first();
+            if (!$preferred) {
+                $preferred = \FluentCrm\App\Models\Lists::orderBy('id', 'asc')->first();
+            }
+            if ($preferred && !empty($preferred->id)) {
+                $list_ids[] = (int) $preferred->id;
+            } elseif (method_exists('\FluentCrm\App\Models\Lists', 'create')) {
+                $created = \FluentCrm\App\Models\Lists::create(array(
+                    'title' => 'Newsletter mailing list',
+                    'slug'  => 'newsletter-mailing-list',
+                ));
+                if ($created && !empty($created->id)) {
+                    $list_ids[] = (int) $created->id;
+                }
+            }
+        }
+
+        $tag_ids = array();
+        if (class_exists('\FluentCrm\App\Models\Tag')) {
+            $tag_title = $is_newsletter ? 'Newsletter Subscriber' : 'Website Lead';
+            $tag_slug  = sanitize_title($tag_title);
+            $tag = \FluentCrm\App\Models\Tag::where('slug', $tag_slug)->first();
+            if (!$tag && method_exists('\FluentCrm\App\Models\Tag', 'create')) {
+                $tag = \FluentCrm\App\Models\Tag::create(array(
+                    'title' => $tag_title,
+                    'slug'  => $tag_slug,
+                ));
+            }
+            if ($tag && !empty($tag->id)) {
+                $tag_ids[] = (int) $tag->id;
+            }
+        }
+
+        $payload = array(
+            'email'      => $email,
+            'first_name' => $first_name,
+            'last_name'  => $last_name,
+            'status'     => 'subscribed',
+            'source'     => sanitize_text_field($source),
+        );
+        if (!empty($phone)) {
+            $payload['phone'] = sanitize_text_field($phone);
+        }
+        if (!empty($list_ids)) {
+            $payload['lists'] = $list_ids;
+        }
+        if (!empty($tag_ids)) {
+            $payload['tags'] = $tag_ids;
+        }
+
+        $contact = FluentCrmApi('contacts')->createOrUpdate($payload);
+        return (bool) $contact;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+function eferz_handle_newsletter_subscription(WP_REST_Request $request) {
+    $params = $request->get_json_params();
+    if (!is_array($params)) {
+        $params = $request->get_params();
+    }
+
+    $honeypot = isset($params['honeypot']) ? trim(sanitize_text_field($params['honeypot'])) : '';
+    if (!empty($honeypot)) {
+        return new WP_REST_Response(array('success' => false, 'message' => 'Spam blocked.'), 400);
+    }
+
+    $email  = sanitize_email($params['email'] ?? '');
+    $name   = sanitize_text_field($params['name'] ?? '');
+    $source = sanitize_text_field($params['source'] ?? 'EFerz Newsletter');
+
+    if (empty($email) || !is_email($email)) {
+        return new WP_REST_Response(array(
+            'success' => false,
+            'message' => 'Please enter a valid email address.',
+        ), 400);
+    }
+
+    $subs = get_option('eferz_newsletter_subscribers', array());
+    if (!is_array($subs)) {
+        $subs = array();
+    }
+    $subs[$email] = array(
+        'email'  => $email,
+        'name'   => $name,
+        'source' => $source,
+        'date'   => current_time('mysql'),
+    );
+    if (count($subs) > 5000) {
+        $subs = array_slice($subs, -5000, null, true);
+    }
+    update_option('eferz_newsletter_subscribers', $subs, false);
+
+    $synced = eferz_sync_contact_to_fluentcrm($email, $name, '', '', 'Newsletter', $source, true);
+
+    return new WP_REST_Response(array(
+        'success'          => true,
+        'fluentcrm_synced' => (bool) $synced,
+        'message'          => 'Subscribed! You are now on EFerz updates & promotional offers.',
+    ), 200);
+}
 
 function eferz_handle_contact_submission(WP_REST_Request $request) {
     $params = $request->get_json_params();
@@ -861,6 +993,12 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
     );
     array_unshift($leads, $new_lead);
     update_option('eferz_contact_leads', array_slice($leads, 0, 500), false);
+
+    // 4b. Sync opted-in leads to FluentCRM for automated newsletters & promotional sequences
+    $newsletter_optin = !array_key_exists('newsletter_optin', $params) || !empty($params['newsletter_optin']);
+    if ($newsletter_optin) {
+        eferz_sync_contact_to_fluentcrm($email, $name, $phone, $company, $service, $source, false);
+    }
 
     // 5. Optional WPForms Entry Sync (if WPForms Pro entry handler is active)
     if (function_exists('wpforms') && isset(wpforms()->entry) && method_exists(wpforms()->entry, 'add')) {
@@ -2322,6 +2460,16 @@ function eferz_fallback_wpseo_image($img) {
 }
 add_filter('wpseo_opengraph_image', 'eferz_fallback_wpseo_image', 20);
 add_filter('wpseo_twitter_image', 'eferz_fallback_wpseo_image', 20);
+add_action('wpseo_add_opengraph_images', function($image_container) {
+    if (eferz_is_spa_request()) {
+        return;
+    }
+    if (is_object($image_container) && method_exists($image_container, 'has_images') && !$image_container->has_images()) {
+        if (method_exists($image_container, 'add_image')) {
+            $image_container->add_image(get_template_directory_uri() . '/assets/og-eferz-v2.jpg');
+        }
+    }
+}, 20);
 
 add_filter('wpseo_sitemap_page_content', function($xml) {
     $routes = array('services', 'work', 'clients', 'team', 'about', 'blog', 'contact', 'privacy', 'terms', 'refund');
