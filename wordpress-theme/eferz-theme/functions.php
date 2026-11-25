@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.0
+ * @version 1.6.4
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.0');
+define('EFERZ_THEME_VERSION', '1.6.4');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -38,8 +38,38 @@ function eferz_send_security_headers() {
 add_action('send_headers', 'eferz_send_security_headers', 999);
 
 /**
- * Enable Nginx / W3TC proxy caching on anonymous SPA routes by stripping tracking Set-Cookie (_fbp)
- * and stripping duplicate Referrer-Policy headers before HTTP response flush.
+ * Determine whether current public request is safe for Cloudflare / proxy edge caching.
+ */
+function eferz_is_cacheable_public_request() {
+    if (is_admin() || is_user_logged_in() || wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
+        return false;
+    }
+    if (function_exists('eferz_is_platform_request') && eferz_is_platform_request()) {
+        return false;
+    }
+    if (!empty($_COOKIE['woocommerce_items_in_cart'])) {
+        return false;
+    }
+    foreach ((array) $_COOKIE as $cname => $cval) {
+        if (stripos((string) $cname, 'wordpress_logged_in_') === 0 || stripos((string) $cname, 'wp_woocommerce_session_') === 0) {
+            return false;
+        }
+    }
+    if (function_exists('eferz_is_spa_request') && eferz_is_spa_request()) {
+        return true;
+    }
+    if (is_404() || is_search() || is_feed() || is_preview() || is_customize_preview()) {
+        return false;
+    }
+    if (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url())) {
+        return false;
+    }
+    return is_singular('post') || is_category() || is_tag();
+}
+
+/**
+ * Enable Cloudflare / Nginx / W3TC proxy caching on anonymous SPA routes & public blog posts
+ * by stripping tracking Set-Cookie (_fbp/_fbc) and enforcing Referrer-Policy.
  */
 function eferz_optimize_final_response_headers() {
     if (headers_sent()) {
@@ -49,7 +79,7 @@ function eferz_optimize_final_response_headers() {
     @header_remove('Referrer-Policy');
     header('Referrer-Policy: strict-origin-when-cross-origin', true);
 
-    if (function_exists('eferz_is_spa_request') && eferz_is_spa_request() && !is_user_logged_in()) {
+    if (eferz_is_cacheable_public_request()) {
         $cookies = array();
         foreach (headers_list() as $hdr) {
             if (stripos($hdr, 'Set-Cookie:') === 0) {
@@ -65,6 +95,7 @@ function eferz_optimize_final_response_headers() {
         }
         header('Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400', true);
         @header_remove('Pragma');
+        @header_remove('Expires');
     }
 }
 
@@ -75,7 +106,7 @@ add_action('template_redirect', function() {
 }, 1);
 
 add_filter('wp_headers', function($headers) {
-    if (is_array($headers) && function_exists('eferz_is_spa_request') && eferz_is_spa_request() && !is_user_logged_in()) {
+    if (is_array($headers) && eferz_is_cacheable_public_request()) {
         $headers['Cache-Control'] = 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400';
         unset($headers['Pragma'], $headers['Expires']);
     }
@@ -170,13 +201,13 @@ function eferz_get_route_seo() {
         'work' => array(
             'title' => 'Case Studies: 3D Web, AI & E-Commerce Portfolio | EFerz',
             'titleAr' => 'معرض الأعمال: مواقع 3D ومتاجر وذكاء اصطناعي | إيفرز',
-            'desc' => 'Explore 17+ EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
-            'descAr' => 'تصفح أكثر من 17 مشروعاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
+            'desc' => 'Explore 13+ EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
+            'descAr' => 'تصفح أكثر من 13 مشروعاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
             'keywords' => '',
             'slug' => 'work',
         ),
         'clients' => array(
-            'title' => 'Client Reviews & Global Case Studies | EFerz',
+            'title' => 'Global Clients & Verified Testimonials | EFerz',
             'titleAr' => 'آراء العملاء العالميين وقصص النجاح | وكالة إيفرز',
             'desc' => 'Headquartered in Fort Lauderdale USA with offices in Riyadh & Karachi, EFerz serves enterprise clients across AI, web & growth. Read client testimonials.',
             'descAr' => 'مقرنا الرئيسي في أمريكا مع مكاتب في الرياض وكراتشي لخدمة العملاء في الذكاء الاصطناعي والويب والتسويق الرقمي. اقرأ شهادات العملاء.',
@@ -251,13 +282,15 @@ function eferz_get_route_seo() {
 
     $cfg = $routes[$route] ?? $routes['agency'];
     $base_url = 'https://eferz.com/' . ($cfg['slug'] ? $cfg['slug'] . '/' : '');
+    $canonical = $is_ar ? ($base_url . '?lang=ar') : $base_url;
     return array(
         'route'     => isset($routes[$route]) ? $route : 'agency',
         'is_ar'     => $is_ar,
         'title'     => $is_ar ? $cfg['titleAr'] : $cfg['title'],
         'desc'      => $is_ar ? $cfg['descAr'] : $cfg['desc'],
         'keywords'  => $cfg['keywords'],
-        'canonical' => $base_url,
+        'base_url'  => $base_url,
+        'canonical' => $canonical,
     );
 }
 
@@ -887,6 +920,47 @@ function eferz_handle_contact_submission(WP_REST_Request $request) {
 }
 
 /**
+ * Align PHPMailer envelope Return-Path Sender with @eferz.com so SPF/DMARC stay strictly aligned on outbound mail.
+ */
+add_action('phpmailer_init', function($phpmailer) {
+    if (is_object($phpmailer) && !empty($phpmailer->From) && stripos($phpmailer->From, '@eferz.com') !== false) {
+        $phpmailer->Sender = $phpmailer->From;
+    } elseif (is_object($phpmailer) && empty($phpmailer->Sender)) {
+        $phpmailer->Sender = 'info@eferz.com';
+    }
+});
+
+/**
+ * Ensure WooCommerce sale badges always show the real calculated discount percentage (never a stale hardcoded 7% badge).
+ */
+add_filter('woocommerce_sale_flash', function($html, $post, $product) {
+    if (!is_object($product) || !method_exists($product, 'is_on_sale') || !$product->is_on_sale()) {
+        return '';
+    }
+    $pct = 0;
+    if ($product->is_type('variable') && method_exists($product, 'get_variation_prices')) {
+        $prices = $product->get_variation_prices(true);
+        foreach ((array) ($prices['regular_price'] ?? array()) as $k => $reg) {
+            $sale = isset($prices['sale_price'][$k]) ? (float) $prices['sale_price'][$k] : 0;
+            $reg  = (float) $reg;
+            if ($reg > 0 && $sale > 0 && $sale < $reg) {
+                $pct = max($pct, (int) round((($reg - $sale) / $reg) * 100));
+            }
+        }
+    } else {
+        $reg  = (float) $product->get_regular_price();
+        $sale = (float) $product->get_sale_price();
+        if ($reg > 0 && $sale > 0 && $sale < $reg) {
+            $pct = (int) round((($reg - $sale) / $reg) * 100);
+        }
+    }
+    if ($pct > 0) {
+        return '<span class="onsale">-' . esc_html($pct) . '%</span>';
+    }
+    return '<span class="onsale">' . esc_html__('Sale', 'woocommerce') . '</span>';
+}, 999, 3);
+
+/**
  * 4. Add "EFerz Leads" Page in WordPress Admin Dashboard so the owner can view all form submissions directly in wp-admin!
  */
 add_action('admin_menu', function() {
@@ -1068,7 +1142,7 @@ add_action('template_redirect', function() {
         echo "- [Interactive 3D Studio](https://eferz.com/lets-build/): Real-time WebGL product and brand configurator.\n";
         echo "- [Client Packages & Shop](https://eferz.com/shop/): Ready-to-launch web, Shopify, and digital startup packages.\n\n";
         echo "## Company & Portfolio\n\n";
-        echo "- [Selected Work & Case Studies](https://eferz.com/work/): 17+ verified web, 3D interactive, e-commerce, and AI case studies.\n";
+        echo "- [Selected Work & Case Studies](https://eferz.com/work/): 13+ verified web, 3D interactive, e-commerce, and AI case studies.\n";
         echo "- [Verified Client Reviews](https://eferz.com/clients/): Client testimonials and global enterprise retention stories.\n";
         echo "- [About EFerz](https://eferz.com/about/): Company story since October 10, 2020, global footprint, and engineering standards.\n";
         echo "- [Leadership & Architects](https://eferz.com/team/): Executive leadership and principal software architects.\n";
@@ -1161,6 +1235,39 @@ add_action('template_redirect', function() {
         wp_redirect('https://eferz.com/', 301);
         exit;
     }
+    if ($req_path === 'contact-us') {
+        wp_redirect('https://eferz.com/contact/', 301);
+        exit;
+    }
+    if ($req_path === 'privacy-policy') {
+        wp_redirect('https://eferz.com/privacy/', 301);
+        exit;
+    }
+    if ($req_path === 'terms-and-conditions' || $req_path === 'terms-of-service') {
+        wp_redirect('https://eferz.com/terms/', 301);
+        exit;
+    }
+    if ($req_path === 'refund-policy') {
+        wp_redirect('https://eferz.com/refund/', 301);
+        exit;
+    }
+
+    $legacy_service_slugs = array(
+        'web-design-development',
+        'digital-marketing',
+        'e-commerce-solution',
+        'amazon-fba',
+        'social-accounts-management',
+        'content-writing',
+        'graphic-designing',
+        'brand-development',
+        'consulting-services',
+        'cyber-security',
+    );
+    if (in_array($req_path, $legacy_service_slugs, true)) {
+        wp_redirect('https://eferz.com/services/', 301);
+        exit;
+    }
 
     global $wp_query;
     $is_wc = function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url());
@@ -1189,13 +1296,23 @@ add_filter('wpseo_sitemap_exclude_post_type', function($excluded, $post_type) {
 }, 10, 2);
 
 /**
- * Exclude noindex WooCommerce utility pages from Yoast page-sitemap.xml
+ * Exclude noindex WooCommerce utility pages AND flagship SPA routes (already in /eferz-pages-sitemap.xml)
+ * from Yoast page-sitemap.xml to prevent duplicate sitemap entries.
  */
 add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_ids) {
     if (!is_array($excluded_ids)) {
         $excluded_ids = array();
     }
-    foreach (array('cart', 'checkout', 'my-account', 'order-track') as $slug) {
+    $front_id = (int) get_option('page_on_front');
+    if ($front_id > 0) {
+        $excluded_ids[] = $front_id;
+    }
+    $spa_and_utility_slugs = array(
+        'home', 'front-page', 'services', 'work', 'portfolio', 'clients', 'team', 'about', 'about-us',
+        'blog', 'contact', 'lets-build', 'privacy', 'privacy-policy', 'terms', 'terms-and-conditions',
+        'refund', 'refund-policy', 'platform', 'cart', 'checkout', 'my-account', 'order-track'
+    );
+    foreach ($spa_and_utility_slugs as $slug) {
         $page = get_page_by_path($slug);
         if ($page && isset($page->ID)) {
             $excluded_ids[] = (int) $page->ID;
@@ -1211,6 +1328,35 @@ add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_ids) {
     }
     return array_values(array_unique(array_filter(array_map('intval', $excluded_ids))));
 }, 20);
+
+/**
+ * Consolidate duplicate User-agent: * blocks in /robots.txt into one clean standards-compliant block.
+ */
+add_filter('robots_txt', function($output, $public) {
+    if ((string) $public === '0') {
+        return "User-agent: *\nDisallow: /\n";
+    }
+    $disallows = array(
+        '/wp-admin/',
+        '/platform/',
+        '/cart/',
+        '/checkout/',
+        '/my-account/',
+        '/order-pay/',
+        '/order-received/',
+    );
+    $lines = array(
+        '# EFerz Robots Policy',
+        'User-agent: *',
+        'Allow: /wp-admin/admin-ajax.php',
+    );
+    foreach ($disallows as $path) {
+        $lines[] = 'Disallow: ' . $path;
+    }
+    $lines[] = '';
+    $lines[] = 'Sitemap: https://eferz.com/sitemap_index.xml';
+    return implode("\n", $lines) . "\n";
+}, 999999, 2);
 
 /**
  * Output XML for Flagship SPA Sitemap (/eferz-pages-sitemap.xml) so Google indexes all 12 React routes + hreflang
@@ -2015,6 +2161,19 @@ add_action('init', function() {
         eferz_flush_site_caches();
     }
 
+    $raw_req_path = strtolower(trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
+    if ($raw_req_path === '.well-known/security.txt') {
+        status_header(200);
+        header('Content-Type: text/plain; charset=utf-8', true);
+        header('Cache-Control: public, max-age=86400', true);
+        echo "Contact: mailto:info@eferz.com\n";
+        echo "Contact: https://eferz.com/contact/\n";
+        echo "Expires: 2028-12-31T23:59:59.000Z\n";
+        echo "Preferred-Languages: en, ar\n";
+        echo "Canonical: https://eferz.com/.well-known/security.txt\n";
+        exit;
+    }
+
     if (wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
         return;
     }
@@ -2070,3 +2229,108 @@ add_action('login_init', function() {
         exit;
     }
 }, 1);
+
+/**
+ * 4. Automated SEO Bridge (syncs seamlessly with EFerz-SEO without requiring manual cPanel edits):
+ *    - Ensures _yoast_wpseo_* including _yoast_wpseo_focuskw are REST-writable for weekly blog automation.
+ *    - Automatically strips any legacy mu-plugin eferz-schema-markup.php callback on wp_head to prevent duplicate Organization JSON-LD on blog posts.
+ */
+add_action('init', function() {
+    if (!function_exists('register_post_meta')) {
+        return;
+    }
+    $post_types = array('page', 'post', 'project');
+    $yoast_keys = array(
+        '_yoast_wpseo_title',
+        '_yoast_wpseo_metadesc',
+        '_yoast_wpseo_metakeywords',
+        '_yoast_wpseo_focuskw',
+    );
+    foreach ($post_types as $pt) {
+        if (!post_type_exists($pt)) {
+            continue;
+        }
+        foreach ($yoast_keys as $meta_key) {
+            register_post_meta($pt, $meta_key, array(
+                'show_in_rest'  => true,
+                'single'        => true,
+                'type'          => 'string',
+                'auth_callback' => function() {
+                    return current_user_can('edit_posts');
+                },
+            ));
+        }
+    }
+}, 25);
+
+add_action('wp_head', function() {
+    global $wp_filter;
+    if (empty($wp_filter['wp_head']) || empty($wp_filter['wp_head']->callbacks)) {
+        return;
+    }
+    foreach ($wp_filter['wp_head']->callbacks as $priority => $callbacks) {
+        foreach ($callbacks as $cb) {
+            $fn = $cb['function'] ?? null;
+            if (!$fn) {
+                continue;
+            }
+            $file = '';
+            try {
+                if ($fn instanceof Closure || (is_string($fn) && function_exists($fn))) {
+                    $ref  = new ReflectionFunction($fn);
+                    $file = (string) $ref->getFileName();
+                } elseif (is_array($fn) && count($fn) === 2 && (is_object($fn[0]) || is_string($fn[0])) && is_string($fn[1])) {
+                    $ref  = new ReflectionMethod($fn[0], $fn[1]);
+                    $file = (string) $ref->getFileName();
+                }
+            } catch (Throwable $e) {
+                $file = '';
+            }
+            if ($file !== '' && stripos($file, 'eferz-schema-markup') !== false) {
+                remove_action('wp_head', $fn, $priority);
+            }
+        }
+    }
+}, -9999);
+
+/**
+ * 5. WooCommerce Shop SEO Hardening & Complete Yoast Sitemap Routes:
+ *    - Prevent duplicate <h1> on /shop/ alongside woocommerce.php banner title.
+ *    - Supply fallback Yoast meta description & og:image on Shop/Product archives when unset.
+ *    - Include primary EFerz SPA routes inside Yoast page-sitemap.xml for complete discovery.
+ */
+add_filter('woocommerce_show_page_title', '__return_false', 999);
+
+function eferz_fallback_wpseo_metadesc($desc) {
+    if (!empty($desc) || eferz_is_spa_request()) {
+        return $desc;
+    }
+    if (function_exists('is_shop') && (is_shop() || is_product_category() || is_product_tag())) {
+        return 'Explore EFerz digital service packages, Shopify Plus deals, enterprise web development bundles & instant online checkout with global delivery.';
+    }
+    return $desc;
+}
+add_filter('wpseo_metadesc', 'eferz_fallback_wpseo_metadesc', 20);
+add_filter('wpseo_opengraph_desc', 'eferz_fallback_wpseo_metadesc', 20);
+add_filter('wpseo_twitter_description', 'eferz_fallback_wpseo_metadesc', 20);
+
+function eferz_fallback_wpseo_image($img) {
+    if (!empty($img) || eferz_is_spa_request()) {
+        return $img;
+    }
+    return get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
+}
+add_filter('wpseo_opengraph_image', 'eferz_fallback_wpseo_image', 20);
+add_filter('wpseo_twitter_image', 'eferz_fallback_wpseo_image', 20);
+
+add_filter('wpseo_sitemap_page_content', function($xml) {
+    $routes = array('services', 'work', 'clients', 'team', 'about', 'blog', 'contact', 'privacy', 'terms', 'refund');
+    $lastmod = gmdate('c');
+    foreach ($routes as $slug) {
+        $loc = 'https://eferz.com/' . $slug . '/';
+        if (strpos((string) $xml, $loc) === false) {
+            $xml .= "\t<url>\n\t\t<loc>" . esc_url($loc) . "</loc>\n\t\t<lastmod>" . esc_html($lastmod) . "</lastmod>\n\t</url>\n";
+        }
+    }
+    return $xml;
+}, 20);

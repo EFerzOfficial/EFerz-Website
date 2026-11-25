@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.3
+ * @version 1.6.4
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.3');
+define('EFERZ_THEME_VERSION', '1.6.4');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -38,8 +38,38 @@ function eferz_send_security_headers() {
 add_action('send_headers', 'eferz_send_security_headers', 999);
 
 /**
- * Enable Nginx / W3TC proxy caching on anonymous SPA routes by stripping tracking Set-Cookie (_fbp)
- * and stripping duplicate Referrer-Policy headers before HTTP response flush.
+ * Determine whether current public request is safe for Cloudflare / proxy edge caching.
+ */
+function eferz_is_cacheable_public_request() {
+    if (is_admin() || is_user_logged_in() || wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
+        return false;
+    }
+    if (function_exists('eferz_is_platform_request') && eferz_is_platform_request()) {
+        return false;
+    }
+    if (!empty($_COOKIE['woocommerce_items_in_cart'])) {
+        return false;
+    }
+    foreach ((array) $_COOKIE as $cname => $cval) {
+        if (stripos((string) $cname, 'wordpress_logged_in_') === 0 || stripos((string) $cname, 'wp_woocommerce_session_') === 0) {
+            return false;
+        }
+    }
+    if (function_exists('eferz_is_spa_request') && eferz_is_spa_request()) {
+        return true;
+    }
+    if (is_404() || is_search() || is_feed() || is_preview() || is_customize_preview()) {
+        return false;
+    }
+    if (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url())) {
+        return false;
+    }
+    return is_singular('post') || is_category() || is_tag();
+}
+
+/**
+ * Enable Cloudflare / Nginx / W3TC proxy caching on anonymous SPA routes & public blog posts
+ * by stripping tracking Set-Cookie (_fbp/_fbc) and enforcing Referrer-Policy.
  */
 function eferz_optimize_final_response_headers() {
     if (headers_sent()) {
@@ -49,7 +79,7 @@ function eferz_optimize_final_response_headers() {
     @header_remove('Referrer-Policy');
     header('Referrer-Policy: strict-origin-when-cross-origin', true);
 
-    if (function_exists('eferz_is_spa_request') && eferz_is_spa_request() && !is_user_logged_in()) {
+    if (eferz_is_cacheable_public_request()) {
         $cookies = array();
         foreach (headers_list() as $hdr) {
             if (stripos($hdr, 'Set-Cookie:') === 0) {
@@ -65,6 +95,7 @@ function eferz_optimize_final_response_headers() {
         }
         header('Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400', true);
         @header_remove('Pragma');
+        @header_remove('Expires');
     }
 }
 
@@ -75,7 +106,7 @@ add_action('template_redirect', function() {
 }, 1);
 
 add_filter('wp_headers', function($headers) {
-    if (is_array($headers) && function_exists('eferz_is_spa_request') && eferz_is_spa_request() && !is_user_logged_in()) {
+    if (is_array($headers) && eferz_is_cacheable_public_request()) {
         $headers['Cache-Control'] = 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400';
         unset($headers['Pragma'], $headers['Expires']);
     }
@@ -2130,6 +2161,19 @@ add_action('init', function() {
         eferz_flush_site_caches();
     }
 
+    $raw_req_path = strtolower(trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/'));
+    if ($raw_req_path === '.well-known/security.txt') {
+        status_header(200);
+        header('Content-Type: text/plain; charset=utf-8', true);
+        header('Cache-Control: public, max-age=86400', true);
+        echo "Contact: mailto:info@eferz.com\n";
+        echo "Contact: https://eferz.com/contact/\n";
+        echo "Expires: 2028-12-31T23:59:59.000Z\n";
+        echo "Preferred-Languages: en, ar\n";
+        echo "Canonical: https://eferz.com/.well-known/security.txt\n";
+        exit;
+    }
+
     if (wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
         return;
     }
@@ -2248,3 +2292,45 @@ add_action('wp_head', function() {
         }
     }
 }, -9999);
+
+/**
+ * 5. WooCommerce Shop SEO Hardening & Complete Yoast Sitemap Routes:
+ *    - Prevent duplicate <h1> on /shop/ alongside woocommerce.php banner title.
+ *    - Supply fallback Yoast meta description & og:image on Shop/Product archives when unset.
+ *    - Include primary EFerz SPA routes inside Yoast page-sitemap.xml for complete discovery.
+ */
+add_filter('woocommerce_show_page_title', '__return_false', 999);
+
+function eferz_fallback_wpseo_metadesc($desc) {
+    if (!empty($desc) || eferz_is_spa_request()) {
+        return $desc;
+    }
+    if (function_exists('is_shop') && (is_shop() || is_product_category() || is_product_tag())) {
+        return 'Explore EFerz digital service packages, Shopify Plus deals, enterprise web development bundles & instant online checkout with global delivery.';
+    }
+    return $desc;
+}
+add_filter('wpseo_metadesc', 'eferz_fallback_wpseo_metadesc', 20);
+add_filter('wpseo_opengraph_desc', 'eferz_fallback_wpseo_metadesc', 20);
+add_filter('wpseo_twitter_description', 'eferz_fallback_wpseo_metadesc', 20);
+
+function eferz_fallback_wpseo_image($img) {
+    if (!empty($img) || eferz_is_spa_request()) {
+        return $img;
+    }
+    return get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
+}
+add_filter('wpseo_opengraph_image', 'eferz_fallback_wpseo_image', 20);
+add_filter('wpseo_twitter_image', 'eferz_fallback_wpseo_image', 20);
+
+add_filter('wpseo_sitemap_page_content', function($xml) {
+    $routes = array('services', 'work', 'clients', 'team', 'about', 'blog', 'contact', 'privacy', 'terms', 'refund');
+    $lastmod = gmdate('c');
+    foreach ($routes as $slug) {
+        $loc = 'https://eferz.com/' . $slug . '/';
+        if (strpos((string) $xml, $loc) === false) {
+            $xml .= "\t<url>\n\t\t<loc>" . esc_url($loc) . "</loc>\n\t\t<lastmod>" . esc_html($lastmod) . "</lastmod>\n\t</url>\n";
+        }
+    }
+    return $xml;
+}, 20);
