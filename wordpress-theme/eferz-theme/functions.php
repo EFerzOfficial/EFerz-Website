@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.5
+ * @version 1.6.6
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.5');
+define('EFERZ_THEME_VERSION', '1.6.6');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -201,8 +201,8 @@ function eferz_get_route_seo() {
         'work' => array(
             'title' => 'Case Studies: 3D Web, AI & E-Commerce Portfolio | EFerz',
             'titleAr' => 'معرض الأعمال: مواقع 3D ومتاجر وذكاء اصطناعي | إيفرز',
-            'desc' => 'Explore 13+ EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
-            'descAr' => 'تصفح أكثر من 13 مشروعاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
+            'desc' => 'Explore 17 verified EFerz case studies across desktop, tablet & mobile — 3D WebGL apps, Shopify Plus stores, SaaS & AI automation. View live results.',
+            'descAr' => 'تصفح 17 مشروعاً موثقاً من إيفرز على الكمبيوتر والتابلت والجوال — تطبيقات ثلاثية الأبعاد، متاجر شوبيفاي ومنصات ذكاء اصطناعي. شاهد النتائج.',
             'keywords' => '',
             'slug' => 'work',
         ),
@@ -1280,7 +1280,7 @@ add_action('template_redirect', function() {
         echo "- [Interactive 3D Studio](https://eferz.com/lets-build/): Real-time WebGL product and brand configurator.\n";
         echo "- [Client Packages & Shop](https://eferz.com/shop/): Ready-to-launch web, Shopify, and digital startup packages.\n\n";
         echo "## Company & Portfolio\n\n";
-        echo "- [Selected Work & Case Studies](https://eferz.com/work/): 13+ verified web, 3D interactive, e-commerce, and AI case studies.\n";
+        echo "- [Selected Work & Case Studies](https://eferz.com/work/): 17 verified web, 3D interactive, e-commerce, and AI case studies.\n";
         echo "- [Verified Client Reviews](https://eferz.com/clients/): Client testimonials and global enterprise retention stories.\n";
         echo "- [About EFerz](https://eferz.com/about/): Company story since October 10, 2020, global footprint, and engineering standards.\n";
         echo "- [Leadership & Architects](https://eferz.com/team/): Executive leadership and principal software architects.\n";
@@ -1290,7 +1290,7 @@ add_action('template_redirect', function() {
         echo "- [Privacy Policy](https://eferz.com/privacy/): GDPR, CCPA, and enterprise data protection standards.\n";
         echo "- [Terms of Service](https://eferz.com/terms/): SLA and 100% client IP ownership commitments.\n";
         echo "- [Refund Policy](https://eferz.com/refund/): 30-day milestone guarantee terms.\n";
-        echo "- [Security Contact (RFC 9116)](https://eferz.com/.well-known/security.txt): Vulnerability disclosure via security@eferz.com.\n";
+        echo "- [Security Contact (RFC 9116)](https://eferz.com/.well-known/security.txt): Vulnerability disclosure via info@eferz.com.\n";
         exit;
     }
 
@@ -2471,14 +2471,79 @@ add_action('wpseo_add_opengraph_images', function($image_container) {
     }
 }, 20);
 
-add_filter('wpseo_sitemap_page_content', function($xml) {
-    $routes = array('services', 'work', 'clients', 'team', 'about', 'blog', 'contact', 'privacy', 'terms', 'refund');
-    $lastmod = gmdate('c');
-    foreach ($routes as $slug) {
-        $loc = 'https://eferz.com/' . $slug . '/';
-        if (strpos((string) $xml, $loc) === false) {
-            $xml .= "\t<url>\n\t\t<loc>" . esc_url($loc) . "</loc>\n\t\t<lastmod>" . esc_html($lastmod) . "</lastmod>\n\t</url>\n";
+/**
+ * 6. XML-RPC Attack Method Hardening, Public REST Namespace Filtering & Author Schema Normalization
+ *    - Strip XML-RPC brute-force/amplification methods (system.multicall, system.listMethods, pingbacks) while preserving Jetpack connectivity.
+ *    - Hide internal plugin/MCP namespace inventory on /wp-json/ root for unauthenticated visitors.
+ *    - Normalize author display name "KayKay" to "Khubaib Khan" with canonical team profile URL in Yoast JSON-LD.
+ */
+add_filter('xmlrpc_methods', function($methods) {
+    unset(
+        $methods['system.multicall'],
+        $methods['system.listMethods'],
+        $methods['pingback.ping'],
+        $methods['pingback.extensions.getPingbacks']
+    );
+    return $methods;
+}, 999);
+
+add_filter('rest_index', function($response) {
+    if (is_user_logged_in() || !is_object($response) || !method_exists($response, 'get_data')) {
+        return $response;
+    }
+    $data = $response->get_data();
+    if (is_array($data) && !empty($data['namespaces']) && is_array($data['namespaces'])) {
+        $public_prefixes = array('oembed/', 'wp/v2', 'eferz/v1', 'wc/store', 'wp/v2/');
+        $data['namespaces'] = array_values(array_filter($data['namespaces'], function($ns) use ($public_prefixes) {
+            foreach ($public_prefixes as $prefix) {
+                if (strpos((string) $ns, $prefix) === 0) {
+                    return true;
+                }
+            }
+            return false;
+        }));
+        if (isset($data['routes']) && is_array($data['routes'])) {
+            $data['routes'] = array_filter($data['routes'], function($route) {
+                $r = (string) $route;
+                return strpos($r, '/mcp') === false
+                    && strpos($r, '-mcp') === false
+                    && strpos($r, 'elementor') === false
+                    && strpos($r, 'wordfence') === false
+                    && strpos($r, 'fluent-crm') === false
+                    && strpos($r, 'site-mailer') === false;
+            }, ARRAY_FILTER_USE_KEY);
+        }
+        $response->set_data($data);
+    }
+    return $response;
+}, 999);
+
+add_filter('wpseo_schema_person', function($data) {
+    if (!is_array($data)) {
+        return $data;
+    }
+    $name = isset($data['name']) ? trim((string) $data['name']) : '';
+    if ($name === '' || strcasecmp($name, 'KayKay') === 0 || strcasecmp($name, 'EFerz') === 0) {
+        $data['name'] = 'Khubaib Khan';
+        $data['jobTitle'] = 'Founder & President, EFerz';
+    }
+    if (empty($data['url'])) {
+        $data['url'] = 'https://eferz.com/team/';
+    }
+    $data['sameAs'] = array('https://eferz.com/team/', 'https://eferz.com/about/');
+    return $data;
+}, 20);
+
+add_filter('wpseo_schema_article', function($data) {
+    if (is_array($data) && isset($data['author']) && is_array($data['author'])) {
+        $aname = isset($data['author']['name']) ? trim((string) $data['author']['name']) : '';
+        if ($aname === '' || strcasecmp($aname, 'KayKay') === 0) {
+            $data['author']['name'] = 'Khubaib Khan';
+        }
+        if (empty($data['author']['url'])) {
+            $data['author']['url'] = 'https://eferz.com/team/';
         }
     }
-    return $xml;
+    return $data;
 }, 20);
+

@@ -104,7 +104,9 @@ export function ContactModal({ isOpen, onClose, prefilledContext, lang }: Contac
       <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl border border-[#ec3935]/30 p-6 sm:p-8 bg-[#181818] text-[#fffdff] shadow-2xl shadow-black/90">
         {/* Close */}
         <button
+          type="button"
           onClick={onClose}
+          aria-label={isAr ? 'إغلاق النافذة' : 'Close project inquiry modal'}
           className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-[#fffdff] transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
@@ -259,6 +261,7 @@ export function ContactModal({ isOpen, onClose, prefilledContext, lang }: Contac
                 <button
                   type="button"
                   onClick={refreshQuiz}
+                  aria-label={isAr ? 'سؤال أمان جديد' : 'Generate new security quiz question'}
                   className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/75 hover:text-white cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
