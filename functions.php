@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.7
+ * @version 1.6.8
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.7');
+define('EFERZ_THEME_VERSION', '1.6.8');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -93,7 +93,7 @@ function eferz_optimize_final_response_headers() {
         foreach ($cookies as $cookie_val) {
             header('Set-Cookie: ' . $cookie_val, false);
         }
-        header('Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400', true);
+        header('Cache-Control: public, max-age=300, s-maxage=86400, stale-while-revalidate=86400', true);
         @header_remove('Pragma');
         @header_remove('Expires');
     }
@@ -107,7 +107,7 @@ add_action('template_redirect', function() {
 
 add_filter('wp_headers', function($headers) {
     if (is_array($headers) && eferz_is_cacheable_public_request()) {
-        $headers['Cache-Control'] = 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400';
+        $headers['Cache-Control'] = 'public, max-age=300, s-maxage=86400, stale-while-revalidate=86400';
         unset($headers['Pragma'], $headers['Expires']);
     }
     return $headers;
