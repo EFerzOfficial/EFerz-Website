@@ -4,7 +4,7 @@
  * Exact 100% React Application from AI Studio Build
  *
  * @package EFerz
- * @version 1.6.9
+ * @version 1.6.10
  */
 $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'service_slug' => '', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'base_url' => 'https://eferz.com/', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
 $eferz_og_image = get_template_directory_uri() . '/assets/og-eferz-v2.jpg';

@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.9
+ * @version 1.6.10
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.9');
+define('EFERZ_THEME_VERSION', '1.6.10');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -571,12 +571,16 @@ add_filter('script_loader_tag', function($tag, $handle, $src) {
     if (is_admin() || eferz_is_spa_request() || empty($src)) {
         return $tag;
     }
+    if (function_exists('is_woocommerce') && (is_cart() || is_checkout() || is_account_page() || is_wc_endpoint_url())) {
+        return $tag;
+    }
     if (strpos($tag, ' defer') !== false || strpos($tag, ' async') !== false || strpos($tag, 'type="module"') !== false || strpos($tag, "type='module'") !== false) {
         return $tag;
     }
-    $exclude_prefixes = array('jquery', 'wc-', 'woocommerce', 'stripe', 'wp-', 'react', 'elementor', 'eferz-');
+    $handle_lc = strtolower((string) $handle);
+    $exclude_prefixes = array('jquery', 'wc-', 'wc_', 'woocommerce', 'wcpay', 'stripe', 'wp-', 'react', 'moment', 'lodash', 'elementor', 'eferz-');
     foreach ($exclude_prefixes as $prefix) {
-        if (strpos($handle, $prefix) === 0 || strpos($src, 'js.stripe.com') !== false) {
+        if (strpos($handle_lc, $prefix) === 0 || strpos($src, 'js.stripe.com') !== false || strpos($src, 'woocommerce-payments') !== false) {
             return $tag;
         }
     }
