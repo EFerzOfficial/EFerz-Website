@@ -4,12 +4,13 @@
  * Exact 100% React Application from AI Studio Build
  *
  * @package EFerz
- * @version 1.6.8
+ * @version 1.6.9
  */
-$eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'base_url' => 'https://eferz.com/', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
+$eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'service_slug' => '', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'base_url' => 'https://eferz.com/', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
 $eferz_og_image = get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
 $eferz_favicon  = get_template_directory_uri() . '/assets/eferz-logo.png';
 $eferz_route    = $eferz_seo['route'] ?? 'agency';
+$eferz_svc_slug = $eferz_seo['service_slug'] ?? '';
 $eferz_is_ar    = !empty($eferz_seo['is_ar']);
 $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
 ?>
@@ -73,15 +74,17 @@ $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
           var origFetch = window.fetch;
           window.fetch = function(input, init) {
             try {
+              var assetRe = /^\/(textures|videos|audio|models|cinematic|assets|draco)\//;
+              var mediaSubRe = /^\/(portfolio|services)\/.+\.(jpe?g|png|webp|gif|svg|mp4|webm|mp3|wav|ogg|glb|gltf|bin|wasm|js|css|woff2?|json)(\?.*)?$/i;
               if (typeof input === 'string') {
                 if (input.startsWith('/') && !input.startsWith('//') && !input.startsWith(themeUri)) {
-                  if (/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//.test(input)) {
+                  if (assetRe.test(input) || mediaSubRe.test(input)) {
                     input = themeUri + input;
                   }
                 }
               } else if (input && input.url && typeof input.url === 'string') {
                 var u = new URL(input.url, window.location.origin);
-                if (/^\/(textures|videos|audio|models|cinematic|portfolio|services|assets|draco)\//.test(u.pathname)) {
+                if (assetRe.test(u.pathname) || mediaSubRe.test(u.pathname)) {
                   input = new Request(themeUri + u.pathname + u.search, input);
                 }
               }
@@ -454,48 +457,146 @@ $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
           <h1 style="font-size:clamp(1.75rem,4vw,3rem);font-weight:900;margin:0 0 12px;"><?php echo esc_html($eferz_seo['title']); ?></h1>
           <p style="font-size:1.05rem;color:rgba(255,255,255,.82);max-width:780px;"><?php echo esc_html($eferz_seo['desc']); ?></p>
           <?php if ($eferz_route === 'services') : ?>
-            <section class="eferz-ssr-card">
-              <h2><?php echo $eferz_is_ar ? 'قدرات إيفرز الرقمية والهندسية' : 'Enterprise Digital & Engineering Capabilities'; ?></h2>
-              <ul>
-                <li>Full-Stack Web Engineering, React, Next.js & Custom Platforms</li>
-                <li>Interactive 3D WebGL & Three.js Brand Websites</li>
-                <li>Custom Artificial Intelligence Agents, RAG & LLM Automation</li>
-                <li>Shopify Plus & Enterprise WooCommerce Architecture</li>
-                <li>Amazon FBA Private Label Launch & Marketplace Growth</li>
-                <li>Technical SEO, Core Web Vitals & Search Visibility</li>
-                <li>Performance Marketing, Paid Media & ROAS Scaling</li>
-                <li>Mobile App Development (iOS & Android)</li>
-                <li>Brand Identity & UI/UX Product Systems</li>
-                <li>Zero Trust Cloud & Enterprise Cybersecurity</li>
-                <li>Automated Business & No-Code Integrations</li>
-              </ul>
-              <p><a href="https://eferz.com/contact/">Request a Custom Project Proposal &rarr;</a></p>
-            </section>
+            <?php
+            $eferz_svc_details = array(
+              'web-design-development' => array(
+                'h2' => 'Custom Web Design & Full-Stack Engineering',
+                'intro' => 'We architect high-speed React, Next.js, WordPress, and custom business management web platforms built for conversion, accessibility, and Core Web Vitals.',
+                'items' => array('Custom UI/UX Systems in Figma', 'React, Next.js, TypeScript & Node.js Apps', 'WordPress & WooCommerce Custom Engineering', '3D WebGL & Interactive Product Configurators'),
+                'faq_q' => 'What technology stack does EFerz use for custom web applications?',
+                'faq_a' => 'We engineer frontend experiences with React, Next.js, TypeScript, and Three.js paired with Node.js, PHP/WordPress, and cloud APIs tailored to project scale.',
+              ),
+              'digital-marketing' => array(
+                'h2' => 'Technical SEO, Google Ads & Performance Marketing',
+                'intro' => 'Data-backed organic search architecture, Google Search & Shopping campaigns, Meta/TikTok performance media, and conversion funnel optimization.',
+                'items' => array('Technical SEO, Schema & Core Web Vitals Audits', 'Google Ads Search, Shopping & Remarketing', 'Meta, TikTok & LinkedIn Paid Acquisition', 'GA4 & Server-Side Conversion Tracking'),
+                'faq_q' => 'How does EFerz measure ROI on digital marketing engagements?',
+                'faq_a' => 'Every campaign pairs GA4 and Consent Mode v2 attribution with qualified lead, cost-per-acquisition, and ROAS reporting.',
+              ),
+              'e-commerce-solution' => array(
+                'h2' => 'Shopify Plus & Enterprise WooCommerce Storefronts',
+                'intro' => 'Scalable multi-currency online stores engineered with Stripe, Apple Pay, Google Pay, fast checkout flows, and inventory synchronization.',
+                'items' => array('Shopify Plus & Custom Liquid Architecture', 'WooCommerce & WooPayments Checkout Integration', 'Multi-Region Currency & Arabic RTL Storefronts', 'Cart Recovery & Conversion Rate Optimization'),
+                'faq_q' => 'Which payment gateways and platforms do you support?',
+                'faq_a' => 'We build on Shopify Plus and WooCommerce with Stripe, WooPayments, Apple Pay, Google Pay, PayPal, and regional Middle East gateways.',
+              ),
+              'amazon-fba' => array(
+                'h2' => 'Amazon FBA Brand Launch & Marketplace Growth',
+                'intro' => 'Full-lifecycle Amazon Seller Central operations, A+ Content, product listing SEO, FBA prep coordination, and Sponsored Ads management.',
+                'items' => array('Seller Central Account & Brand Registry Setup', 'High-Converting A+ Content & Listing Copy', 'Sponsored Products & Brand PPC Optimization', 'Inventory Health & Buy Box Protection'),
+                'faq_q' => 'Do you manage existing Amazon accounts as well as new launches?',
+                'faq_a' => 'Yes, we support both private-label launches and established Amazon FBA catalogs looking to lower ACOS and improve organic ranking.',
+              ),
+              'social-accounts-management' => array(
+                'h2' => 'Social Media Management & Community Growth',
+                'intro' => 'Consistent editorial calendars, short-form video reels, brand voice management, and audience engagement across Instagram, LinkedIn, TikTok, and X.',
+                'items' => array('Monthly Content Calendars & Creative Direction', 'Short-Form Video & Motion Storytelling', 'Multi-Channel Community & DM Moderation', 'Monthly Audience & Engagement Reporting'),
+                'faq_q' => 'Which social networks are covered in monthly management?',
+                'faq_a' => 'Our creative and growth teams manage Instagram, Facebook, LinkedIn, TikTok, X, and Snapchat campaigns in English and Arabic.',
+              ),
+              'content-writing' => array(
+                'h2' => 'SEO Copywriting, Blogs & Technical Documentation',
+                'intro' => 'Search-intent website messaging, long-form engineering playbooks, product descriptions, and bilingual marketing copy written for clarity and authority.',
+                'items' => array('Conversion-Focused Website & Landing Page Copy', 'Long-Form Technical SEO Guides', 'Product Catalog & E-Commerce Descriptions', 'Bilingual English & Arabic Brand Messaging'),
+                'faq_q' => 'Is all content optimized for search engines and human readers?',
+                'faq_a' => 'Every piece follows structured heading hierarchy, factual clarity, internal linking, and buyer-intent keyword alignment.',
+              ),
+              'graphic-designing' => array(
+                'h2' => 'Visual Identity, UI Layouts & Packaging Design',
+                'intro' => 'Custom visual systems spanning UI/UX interfaces, print & retail packaging, 3D product mockups, and cohesive social campaign assets.',
+                'items' => array('Web & Mobile App UI Systems', 'Retail & E-Commerce Packaging Design', 'Social & Paid Ad Creative Kits', '3D Mockups & Visual Brand Guidelines'),
+                'faq_q' => 'Do clients receive full source files and commercial rights?',
+                'faq_a' => 'Yes, clients receive production-ready vector, Figma, and print source files with full IP ownership upon milestone completion.',
+              ),
+              'brand-development' => array(
+                'h2' => 'Brand Architecture, Logo Systems & Market Positioning',
+                'intro' => 'Foundational brand strategy, signature logo systems, typography, color tokens, and messaging guides built for long-term recognition.',
+                'items' => array('Custom Logo Suites & Monograms', 'Typography, Color & Visual Guidelines', 'Brand Positioning & Messaging Playbooks', 'Multi-Market Bilingual Brand Consistency'),
+                'faq_q' => 'What is included in a brand development engagement?',
+                'faq_a' => 'Deliverables include strategic positioning, primary and secondary logo marks, typography/color systems, and an actionable brand guidelines book.',
+              ),
+              'consulting-services' => array(
+                'h2' => 'IT Consulting, Custom Management Systems & AI Automation',
+                'intro' => 'Principal-led technical architecture audits, custom CRM/ERP scoping, AI workflow automation, and cloud modernization for growing businesses.',
+                'items' => array('Custom CRM, ERP & Portal Architecture', 'AI Agent & Workflow Automation Scoping', 'Technical SEO & Platform Performance Audits', 'Cloud Infrastructure & Migration Advisory'),
+                'faq_q' => 'Can EFerz audit an existing system before building new features?',
+                'faq_a' => 'Yes, we start with a structured technical audit covering codebase quality, database schema, security posture, and conversion bottlenecks.',
+              ),
+              'cyber-security' => array(
+                'h2' => 'Zero-Trust Application, WordPress & Cloud Security',
+                'intro' => 'Proactive web security hardening across Cloudflare WAF rules, WordPress core/plugin defense, HTTP security headers, API lockdown, and incident cleanup.',
+                'items' => array('Cloudflare WAF, Rate-Limiting & Bot Defense', 'WordPress & WooCommerce Security Hardening', 'CSP, HSTS, Referrer-Policy & Header Audits', 'Malware Cleanup & False-Positive Reputation Appeals'),
+                'faq_q' => 'Does security hardening affect WooCommerce checkout or site speed?',
+                'faq_a' => 'No. Our Cloudflare WAF and CSP policies explicitly preserve Stripe, Apple Pay, Google Pay, and authenticated session routes while blocking automated probes.',
+              ),
+              'connect-isp' => array(
+                'h2' => 'EFerz Connect — High-Speed Fiber & Fixed Wireless Internet',
+                'intro' => 'Reliable Fiber and Fixed Wireless Internet connectivity with low-latency mesh networking designed for offices and residences in Fort Lauderdale, Florida.',
+                'items' => array('Symmetric Fiber Connectivity up to 940 Mbps', 'Rapid Fixed Wireless Deployment', 'Enterprise Whole-Home & Office Mesh Wi-Fi', 'Local Technical Support & Uptime Monitoring'),
+                'faq_q' => 'Where is EFerz Connect ISP available?',
+                'faq_a' => 'EFerz Connect serves select commercial and residential zones in Fort Lauderdale and Broward County, Florida.',
+              ),
+            );
+            $cur_svc = ($eferz_svc_slug !== '' && isset($eferz_svc_details[$eferz_svc_slug])) ? $eferz_svc_details[$eferz_svc_slug] : null;
+            ?>
+            <?php if ($cur_svc) : ?>
+              <section class="eferz-ssr-card">
+                <h2><?php echo esc_html($cur_svc['h2']); ?></h2>
+                <p><?php echo esc_html($cur_svc['intro']); ?></p>
+                <h3>Scope &amp; Deliverables</h3>
+                <ul>
+                  <?php foreach ($cur_svc['items'] as $sitem) : ?>
+                    <li><?php echo esc_html($sitem); ?></li>
+                  <?php endforeach; ?>
+                </ul>
+                <h3>Frequently Asked Question</h3>
+                <p><strong><?php echo esc_html($cur_svc['faq_q']); ?></strong><br /><?php echo esc_html($cur_svc['faq_a']); ?></p>
+                <p><a href="https://eferz.com/work/">View Relevant Case Studies &rarr;</a> | <a href="https://eferz.com/services/">All EFerz Services &rarr;</a> | <a href="https://eferz.com/contact/">Request a Proposal &rarr;</a></p>
+              </section>
+            <?php else : ?>
+              <section class="eferz-ssr-card">
+                <h2><?php echo $eferz_is_ar ? 'قدرات إيفرز الرقمية والهندسية' : 'Enterprise Digital & Engineering Capabilities'; ?></h2>
+                <ul>
+                  <li><a href="https://eferz.com/services/web-design-development/">Web Design &amp; Full-Stack Development</a> (React, Next.js, WordPress &amp; 3D WebGL)</li>
+                  <li><a href="https://eferz.com/services/digital-marketing/">Digital Marketing, Technical SEO &amp; Paid Ads</a></li>
+                  <li><a href="https://eferz.com/services/e-commerce-solution/">E-Commerce, Shopify Plus &amp; WooCommerce Architecture</a></li>
+                  <li><a href="https://eferz.com/services/amazon-fba/">Amazon FBA Brand Launch &amp; Marketplace Scaling</a></li>
+                  <li><a href="https://eferz.com/services/social-accounts-management/">Social Media Management &amp; Brand Growth</a></li>
+                  <li><a href="https://eferz.com/services/content-writing/">SEO Content Writing &amp; Technical Copywriting</a></li>
+                  <li><a href="https://eferz.com/services/graphic-designing/">Graphic Design, UI/UX &amp; Packaging Visuals</a></li>
+                  <li><a href="https://eferz.com/services/brand-development/">Brand Development &amp; Identity Systems</a></li>
+                  <li><a href="https://eferz.com/services/consulting-services/">IT Consulting, Custom CRM/ERP &amp; AI Automation</a></li>
+                  <li><a href="https://eferz.com/services/cyber-security/">Cybersecurity &amp; Zero-Trust Cloud Hardening</a></li>
+                  <li><a href="https://eferz.com/services/connect-isp/">EFerz Connect (ISP) — Fiber &amp; Wireless Internet</a></li>
+                </ul>
+                <p><a href="https://eferz.com/work/">Explore Case Studies &rarr;</a> | <a href="https://eferz.com/contact/">Request a Custom Project Proposal &rarr;</a></p>
+              </section>
+            <?php endif; ?>
           <?php elseif ($eferz_route === 'work') : ?>
             <section class="eferz-ssr-card">
-              <h2><?php echo $eferz_is_ar ? 'معرض المشاريع ودراسات الحالة' : '17 Flagship Case Studies & Production Launches'; ?></h2>
-              <p>Featured production launches across our 17 verified flagship digital ecosystems include AllThingsDesire, AapnaOnlineStore, MiniMog, HiDoose, Your Kitchen Is Cooking, Sustagro, InstaShop, Al-Sheikh Curtain &amp; Interiors, Airtilize, TrendifyToday, ClickVolo, Khuzair, AffordableThings, Storeara, ReflectiveThings, FitwearStores, and CharmThings across custom web platforms, Shopify Plus stores, brand identity systems, technical SEO, and cybersecurity.</p>
-              <p>Each case study is engineered for sub-second load speeds, multi-device responsiveness across desktop, tablet, and mobile viewports, and measurable revenue retention.</p>
+              <h2><?php echo $eferz_is_ar ? 'معرض المشاريع ودراسات الحالة' : '17 Client Case Studies & Production Launches'; ?></h2>
+              <p>Featured production launches across our 17 client digital ecosystems include AllThingsDesire, AapnaOnlineStore, MiniMog, HiDoose, Your Kitchen Is Cooking, Sustagro, InstaShop, Al-Sheikh Curtain &amp; Interiors, Airtilize, TrendifyToday, ClickVolo, Khuzair, AffordableThings, Storeara, ReflectiveThings, FitwearStores, and CharmThings across custom web platforms, Shopify Plus stores, brand identity systems, technical SEO, and cybersecurity.</p>
+              <p>Each case study demonstrates multi-device responsiveness across desktop, tablet, and mobile viewports along with the specific technology and marketing services delivered.</p>
               <p><a href="https://eferz.com/lets-build/">Explore Interactive 3D Studio &rarr;</a> | <a href="https://eferz.com/contact/">Start Your Project &rarr;</a></p>
             </section>
           <?php elseif ($eferz_route === 'clients') : ?>
             <section class="eferz-ssr-card">
-              <h2><?php echo $eferz_is_ar ? '17 شراكة موثقة وشهادات العملاء حول العالم' : '17 Verified Client Ecosystems &amp; Founder Testimonials Across USA, KSA &amp; Global Markets'; ?></h2>
-              <p>EFerz partners with high-growth e-commerce brands, fintech platforms, hospitality groups, industrial suppliers, and regional enterprises across North America, Europe, the Middle East, and Asia to design, engineer, secure, and scale mission-critical digital infrastructure.</p>
-              <h3>Verified Client Retention Metrics</h3>
+              <h2><?php echo $eferz_is_ar ? '17 مشروعاً موثقاً وتفاصيل التنفيذ حول العالم' : '17 Client Partnerships &amp; Delivered Project Outcomes Across USA, KSA &amp; Global Markets'; ?></h2>
+              <p>EFerz partners with high-growth e-commerce brands, industrial suppliers, retail storefronts, and regional enterprises across North America, Europe, the Middle East, and Asia to design, engineer, secure, and scale digital platforms.</p>
+              <h3>Client Engagements &amp; Scope Summary</h3>
               <ul>
-                <li><strong>Your Kitchen is Cooking</strong> (Miss Sheila, Founder) — <strong>89% Returning Customers</strong> | Shopify Plus &amp; 10-department growth partnership. <blockquote>&ldquo;Our mission is to deliver the most compelling shopping experience for our customers.&rdquo;</blockquote></li>
-                <li><strong>MiniMog</strong> (Mr. Taha Kamal, Founder) — <strong>89% Returning Customers</strong> | High-velocity retail, analytics &amp; cloud security. <blockquote>&ldquo;EFerz provided a true one-stop 10-service partnership &mdash; combining web excellence, data analytics, and cybersecurity to achieve 89% returning customers.&rdquo;</blockquote></li>
-                <li><strong>InstaShop</strong> (Sarim Baig, Founder &amp; CEO) — <strong>97% Returning Customers</strong> | Multi-vendor commerce, AI search &amp; rapid fulfillment web platform.</li>
-                <li><strong>Khuzair Official</strong> (Mr. Uzair, Founder) — <strong>98% Returning Customers</strong> | High-converting luxury e-commerce storefront &amp; performance marketing.</li>
-                <li><strong>HiDoose</strong> (Mr. Khubaib Khan, Founder) — <strong>98% Returning Traffic</strong> | High-speed digital publishing architecture &amp; Core Web Vitals optimization.</li>
-                <li><strong>Airtilize Inc.</strong> (Mr. Shakeel, Founder &amp; CEO) — <strong>88% Returning Customers</strong> | Multi-region brand technology ecosystem across 30+ markets.</li>
-                <li><strong>TrendifyToday</strong> (Salman Shahid, Founder) — <strong>89% Returning Customers</strong> | E-commerce architecture &amp; conversion scaling.</li>
-                <li><strong>Sustagro</strong> (Amjid Mohammed, Marketing Executive) — <strong>88% Returning Customers</strong> | Enterprise brand positioning &amp; digital lead engine.</li>
-                <li><strong>AapnaOnlineStore</strong> (Mr. Moosa, Founder) — <strong>88% Returning Customers</strong> | Full-stack marketplace &amp; retail scaling.</li>
+                <li><strong>Your Kitchen is Cooking</strong> (Miss Sheila, Founder) — <strong>89% Returning Customers</strong> | Full-stack e-commerce, graphic design, content writing, and digital marketing across 10 curated departments.</li>
+                <li><strong>MiniMog</strong> (Mr. Taha Kamal, Founder) — <strong>89% Returning Customers</strong> | Complete 10-service partnership spanning web development, data analytics, and cybersecurity.</li>
+                <li><strong>InstaShop</strong> (Sarim Baig, Founder &amp; CEO) — <strong>97% Returning Customers</strong> | Multi-vendor commerce web development, social media management, and checkout UX.</li>
+                <li><strong>Khuzair Official</strong> (Mr. Uzair, Founder) — <strong>98% Returning Customers</strong> | Custom logo design, brand copywriting, and e-commerce growth strategy.</li>
+                <li><strong>HiDoose</strong> (Mr. Khubaib Khan, Founder) — <strong>98% Returning Traffic</strong> | High-speed digital publishing architecture, cybersecurity, and analytics.</li>
+                <li><strong>Airtilize Inc.</strong> (Mr. Shakeel, Founder &amp; CEO) — <strong>88% Returning Customers</strong> | Multi-region brand technology ecosystem across 30+ locations.</li>
+                <li><strong>TrendifyToday</strong> (Salman Shahid, Founder) — <strong>89% Returning Customers</strong> | Custom coffee marketplace development and performance marketing.</li>
+                <li><strong>Sustagro</strong> (Amjid Mohammed, Marketing Executive) — <strong>88% Returning Customers</strong> | Sustainable brand positioning and social media lead ecosystem.</li>
+                <li><strong>AapnaOnlineStore</strong> (Mr. Moosa, Founder) — <strong>88% Returning Customers</strong> | Full-stack retail storefront and signature brand identity.</li>
                 <li><strong>ReflectiveThings</strong> (Mr. Ibrahim Ahmed, Founder) — <strong>88% Returning Customers</strong>; <strong>StoreAra</strong> (Mr. Muhammad Maaz, Founder) — <strong>85% Returning Customers</strong>; <strong>FitWearStores</strong> (Mr. Farhan, Founder) — <strong>84% Returning Customers</strong>; <strong>CharmThings</strong> (Mr. Shaban Rizwan, Founder) — <strong>84% Returning Customers</strong>; <strong>Al-Sheikh Curtain &amp; Interiors</strong> (Mr. Taha Mahmood, Founder) — <strong>78% Returning Customers</strong>; <strong>ClickVolo</strong> (Mr. Ali, Founder) — <strong>78% Returning Customers</strong>; <strong>AllThingsDesire</strong> (Mr. Hassan, Marketing Manager) — <strong>76% Returning Customers</strong>; <strong>AffordableThings</strong> (Mr. Muneeb Ahmed, Founder) — <strong>65% Returning Customers</strong>.</li>
               </ul>
-              <p><a href="https://eferz.com/work/">Explore All 17 Live Case Studies &rarr;</a> | <a href="https://eferz.com/contact/">Request Client References &rarr;</a></p>
+              <p><a href="https://eferz.com/work/">Explore Live Case Studies &rarr;</a> | <a href="https://eferz.com/contact/">Request Client References &rarr;</a></p>
             </section>
           <?php elseif ($eferz_route === 'team') : ?>
             <section class="eferz-ssr-card">

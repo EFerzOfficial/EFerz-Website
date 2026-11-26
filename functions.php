@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.8
+ * @version 1.6.9
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.8');
+define('EFERZ_THEME_VERSION', '1.6.9');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -207,10 +207,10 @@ function eferz_get_route_seo() {
             'slug' => 'work',
         ),
         'clients' => array(
-            'title' => 'Global Clients & Verified Testimonials | EFerz',
-            'titleAr' => 'آراء العملاء العالميين وقصص النجاح | وكالة إيفرز',
-            'desc' => 'Headquartered in Fort Lauderdale USA with offices in Riyadh & Karachi, EFerz serves enterprise clients across AI, web & growth. Read client testimonials.',
-            'descAr' => 'مقرنا الرئيسي في أمريكا مع مكاتب في الرياض وكراتشي لخدمة العملاء في الذكاء الاصطناعي والويب والتسويق الرقمي. اقرأ شهادات العملاء.',
+            'title' => 'Global Clients & Project Outcomes | EFerz',
+            'titleAr' => 'عملاؤنا العالميون ونتائج المشاريع | وكالة إيفرز',
+            'desc' => 'Headquartered in Fort Lauderdale USA with offices in Riyadh & Karachi, EFerz delivers enterprise AI, web & e-commerce platforms for 17 global brands.',
+            'descAr' => 'مقرنا الرئيسي في أمريكا مع مكاتب في الرياض وكراتشي لتطوير حلول الذكاء الاصطناعي والويب والتسويق الرقمي لعلامات تجارية عالمية.',
             'keywords' => '',
             'slug' => 'clients',
         ),
@@ -281,16 +281,99 @@ function eferz_get_route_seo() {
     );
 
     $cfg = $routes[$route] ?? $routes['agency'];
+    $second_seg = strtolower(explode('/', $req_path)[1] ?? '');
+    $service_slug = '';
     $base_url = 'https://eferz.com/' . ($cfg['slug'] ? $cfg['slug'] . '/' : '');
+    $title = $is_ar ? $cfg['titleAr'] : $cfg['title'];
+    $desc  = $is_ar ? $cfg['descAr'] : $cfg['desc'];
+
+    $service_subpages = array(
+        'web-design-development' => array(
+            'title'   => 'Custom Web Design & Full-Stack Development Services | EFerz',
+            'titleAr' => 'تصميم وتطوير المواقع الإلكترونية المخصصة | إيفرز',
+            'desc'    => 'Custom React, Next.js, WordPress, and full-stack web application development built for sub-second speed, responsive UX, and enterprise scalability.',
+            'descAr'  => 'تصميم مواقع مخصصة وتطوير شامل باستخدام React وNext.js وووردبريس — سريعة، متجاوبة مع الجوال، ومبنية لتنمية أعمالك.',
+        ),
+        'digital-marketing' => array(
+            'title'   => 'Digital Marketing, Technical SEO & PPC Services | EFerz',
+            'titleAr' => 'التسويق الرقمي وتحسين محركات البحث SEO | إيفرز',
+            'desc'    => 'Data-driven technical SEO, Google Search Ads, Meta & TikTok performance marketing, and conversion rate optimization to scale measurable pipeline growth.',
+            'descAr'  => 'استراتيجيات تسويق رقمي مبنية على البيانات وتحسين محركات البحث SEO وإعلانات جوجل لزيادة الزيارات والمبيعات.',
+        ),
+        'e-commerce-solution' => array(
+            'title'   => 'E-Commerce, Shopify Plus & WooCommerce Development | EFerz',
+            'titleAr' => 'حلول التجارة الإلكترونية وتطوير شوبيفاي ووكومرس | إيفرز',
+            'desc'    => 'High-converting Shopify Plus and WooCommerce storefronts with Stripe, Apple Pay, Google Pay, ERP inventory sync, and checkout optimization.',
+            'descAr'  => 'متاجر إلكترونية متكاملة على شوبيفاي بلس ووكومرس مع بوابات دفع عالمية وتجربة شراء سريعة عالية التحويل.',
+        ),
+        'amazon-fba' => array(
+            'title'   => 'Amazon FBA Management, Listing SEO & PPC Scaling | EFerz',
+            'titleAr' => 'إدارة متاجر أمازون FBA وتحسين القوائم والإعلانات | إيفرز',
+            'desc'    => 'End-to-end Amazon FBA brand management: supplier sourcing, A+ Content, Seller Central operations, Buy Box strategy, and Sponsored Ads optimization.',
+            'descAr'  => 'إدارة شاملة لحسابات أمازون FBA — من توريد المنتجات وتجهيز المحتوى A+ إلى إدارة الإعلانات وزيادة المبيعات.',
+        ),
+        'social-accounts-management' => array(
+            'title'   => 'Social Media Account Management & Growth Strategy | EFerz',
+            'titleAr' => 'إدارة حسابات التواصل الاجتماعي ونمو العلامات التجارية | إيفرز',
+            'desc'    => 'Full-cycle content calendars, community management, short-form video reels, and social commerce growth across Instagram, LinkedIn, TikTok, and X.',
+            'descAr'  => 'إدارة احترافية متكاملة لمنصات التواصل الاجتماعي مع صناعة المحتوى وإدارة الجمهور وتعزيز حضور علامتك التجارية.',
+        ),
+        'content-writing' => array(
+            'title'   => 'SEO Content Writing & Technical Copywriting Services | EFerz',
+            'titleAr' => 'كتابة المحتوى الإبداعي والتسويقي المتوافق مع السيو | إيفرز',
+            'desc'    => 'Conversion-focused website copy, technical B2B documentation, long-form SEO playbooks, and bilingual product storytelling engineered for search intent.',
+            'descAr'  => 'كتابة محتوى المواقع والمقالات التقنية والتسويقية بأسلوب إبداعي متوافق مع معايير محركات البحث SEO.',
+        ),
+        'graphic-designing' => array(
+            'title'   => 'Graphic Design, UI/UX & Brand Packaging Visuals | EFerz',
+            'titleAr' => 'التصميم الجرافيكي وواجهات المستخدم وتصميم العبوات | إيفرز',
+            'desc'    => 'Custom visual systems, Figma product UI/UX, social campaign graphics, 3D product renders, and print-ready retail packaging designed for brand recall.',
+            'descAr'  => 'تصميم جرافيكي إبداعي يشمل الهوية البصرية، واجهات UI/UX، التغليف والعبوات والحملات الإعلانية.',
+        ),
+        'brand-development' => array(
+            'title'   => 'Brand Identity, Logo Design & Positioning Services | EFerz',
+            'titleAr' => 'تطوير الهوية التجارية وتصميم الشعارات | إيفرز',
+            'desc'    => 'Strategic brand architecture, custom logo systems, typography, brand guidelines, and market positioning built for multi-region customer trust.',
+            'descAr'  => 'بناء الهوية التجارية المتكاملة وتصميم الشعارات الاحترافية ودليل الهوية البصرية لتمييز علامتك في السوق.',
+        ),
+        'consulting-services' => array(
+            'title'   => 'IT Consulting, AI Workflows & Systems Architecture | EFerz',
+            'titleAr' => 'استشارات تقنية المعلومات وأتمتة الأعمال بالذكاء الاصطناعي | إيفرز',
+            'desc'    => 'Principal-led technical architecture audits, custom CRM/ERP scoping, AI agent integration, cloud migration, and digital transformation consulting.',
+            'descAr'  => 'استشارات تقنية متخصصة في هندسة الأنظمة، أتمتة سير العمل بالذكاء الاصطناعي، والتحول الرقمي للمؤسسات.',
+        ),
+        'cyber-security' => array(
+            'title'   => 'Cybersecurity, Zero-Trust Hardening & Audit Services | EFerz',
+            'titleAr' => 'خدمات الأمن السيبراني وحماية الأنظمة والتطبيقات | إيفرز',
+            'desc'    => 'Zero-Trust WordPress, API, and cloud security hardening, Cloudflare WAF rules, vulnerability assessments, and malware incident remediation.',
+            'descAr'  => 'حماية شاملة لتطبيقات الويب والمتاجر والبنية السحابية عبر قواعد Zero-Trust وجدران الحماية واختبارات الأمان.',
+        ),
+        'connect-isp' => array(
+            'title'   => 'EFerz Connect (ISP) | High-Speed Fiber & Wireless Internet',
+            'titleAr' => 'خدمات الإنترنت فائق السرعة والألياف الضوئية Connect ISP | إيفرز',
+            'desc'    => 'Business and residential high-speed Fiber and Fixed Wireless Internet solutions with low-latency mesh networking in Fort Lauderdale, Florida.',
+            'descAr'  => 'خدمات إنترنت الألياف الضوئية واللاسلكي الثابت بسرعة عالية وزمن استجابة منخفض للشركات والمنازل في فلوريدا.',
+        ),
+    );
+
+    if ($route === 'services' && $second_seg !== '' && isset($service_subpages[$second_seg])) {
+        $service_slug = $second_seg;
+        $scfg = $service_subpages[$second_seg];
+        $base_url = 'https://eferz.com/services/' . $service_slug . '/';
+        $title = $is_ar ? $scfg['titleAr'] : $scfg['title'];
+        $desc  = $is_ar ? $scfg['descAr'] : $scfg['desc'];
+    }
+
     $canonical = $is_ar ? ($base_url . '?lang=ar') : $base_url;
     return array(
-        'route'     => isset($routes[$route]) ? $route : 'agency',
-        'is_ar'     => $is_ar,
-        'title'     => $is_ar ? $cfg['titleAr'] : $cfg['title'],
-        'desc'      => $is_ar ? $cfg['descAr'] : $cfg['desc'],
-        'keywords'  => $cfg['keywords'],
-        'base_url'  => $base_url,
-        'canonical' => $canonical,
+        'route'        => isset($routes[$route]) ? $route : 'agency',
+        'service_slug' => $service_slug,
+        'is_ar'        => $is_ar,
+        'title'        => $title,
+        'desc'         => $desc,
+        'keywords'     => $cfg['keywords'],
+        'base_url'     => $base_url,
+        'canonical'    => $canonical,
     );
 }
 
@@ -1407,7 +1490,7 @@ add_action('template_redirect', function() {
         exit;
     }
     if (in_array($req_path, $legacy_service_slugs, true)) {
-        wp_redirect('https://eferz.com/services/', 301);
+        wp_redirect('https://eferz.com/services/' . $req_path . '/', 301);
         exit;
     }
 
@@ -1504,18 +1587,29 @@ add_filter('robots_txt', function($output, $public) {
  */
 function eferz_render_flagship_sitemap_xml() {
     $routes = array(
-        ''           => '1.0',
-        'services'   => '0.9',
-        'work'       => '0.9',
-        'clients'    => '0.8',
-        'team'       => '0.8',
-        'about'      => '0.8',
-        'blog'       => '0.8',
-        'contact'    => '0.9',
-        'lets-build' => '0.8',
-        'privacy'    => '0.4',
-        'terms'      => '0.4',
-        'refund'     => '0.4',
+        ''                                     => '1.0',
+        'services'                             => '0.9',
+        'services/web-design-development'      => '0.8',
+        'services/digital-marketing'           => '0.8',
+        'services/e-commerce-solution'         => '0.8',
+        'services/amazon-fba'                  => '0.8',
+        'services/social-accounts-management'  => '0.7',
+        'services/content-writing'             => '0.7',
+        'services/graphic-designing'           => '0.7',
+        'services/brand-development'           => '0.7',
+        'services/consulting-services'         => '0.8',
+        'services/cyber-security'              => '0.8',
+        'services/connect-isp'                 => '0.6',
+        'work'                                 => '0.9',
+        'clients'                              => '0.8',
+        'team'                                 => '0.8',
+        'about'                                => '0.8',
+        'blog'                                 => '0.8',
+        'contact'                              => '0.9',
+        'lets-build'                           => '0.8',
+        'privacy'                              => '0.4',
+        'terms'                                => '0.4',
+        'refund'                               => '0.4',
     );
     $lastmod = gmdate('Y-m-d\TH:i:s+00:00');
     $og_img  = esc_url(get_template_directory_uri() . '/assets/og-eferz-v2.jpg');
