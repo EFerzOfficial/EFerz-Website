@@ -413,7 +413,7 @@ export function buildVeloraExactHtml(config: VeloraCustomizationConfig): string 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${config.brandName} ${config.brandSub} — Haute Botanical 3D</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=DM+Sans:wght@400;500;700&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"></script>
 <style>
 :root{
   --cream:#fbf3ee;
@@ -1144,6 +1144,8 @@ window.dismissVeloraLoader = function() {
       window._threeScriptRequested = true;
       const s = document.createElement('script');
       s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+      s.integrity = 'sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu';
+      s.crossOrigin = 'anonymous';
       s.onload = () => setTimeout(initVeloraScope, 20);
       document.head.appendChild(s);
     }

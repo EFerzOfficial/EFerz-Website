@@ -3,7 +3,7 @@
  * EFerz Digital Studio - Theme Functions and Definitions
  *
  * @package EFerz
- * @version 1.6.10
+ * @version 1.6.11
  */
 
 if (!defined('ABSPATH')) {
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
  * GitHub Automatic Theme Update Support Header
  * Used by 'GitHub Theme Updater' & 'WP Pusher'
  */
-define('EFERZ_THEME_VERSION', '1.6.10');
+define('EFERZ_THEME_VERSION', '1.6.11');
 
 /**
  * 1. HTTP Security & Trust Headers (Compatible with Wordfence, WooPayments Stripe/Apple Pay & Security Scanners)
@@ -27,7 +27,11 @@ function eferz_send_security_headers() {
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
         header('Referrer-Policy: strict-origin-when-cross-origin', true);
-        header("Content-Security-Policy: default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https: wss:; frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.google.com https://pay.google.com https:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com; upgrade-insecure-requests;");
+        $is_spa = function_exists('eferz_is_spa_request') && eferz_is_spa_request();
+        $script_src = $is_spa
+            ? "script-src 'self' 'unsafe-inline' https: blob:;"
+            : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:;";
+        header("Content-Security-Policy: default-src 'self' https: data: blob:; " . $script_src . " style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https: wss:; frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.google.com https://pay.google.com https:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' https://checkout.stripe.com https://js.stripe.com https://hooks.stripe.com; upgrade-insecure-requests;");
         header('Permissions-Policy: camera=(self), microphone=(self), geolocation=(), payment=(self "https://js.stripe.com" "https://checkout.stripe.com" "https://pay.google.com")');
         header('Link: <https://eferz.com/.well-known/ard.json>; rel="ard"', false);
         if (is_ssl()) {
@@ -568,6 +572,9 @@ add_filter('w3tc_lazyload_can_process', function($can_process) {
  * while preserving WooCommerce Blocks, Stripe checkout & jQuery dependencies.
  */
 add_filter('script_loader_tag', function($tag, $handle, $src) {
+    if (!empty($src) && strpos($src, 'cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js') !== false && strpos($tag, 'integrity=') === false) {
+        $tag = str_replace(' src=', ' integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous" src=', $tag);
+    }
     if (is_admin() || eferz_is_spa_request() || empty($src)) {
         return $tag;
     }
@@ -1548,7 +1555,7 @@ add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_ids) {
         }
     }
     if (function_exists('wc_get_page_id')) {
-        foreach (array('cart', 'checkout', 'myaccount') as $wc_key) {
+        foreach (array('shop', 'cart', 'checkout', 'myaccount') as $wc_key) {
             $pid = (int) wc_get_page_id($wc_key);
             if ($pid > 0) {
                 $excluded_ids[] = $pid;
@@ -1649,7 +1656,8 @@ add_filter('wpseo_sitemap_entry', function($url, $type, $object) {
     if ($type === 'post' && is_array($url) && !empty($url['loc'])) {
         $loc = untrailingslashit((string) $url['loc']);
         $home = untrailingslashit((string) home_url('/'));
-        if ($loc === $home) {
+        $blog = untrailingslashit((string) home_url('/blog'));
+        if ($loc === $home || $loc === $blog) {
             return false;
         }
     }
@@ -2659,15 +2667,43 @@ add_filter('wpseo_schema_article', function($data) {
     return $data;
 }, 20);
 
-add_action('wp_enqueue_scripts', function() {
+add_filter('rest_pre_dispatch', function($result, $server, $request) {
+    if (is_user_logged_in()) {
+        return $result;
+    }
+    $route = (is_object($request) && method_exists($request, 'get_route')) ? (string) $request->get_route() : '';
+    $blocked_patterns = array('/elementor/v1/mcp', '/mcp-proxy', '-mcp', '/fluent-crm/', '/site-mailer/', '/wordfence/');
+    foreach ($blocked_patterns as $pat) {
+        if ($route !== '' && stripos($route, $pat) !== false) {
+            return new WP_Error('rest_forbidden', 'Authentication required.', array('status' => 401));
+        }
+    }
+    return $result;
+}, 0, 3);
+
+function eferz_dequeue_blog_bloat_scripts() {
     if (is_admin() || is_user_logged_in()) {
         return;
     }
-    if (is_singular('post')) {
-        foreach (array('wc-order-attribution', 'sourcebuster-js', 'wc-jquery-blockui', 'woocommerce', 'wc-add-to-cart') as $handle) {
+    if (is_singular('post') && (!function_exists('is_woocommerce') || !is_woocommerce())) {
+        $handles = array(
+            'wc-order-attribution',
+            'sourcebuster-js',
+            'jquery-blockui',
+            'wc-jquery-blockui',
+            'woocommerce',
+            'wc-add-to-cart',
+            'WCPAY_ASSETS',
+            'woocommerce-analytics',
+            'woocommerce-analytics-client',
+            'wp-consent-api-integration',
+        );
+        foreach ($handles as $handle) {
             wp_dequeue_script($handle);
         }
     }
-}, 9999);
-
+}
+add_action('wp_enqueue_scripts', 'eferz_dequeue_blog_bloat_scripts', 99999);
+add_action('wp_print_scripts', 'eferz_dequeue_blog_bloat_scripts', 1);
+add_action('wp_print_footer_scripts', 'eferz_dequeue_blog_bloat_scripts', 1);
 

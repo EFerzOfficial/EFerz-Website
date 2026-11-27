@@ -6,7 +6,7 @@ function qP(o){var r,a,s,c,u,d,f;if(o.customHtmlOverride&&o.customHtmlOverride.t
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"><\/script>
 <style>
 :root{color-scheme:dark;--bg:#0b0710;--bg2:#2a1136;--fg:#fff7ee;--mut:#c9b9cd;--liq:#ff7a2f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @property --bg{syntax:'<color>';inherits:true;initial-value:#0b0710}
@@ -610,6 +610,8 @@ window.dismissFizzoPreloader = function() {
       window._threeScriptRequested = true;
       const s = document.createElement('script');
       s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+      s.integrity = 'sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu';
+      s.crossOrigin = 'anonymous';
       s.onload = () => setTimeout(initFizzoScope, 20);
       document.head.appendChild(s);
     }
@@ -1406,7 +1408,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&selecting)$('go').click()});
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${o.brandName} ${o.brandSub} — Haute Botanical 3D</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400;1,9..144,600&family=DM+Sans:wght@400;500;700&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"><\/script>
 <style>
 :root{
   --cream:#fbf3ee;
@@ -2131,6 +2133,8 @@ window.dismissVeloraLoader = function() {
       window._threeScriptRequested = true;
       const s = document.createElement('script');
       s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+      s.integrity = 'sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu';
+      s.crossOrigin = 'anonymous';
       s.onload = () => setTimeout(initVeloraScope, 20);
       document.head.appendChild(s);
     }
@@ -2744,7 +2748,7 @@ setTimeout(() => {
 <title>${o.brandName} ${o.brandSub}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,700;0,900;1,700;1,900&family=Mulish:wght@400;600;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"><\/script>
 <script>
 if (typeof THREE === 'undefined') {
   document.write('<script src="/three.r128.min.js"><\\/script>');
@@ -3121,7 +3125,7 @@ function frame(now){requestAnimationFrame(frame);
 <title>${o.brandName} ${o.brandSub}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,700;0,900;1,700;1,900&family=Mulish:wght@400;600;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"><\/script>
 <script>
 if (typeof THREE === 'undefined') {
   document.write('<script src="/three.r128.min.js"><\\/script>');
@@ -4236,7 +4240,7 @@ ${u}
   </footer>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"><\/script>
 <script>
 (function initUniversalScope(){
   if (typeof THREE === 'undefined') {

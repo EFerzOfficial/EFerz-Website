@@ -4,7 +4,7 @@
  * Exact 100% React Application from AI Studio Build
  *
  * @package EFerz
- * @version 1.6.10
+ * @version 1.6.11
  */
 $eferz_seo = function_exists('eferz_get_route_seo') ? eferz_get_route_seo() : array('route' => 'agency', 'service_slug' => '', 'title' => 'EFerz Digital Agency | AI, 3D WebGL, SEO & Software', 'desc' => 'Global AI automation, 3D WebGL websites, Shopify Plus, Amazon FBA, technical SEO & cloud cybersecurity by EFerz (USA, KSA, PAK). Start your project.', 'base_url' => 'https://eferz.com/', 'canonical' => 'https://eferz.com/', 'is_ar' => false);
 $eferz_og_image = get_template_directory_uri() . '/assets/og-eferz-v2.jpg';
@@ -581,15 +581,19 @@ $eferz_base_url = $eferz_seo['base_url'] ?? 'https://eferz.com/';
             </section>
           <?php elseif ($eferz_route === 'clients') : ?>
             <section class="eferz-ssr-card">
-              <h2><?php echo $eferz_is_ar ? '17 مشروعاً موثقاً وتفاصيل التنفيذ حول العالم' : '17 Client Partnerships &amp; Delivered Project Outcomes Across USA, KSA &amp; Global Markets'; ?></h2>
+              <h2><?php echo $eferz_is_ar ? '17 مشروعاً وتفاصيل التنفيذ حول العالم' : '17 Client Partnerships &amp; Delivered Project Outcomes Across USA, KSA &amp; Global Markets'; ?></h2>
               <p>EFerz partners with high-growth e-commerce brands, industrial suppliers, retail storefronts, and regional enterprises across North America, Europe, the Middle East, and Asia to design, engineer, secure, and scale digital platforms.</p>
+              <h3>Featured Client Quotes</h3>
+              <blockquote>&ldquo;Working with EFerz on our kitchenware store was an incredible experience! They delivered high quality results in a remarkably fast turnaround, with outstanding communication every step of the way.&rdquo; — <strong>Miss Sheila</strong>, Founder, Your Kitchen is Cooking</blockquote>
+              <blockquote>&ldquo;It&rsquo;s been a great experience working with EFerz. They designed our website and continue to manage it seamlessly. They also handle our Google Ads, Meta Ads, Amazon, and TikTok Shop with great dedication and results. Highly recommended.&rdquo; — <strong>Mr. Taha Kamal</strong>, Founder, MiniMog</blockquote>
+              <blockquote>&ldquo;From strategic brand positioning to social media outreach, EFerz helped Sustagro expand our digital footprint and connect with business buyers effectively.&rdquo; — <strong>Amjid Mohammed</strong>, Marketing Executive, Sustagro</blockquote>
               <h3>Client Engagements &amp; Scope Summary</h3>
               <ul>
                 <li><strong>Your Kitchen is Cooking</strong> (Miss Sheila, Founder) — <strong>89% Returning Customers</strong> | Full-stack e-commerce, graphic design, content writing, and digital marketing across 10 curated departments.</li>
                 <li><strong>MiniMog</strong> (Mr. Taha Kamal, Founder) — <strong>89% Returning Customers</strong> | Complete 10-service partnership spanning web development, data analytics, and cybersecurity.</li>
                 <li><strong>InstaShop</strong> (Sarim Baig, Founder &amp; CEO) — <strong>97% Returning Customers</strong> | Multi-vendor commerce web development, social media management, and checkout UX.</li>
                 <li><strong>Khuzair Official</strong> (Mr. Uzair, Founder) — <strong>98% Returning Customers</strong> | Custom logo design, brand copywriting, and e-commerce growth strategy.</li>
-                <li><strong>HiDoose</strong> (Mr. Khubaib Khan, Founder) — <strong>98% Returning Traffic</strong> | High-speed digital publishing architecture, cybersecurity, and analytics.</li>
+                <li><strong>HiDoose</strong> (Mr. Khubaib Khan, Founder) — <strong>98% Returning Reader Traffic</strong> (Digital Publishing Traffic Metric) | High-speed digital publishing architecture, cybersecurity, and analytics.</li>
                 <li><strong>Airtilize Inc.</strong> (Mr. Shakeel, Founder &amp; CEO) — <strong>88% Returning Customers</strong> | Multi-region brand technology ecosystem across 30+ locations.</li>
                 <li><strong>TrendifyToday</strong> (Salman Shahid, Founder) — <strong>89% Returning Customers</strong> | Custom coffee marketplace development and performance marketing.</li>
                 <li><strong>Sustagro</strong> (Amjid Mohammed, Marketing Executive) — <strong>88% Returning Customers</strong> | Sustainable brand positioning and social media lead ecosystem.</li>
